@@ -1,4 +1,11 @@
 #include "stereoCommand.h"
+#include <XnOpenNI.h>
+#include <XnCppWrapper.h>
+#include <XnHash.h>
+#include <XnLog.h>
+
+//header for NITE
+
 
 int main(int agrc, char *argv)
 {
