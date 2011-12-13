@@ -279,6 +279,32 @@ int main(int agrc, char *argv)
 		g_HandsGenerator.GetHandTouchingFOVEdgeCap().RegisterToHandTouchingFOVEdge(TouchingCallback, NULL,h);
 	}
 
+	XnCallbackHandle hGestureIntermediateStageCompleted, hGestureProgress, hGestureReadyForNextIntermediateStage;
+	g_GestureGenerator.RegisterToGestureIntermediateStageCompleted(GestureIntermediateStageCompletedHandler, NULL, hGestureIntermediateStageCompleted);
+	g_GestureGenerator.RegisterToGestureReadyForNextIntermediateStage(GestureReadyForNextIntermediateStageHandler, NULL, hGestureReadyForNextIntermediateStage);
+	g_GestureGenerator.RegisterGestureCallbacks(NULL, GestureProgressHandler, NULL, hGestureProgress);
+
+	//We already created OpenNI objects, now we need to Create NITE objects
+
+	g_pSessionManager = new XnVSessionManager;
+	rc = g_pSessionManager->Initialize(&g_Context,"Click,Wave","RaiseHand");
+	CHECK_RC(rc, "SessionManager Initialization");
+
+	g_pSessionManager->RegisterSession(NULL,SessionStarting,SessionEnding,FocusProgress);
+
+	g_pDrawer = new XnVPointDrawer(20, g_DepthGenerator);
+	g_pFlowRouter = new XnVFlowRouter;
+	g_pFlowRouter->SetActive(g_pDrawer);
+
+	//will now draw the circle on the hand
+	g_pSessionManager->AddListener(g_pFlowRouter);
+
+	//logic and registration for the circle detector
+	g_pCircle = new XnVCircleDetector;
+	g_pCircle->RegisterCircle(NULL,&CircleCB); //when circle is recognized, CircleCB will be called
+	g_pCircle->RegisterNoCircle(NULL,&NoCircleCB); //when circle stops being detector, NoCircleCB will be called
+	g_pSessionManager->AddListener(g_pCircle);
+
 
 
 
