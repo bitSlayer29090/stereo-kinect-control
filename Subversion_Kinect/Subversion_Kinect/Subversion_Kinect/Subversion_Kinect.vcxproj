@@ -50,13 +50,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;USE_GLUT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OPEN_NI_INCLUDE);../Include;../GLES;../glh;../GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OPEN_NI_INCLUDE);../Include;C:\Users\djquam\Documents\Visual Studio 2010\Projects\Subversion_Kinect\Include;C:\Users\djquam\Documents\Visual Studio 2010\Projects\Subversion_Kinect\glh;C:\Users\djquam\Documents\Visual Studio 2010\Projects\Subversion_Kinect\GLES;C:\Users\djquam\Documents\Visual Studio 2010\Projects\Subversion_Kinect\GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OPEN_NI_LIB);..\Libs;..\Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OpenNI.lib;XnVNite_1_4_2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OpenNI.lib;XnVNite_1_4_2.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -88,8 +88,6 @@
     <ClInclude Include="vrpnClient.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Lib\glut32.dll" />
-    <None Include="..\Lib\vrpndll.dll" />
     <None Include="mainicon.ico" />
   </ItemGroup>
   <ItemGroup>

@@ -23,8 +23,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Lib\glut32.dll" />
-    <None Include="..\Lib\vrpndll.dll" />
     <None Include="mainicon.ico">
       <Filter>Resource Files</Filter>
     </None>
