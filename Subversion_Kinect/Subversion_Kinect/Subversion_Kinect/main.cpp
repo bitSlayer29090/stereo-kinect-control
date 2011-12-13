@@ -12,10 +12,15 @@
 #include "stereoCommand.h" //COM Automation
 #include "vrpnClient.h" //VRPN Server/Client
 
+
+//Pointers to StereoPlayer control functions
+
+
 //headers for gesture recognition
 #include <XnVSwipeDetector.h>
 #include <XnVSteadyDetector.h>
 #include <XnVCircleDetector.h>
+#include <XnVWaveDetector.h>
 
 #define CHECK_RC(rc, what)											\
 	if (rc != XN_STATUS_OK)											\
@@ -75,6 +80,9 @@ XnVSwipeDetector* g_pSwipe = NULL;
 //steady detector
 XnVSteadyDetector* g_pSteady = NULL;
 
+//wave detector
+XnVWaveDetector* g_pWave = NULL;
+
 #define GL_WIN_SIZE_X 720
 #define GL_WIN_SIZE_Y 480
 
@@ -129,6 +137,8 @@ void XN_CALLBACK_TYPE NoHands(void * UserCxt)
 
 void XN_CALLBACK_TYPE TouchingCallback(xn::HandTouchingFOVEdgeCapability& generator, XnUserID id, const XnPoint3D* pPosition, XnFloat fTime, XnDirection eDir, void* pCookie)
 {
+	printf("Hand at edge of FIELD OF VIEW\n");
+
 	g_pDrawer->SetTouchingFOVEdge(id);
 }
 
@@ -253,7 +263,7 @@ void XN_CALLBACK_TYPE GestureProgressHandler(xn::GestureGenerator& generator, co
 
 void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircle* pCircle, void* pUserCxt)
 {
-	//goes here
+	printf("\nCircle Detected %g\n",fTimes);
 }
 
 void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCircleReason eReason, void* pUserCxt)
@@ -263,22 +273,23 @@ void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCir
 
 void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	//goes here
+	
+	printf("\nSwipe Down\n");
 }
 
 void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	//goes here
+	printf("\nSwipe Up\n");
 }
 
 void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	//goes here
+	printf("\nSwipe Left\n");
 }
 
 void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	//goes here
+	printf("\nSwipe Right\n");
 }
 
 //sample XML code that will initialize the OpenNI interface
@@ -292,6 +303,11 @@ int main(int argc, char ** argv)
 	HRESULT hr;
 	XnStatus rc = XN_STATUS_OK;
 	xn::EnumerationErrors errors;
+
+
+
+	
+
 
 	//prepare the file to be opened by the computer
 	string filename = "C:\\Users\\Public\\Videos\\VascularVoyage.wmv";
@@ -373,6 +389,13 @@ int main(int argc, char ** argv)
 	g_pSwipe->RegisterSwipeUp(NULL, &SwipeUpCB);
 
 	g_pSessionManager->AddListener(g_pSwipe);
+
+	//registration for wave detector
+
+	g_pWave = new XnVWaveDetector;
+	g_pWave->RegisterWave(NULL, &WaveCB);
+
+	g_pSessionManager->AddListener(g_pWave);
 
 	g_pDrawer->RegisterNoPoints(NULL, NoHands);
 	g_pDrawer->SetDepthMap(g_bDrawDepthMap);
