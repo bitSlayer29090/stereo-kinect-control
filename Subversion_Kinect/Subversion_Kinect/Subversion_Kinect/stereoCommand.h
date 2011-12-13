@@ -54,6 +54,7 @@ class COMMAND
 	bool play;
 	bool pause;
 	bool stop;
+	VARIANT resultStruct[1];
 
 public:
 
@@ -70,6 +71,7 @@ public:
 		}
 
 		VariantInit(&stereoCommand[0]);
+		VariantInit(&resultStruct[0]);
 		initalize_CommandStruct();
 
 		str = TEXT("\nConstructor Called\n");
@@ -312,6 +314,62 @@ public:
 	}
 
 private:
+
+	HRESULT getDuration()
+	{
+		set_params(&dispparams,8,0);
+		pOLEStr = OLESTR("GetDuration");
+
+		hresult = myInvoke(&resultStruct);
+
+		return hresult;
+	}
+
+	HRESULT myInvoke(VARIANT* results)
+	{
+		//query the interface
+		hresult = punk->QueryInterface(&pdisp);
+
+		if FAILED(hresult)
+		{
+			cout << "Failed at QueryInterface step: " << format_error(hresult) << endl;
+			return hresult;
+		}
+
+		//find command's location in memory
+		hresult = pdisp->GetIDsOfNames(IID_NULL,
+			&pOLEStr,
+			1,
+			LOCALE_USER_DEFAULT,
+			&dispid);
+
+		if FAILED(hresult)
+		{
+			cout << "Failed at GetIDsOfNames step: " << format_error(hresult) << endl;
+			return hresult;
+		}
+
+
+		//invoke the command
+		hresult = pdisp->Invoke(dispid,
+			IID_NULL,
+			LOCALE_SYSTEM_DEFAULT,
+			DISPATCH_METHOD,
+			&dispparams,
+			&results,
+			NULL,
+			NULL);
+
+		if FAILED(hresult)
+		{
+			cout << "Failed at Invoke step: " << format_error(hresult) << endl;
+			return hresult;
+		}
+
+		return hresult;
+	}
+
+
 
 	HRESULT myInvoke()
 	{
