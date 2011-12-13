@@ -20,12 +20,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stereoCommand.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\Lib\glut32.dll" />
     <None Include="..\Lib\vrpndll.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stereoCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
