@@ -84,6 +84,7 @@
   <ItemGroup>
     <None Include="..\Lib\glut32.dll" />
     <None Include="..\Lib\vrpndll.dll" />
+    <None Include="AppIcon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
