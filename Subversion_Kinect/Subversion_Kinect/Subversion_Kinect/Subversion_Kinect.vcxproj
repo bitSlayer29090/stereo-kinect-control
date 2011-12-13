@@ -90,7 +90,7 @@
   <ItemGroup>
     <None Include="..\Lib\glut32.dll" />
     <None Include="..\Lib\vrpndll.dll" />
-    <None Include="AppIcon.ico" />
+    <None Include="mainicon.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NITE.rc" />
