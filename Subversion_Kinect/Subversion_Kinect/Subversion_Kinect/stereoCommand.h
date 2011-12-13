@@ -233,6 +233,14 @@ public:
 
 		hresult = myInvoke();
 
+		if FAILED(hresult)
+		{
+			std::cout<<"FAILED TO LEAVE FULL SCREEN" << endl;
+			EmergencyExit();
+		}
+
+		fullScreen = false;
+
 		return hresult;
 	}
 
@@ -249,7 +257,6 @@ public:
 				return hresult;
 			}
 
-			fullScreen = true;
 		}
 		else if (fullScreen)
 		{
@@ -259,7 +266,6 @@ public:
 				std::cout << "Failed to set non-full screen: " << format_error(hresult) << endl;
 				return hresult;
 			}
-			fullScreen = false;
 		}
 
 		return hresult;
@@ -267,7 +273,7 @@ public:
 
 	HRESULT togglePlay()
 	{
-		if(!play)
+		if(!play | stop)
 		{
 			hresult = SetPlay();
 			if FAILED(hresult)
