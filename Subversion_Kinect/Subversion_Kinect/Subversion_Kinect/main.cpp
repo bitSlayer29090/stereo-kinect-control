@@ -9,8 +9,8 @@
 
 //local headers
 #include "PointDrawer.h"
-#include "stereoCommand.h"
-#include "vrpnClient.h"
+#include "stereoCommand.h" //COM Automation
+#include "vrpnClient.h" //VRPN Server/Client
 
 //headers for gesture recognition
 #include <XnVSwipeDetector.h>
@@ -240,22 +240,75 @@ void XN_CALLBACK_TYPE GestureIntermediateStageCompletedHandler(xn::GestureGenera
 {
 	printf("Gesture %s: Intermediate stage complete (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
 }
+
 void XN_CALLBACK_TYPE GestureReadyForNextIntermediateStageHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
 {
 	printf("Gesture %s: Ready for next intermediate stage (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
 }
+
 void XN_CALLBACK_TYPE GestureProgressHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, XnFloat fProgress, void* pCookie)
 {
 	printf("Gesture %s progress: %f (%f,%f,%f)\n", strGesture, fProgress, pPosition->X, pPosition->Y, pPosition->Z);
 }
 
+void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircle* pCircle, void* pUserCxt)
+{
+	//goes here
+}
+
+void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVNoCircleReason eReason, void* pUserCxt)
+{
+	//goes here
+}
+
+void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
+{
+	//goes here
+}
+
+void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
+{
+	//goes here
+}
+
+void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
+{
+	//goes here
+}
+
+void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
+{
+	//goes here
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define SAMPLE_XML_PATH "Sample-Tracking.xml"
 
 int main(int agrc, char *argv)
 {
+	//error handling variables
+	HRESULT hr;
 	XnStatus rc = XN_STATUS_OK;
 	xn::EnumerationErrors errors;
 
+	//prepare the file to be opened by the computer
+	string filename = "C:\\Users\\Public\\Videos\\VascularVoyage.wmv";
+	cout << "File to Open: " << filename << endl;
+	
+	//instantiate new instance of COMMAND class as "command"
+	COMMAND command;
+	
 	//Initialize the OpenNI interface to the Kinect Camera
 	rc = g_Context.InitFromXmlFile(SAMPLE_XML_PATH, g_ScriptNode,&errors);
 	CHECK_ERRORS(rc,errors,"InitFromXMLFile");
@@ -352,14 +405,7 @@ int main(int agrc, char *argv)
 
 
 
-	HRESULT hr;
 
-	//prepare the file to be opened by the computer
-	string filename = "C:\\Users\\Public\\Videos\\VascularVoyage.wmv";
-	cout << "File to Open: " << filename << endl;
-	
-	//instantiate new instance of COMMAND class as "command"
-	COMMAND command;
 
 	//create instance using COMMAND::CreateInstance
 	hr = command.CreateInstance();
