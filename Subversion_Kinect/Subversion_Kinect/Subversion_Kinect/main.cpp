@@ -270,13 +270,13 @@ void XN_CALLBACK_TYPE GestureProgressHandler(xn::GestureGenerator& generator, co
 
 void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircle* pCircle, void* pUserCxt)
 {
-	printf("\nCircle Detected %g\n",fTimes);
+	printf("\nCircle Detected\n");
 	g_pCircle->Reset();
 }
 
 void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCircleReason eReason, void* pUserCxt)
 {
-	//goes here
+	//nothing goes here
 }
 
 void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
@@ -305,20 +305,13 @@ void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCx
 
 void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	printf("\nSwipe Left -- SET STOP\n");
-	hr = command.SetStop();
+	printf("\nSwipe Left\n");
 
-	if FAILED(hr)
-	{
-		std::cout << "COMMAND ERROR: " << format_error(hr) << endl;
-	}
 }
 
 void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	printf("\nSwipe Right\n");
-
-
 
 }
 
@@ -330,6 +323,15 @@ void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
 void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 {
 	printf("\nPush Detected\n");
+
+	hr = command.SetStop();
+
+	if FAILED(hr)
+	{
+		std::cout << "COMMAND ERROR: " << format_error(hr) << endl;
+	}
+
+
 }
 
 //sample XML code that will initialize the OpenNI interface
