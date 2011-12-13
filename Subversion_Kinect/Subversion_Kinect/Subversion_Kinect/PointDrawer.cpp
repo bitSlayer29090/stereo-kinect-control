@@ -13,7 +13,7 @@
 	#if (XN_PLATFORM == XN_PLATFORM_MACOSX)
 		#include <GLUT/glut.h>
 	#else
-		#include <GL/glut.h>
+		#include <glut.h>
 	#endif
 #elif defined(USE_GLES)
 	#include "opengles.h"

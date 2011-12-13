@@ -256,7 +256,7 @@ void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircl
 	//goes here
 }
 
-void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVNoCircleReason eReason, void* pUserCxt)
+void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCircleReason eReason, void* pUserCxt)
 {
 	//goes here
 }
@@ -281,9 +281,12 @@ void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUse
 	//goes here
 }
 
+//sample XML code that will initialize the OpenNI interface
 #define SAMPLE_XML_PATH "Sample-Tracking.xml"
 
-int main(int agrc, char *argv)
+
+
+int main(int argc, char ** argv)
 {
 	//error handling variables
 	HRESULT hr;
@@ -354,6 +357,38 @@ int main(int agrc, char *argv)
 	g_pSwipe->RegisterSwipeUp(NULL, &SwipeUpCB);
 
 	g_pSessionManager->AddListener(g_pSwipe);
+
+	g_pDrawer->RegisterNoPoints(NULL, NoHands);
+	g_pDrawer->SetDepthMap(g_bDrawDepthMap);
+
+	rc = g_Context.StartGeneratingAll();
+	CHECK_RC(rc,"Start Generating");
+
+#ifdef USE_GLUT
+
+	glInit(&argc, argv);
+	glutMainLoop();
+
+#elif defined(USE_GLES)
+	if (!opengles_init(GL_WIN_SIZE_X, GL_WIN_SIZE_Y, &display, &surface, &context))
+	{
+		printf("Error initializing opengles\n");
+		CleanupExit();
+	}
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+
+	while ((!_kbhit()) && (!g_bQuit))
+	{
+		glutDisplay();
+		eglSwapBuffers(display, surface);
+	}
+	opengles_shutdown(display, surface, context);
+
+	CleanupExit();
+#endif
 
 
 	//create instance using COMMAND::CreateInstance
