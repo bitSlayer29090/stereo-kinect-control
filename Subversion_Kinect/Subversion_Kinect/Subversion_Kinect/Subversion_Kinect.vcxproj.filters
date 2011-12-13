@@ -36,5 +36,8 @@
     <ClInclude Include="PointDrawer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vrpnClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

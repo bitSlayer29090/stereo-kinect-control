@@ -80,6 +80,7 @@
   <ItemGroup>
     <ClInclude Include="PointDrawer.h" />
     <ClInclude Include="stereoCommand.h" />
+    <ClInclude Include="vrpnClient.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Lib\glut32.dll" />
