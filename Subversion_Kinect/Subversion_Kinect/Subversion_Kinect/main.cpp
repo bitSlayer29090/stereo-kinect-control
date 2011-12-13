@@ -281,18 +281,6 @@ void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUse
 	//goes here
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 #define SAMPLE_XML_PATH "Sample-Tracking.xml"
 
 int main(int agrc, char *argv)
@@ -325,7 +313,6 @@ int main(int agrc, char *argv)
 
 	XnCallbackHandle h;
 
-	
 	//if we've activating the sensor for knowing whether or not the hand is near the FOV edge, register the callback
 	if (g_HandsGenerator.IsCapabilitySupported(XN_CAPABILITY_HAND_TOUCHING_FOV_EDGE))
 	{
@@ -367,44 +354,6 @@ int main(int agrc, char *argv)
 	g_pSwipe->RegisterSwipeUp(NULL, &SwipeUpCB);
 
 	g_pSessionManager->AddListener(g_pSwipe);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	//create instance using COMMAND::CreateInstance
