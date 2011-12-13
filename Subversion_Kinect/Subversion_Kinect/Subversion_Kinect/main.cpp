@@ -305,13 +305,26 @@ void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCx
 
 void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	printf("\nSwipe Left\n");
+	hr = command.SetFullScreen();
+
+	if FAILED(hr)
+	{
+		std::cout << "COMMAND ERROR: " << format_error(hr) << endl;
+	}
+
 
 }
 
 void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	printf("\nSwipe Right\n");
+
+	hr = command.SetLeaveFullScreen();
+
+	if FAILED(hr)
+	{
+		std::cout << "COMMAND ERROR: " << format_error(hr) << endl;
+	}
 
 }
 

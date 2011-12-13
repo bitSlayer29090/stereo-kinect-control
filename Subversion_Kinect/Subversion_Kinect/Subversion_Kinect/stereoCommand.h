@@ -178,6 +178,16 @@ public:
 		return hresult;
 	}
 
+	HRESULT SetLeaveFullScreen()
+	{
+		set_params(&dispparams,8,0);
+		pOLEStr = OLESTR("LeaveFullscreenMode");
+
+		hresult = myInvoke();
+
+		return hresult;
+	}
+
 private:
 
 	HRESULT myInvoke()
@@ -283,8 +293,8 @@ private:
 		stereoCommand[7].vt = VT_BOOL;
 		stereoCommand[7].boolVal = 0;
 
-
-
-
+		//VARIANT struct for null
+		stereoCommand[8].vt = VT_EMPTY;
+		
 	}
 };
