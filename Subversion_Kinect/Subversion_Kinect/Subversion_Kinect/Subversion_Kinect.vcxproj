@@ -79,6 +79,10 @@
   <ItemGroup>
     <ClInclude Include="stereoCommand.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Lib\glut32.dll" />
+    <None Include="..\Lib\vrpndll.dll" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
