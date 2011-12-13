@@ -135,11 +135,6 @@ public:
 		return hresult;		
 	}
 
-	HRESULT *pSetPlay()
-	{
-		SetPlay();
-	}
-
 	HRESULT SetFF()
 	{
 		set_params(&dispparams,4,1);
