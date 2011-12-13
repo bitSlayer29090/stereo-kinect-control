@@ -4,6 +4,7 @@
 #include <XnCppWrapper.h>
 #include <XnHash.h>
 #include <XnLog.h>
+#include <XnVNite.h>
 
 //header for NITE
 #include "PointDrawer.h"
