@@ -1,4 +1,5 @@
 #include "stereoCommand.h"
+#include "vrpnClient.h"
 #include <XnOpenNI.h>
 #include <XnCppWrapper.h>
 #include <XnHash.h>
@@ -30,7 +31,7 @@
 	#if (XN_PLATFORM == XN_PLATFORM_MACOSX)
 		#include <GLUT/glut.h>
 	#else
-		#include <GL/glut.h>
+		#include <gl\GL.h>
 	#endif
 #elif defined(USE_GLES)
 	#include "opengles.h"
