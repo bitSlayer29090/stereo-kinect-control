@@ -18,6 +18,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PointDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Lib\glut32.dll" />
@@ -26,6 +29,9 @@
   <ItemGroup>
     <ClInclude Include="stereoCommand.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointDrawer.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
