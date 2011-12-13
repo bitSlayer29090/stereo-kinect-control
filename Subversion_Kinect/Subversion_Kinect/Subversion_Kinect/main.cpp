@@ -402,6 +402,7 @@ int main(int argc, char ** argv)
 
 	//logic and registration for the swipe detector and its 4 events
 	g_pSwipe = new XnVSwipeDetector;
+	g_pSwipe->SetSteadyDuration(400);
 	g_pSwipe->RegisterSwipeDown(NULL, &SwipeDownCB);
 	g_pSwipe->RegisterSwipeLeft(NULL, &SwipeLeftCB);
 	g_pSwipe->RegisterSwipeRight(NULL, &SwipeRightCB);
