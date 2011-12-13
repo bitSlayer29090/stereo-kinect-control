@@ -299,6 +299,22 @@ int main(int argc, char ** argv)
 	
 	//instantiate new instance of COMMAND class as "command"
 	COMMAND command;
+
+	//create instance using COMMAND::CreateInstance
+	hr = command.CreateInstance();
+	if FAILED(hr)
+	{
+		cout << "Main - Failed to CreateInstance: " << format_error(hr) << endl;
+		goto error;
+	}
+
+	//open the file of interest using COMMAND::OpenFile() where the argument is the string of the filepath
+	hr = command.OpenFile(filename);
+	if FAILED(hr)
+	{
+		cout << "Main - Failed to Open File: " << format_error(hr) << endl;
+		goto error;
+	}
 	
 	//Initialize the OpenNI interface to the Kinect Camera
 	rc = g_Context.InitFromXmlFile(SAMPLE_XML_PATH, g_ScriptNode,&errors);
@@ -364,6 +380,8 @@ int main(int argc, char ** argv)
 	rc = g_Context.StartGeneratingAll();
 	CHECK_RC(rc,"Start Generating");
 
+
+
 #ifdef USE_GLUT
 
 	glInit(&argc, argv);
@@ -390,25 +408,6 @@ int main(int argc, char ** argv)
 	CleanupExit();
 #endif
 
-
-	//create instance using COMMAND::CreateInstance
-	hr = command.CreateInstance();
-	
-	if FAILED(hr)
-	{
-		cout << "Main - Failed to CreateInstance: " << format_error(hr) << endl;
-		goto error;
-	}
-
-	//open the file of interest using COMMAND::OpenFile() where the argument is the string of the filepath
-	hr = command.OpenFile(filename);
-	if FAILED(hr)
-	{
-		cout << "Main - Failed to Open File: " << format_error(hr) << endl;
-		goto error;
-	}
-
-	
 	cout << "Please press a key" << endl;
 	int temp;
 	cin >> temp;
