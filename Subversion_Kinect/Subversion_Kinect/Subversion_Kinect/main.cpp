@@ -21,6 +21,7 @@
 #include <XnVSteadyDetector.h>
 #include <XnVCircleDetector.h>
 #include <XnVWaveDetector.h>
+#include <XnVPushDetector.h>
 
 #define CHECK_RC(rc, what)											\
 	if (rc != XN_STATUS_OK)											\
@@ -290,6 +291,14 @@ void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUser
 void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	printf("\nSwipe Right\n");
+
+
+
+}
+
+void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
+{
+	printf("\nWave Detected\n");
 }
 
 //sample XML code that will initialize the OpenNI interface
