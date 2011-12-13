@@ -303,7 +303,17 @@ int main(int agrc, char *argv)
 	g_pCircle = new XnVCircleDetector;
 	g_pCircle->RegisterCircle(NULL,&CircleCB); //when circle is recognized, CircleCB will be called
 	g_pCircle->RegisterNoCircle(NULL,&NoCircleCB); //when circle stops being detector, NoCircleCB will be called
+	
 	g_pSessionManager->AddListener(g_pCircle);
+
+	//logic and registration for the swipe detector
+	g_pSwipe = new XnVSwipeDetector;
+	g_pSwipe->RegisterSwipeDown(NULL, &SwipeDownCB);
+	g_pSwipe->RegisterSwipeLeft(NULL, &SwipeLeftCB);
+	g_pSwipe->RegisterSwipeRight(NULL, &SwipeRightCB);
+	g_pSwipe->RegisterSwipeUp(NULL, &SwipeUpCB);
+
+	g_pSessionManager->AddListener(g_pSwipe);
 
 
 
