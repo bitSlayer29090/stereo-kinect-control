@@ -49,7 +49,11 @@ class COMMAND
 	WCHAR stringCommand[MAX_PATH];  //MAX_PATH defined as 260
 	LPCWSTR str;
 	float videoDuration;
+	float videoPosition;
 	bool fullScreen;
+	bool play;
+	bool pause;
+	bool stop;
 
 public:
 
@@ -72,6 +76,9 @@ public:
 		OutputDebugString(str);
 
 		fullScreen = false;
+		play = false;
+		pause = false;
+		stop = false;
 	}
 	//this is the destructor for the class
 	~COMMAND()
@@ -110,6 +117,17 @@ public:
 
 		hresult = myInvoke();
 
+
+		if FAILED(hresult)
+		{
+			std::cout << "FAILED TO OPEN FILE " << filepath << endl;
+			return hresult;
+		}
+
+		play = true;
+		pause = false;
+		stop = false;
+
 		return hresult;
 	}
 
@@ -122,6 +140,9 @@ public:
 		pOLEStr = OLESTR("SetPlaybackState");
 
 		hresult = myInvoke();
+		play = false;
+		pause = true;
+		stop = false;
 
 		return hresult;
 
@@ -136,6 +157,10 @@ public:
 		pOLEStr = OLESTR("SetPlaybackState");
 
 		hresult = myInvoke();
+
+		play = true;
+		pause = false;
+		stop = false;
 		
 		
 		return hresult;		
@@ -169,6 +194,15 @@ public:
 		pOLEStr = OLESTR("EnterFullscreenMode");
 		set_params(&dispparams,6,1);
 		hresult = myInvoke();
+
+		if FAILED(hresult)
+		{
+			std::cout << "FAILED TO SET FULL SCREEN " <<format_error(hresult) << endl;
+		}
+
+		fullScreen = true;
+
+
 		return hresult;
 	}
 
@@ -178,6 +212,16 @@ public:
 		pOLEStr = OLESTR("SetPlaybackState");
 		
 		hresult = myInvoke();
+
+		if FAILED(hresult)
+		{
+			std::cout << "FAILED TO SET STOP " << format_error(hresult) << endl;
+		}
+
+		play = false;
+		pause = false;
+		stop = true;
+
 
 		return hresult;
 	}
@@ -212,13 +256,37 @@ public:
 			hresult = SetLeaveFullScreen();
 			if FAILED(hresult)
 			{
-				std::cout << "Failed to set full screen: " << format_error(hresult) << endl;
+				std::cout << "Failed to set non-full screen: " << format_error(hresult) << endl;
 				return hresult;
 			}
 			fullScreen = false;
 		}
 
 		return hresult;
+	}
+
+	HRESULT togglePlay()
+	{
+		if(!play)
+		{
+			hresult = SetPlay();
+			if FAILED(hresult)
+			{
+				std::cout << "FAILED TO SET PLAY: " << format_error(hresult) << endl;
+				return hresult;
+			}
+
+		}
+
+		else if (play)
+		{
+			hresult = SetPause();
+			if FAILED(hresult)
+			{
+				std::cout << "FAILED TO SET PAUSE: " << format_error(hresult) << endl;
+				return hresult;
+			}
+		}
 	}
 
 
