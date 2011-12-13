@@ -48,6 +48,8 @@ class COMMAND
 	public: VARIANT stereoCommand[15];
 	WCHAR stringCommand[MAX_PATH];  //MAX_PATH defined as 260
 	LPCWSTR str;
+	float videoDuration;
+	bool fullScreen;
 
 public:
 
@@ -68,6 +70,8 @@ public:
 
 		str = TEXT("\nConstructor Called\n");
 		OutputDebugString(str);
+
+		fullScreen = false;
 	}
 	//this is the destructor for the class
 	~COMMAND()
@@ -186,6 +190,45 @@ public:
 		hresult = myInvoke();
 
 		return hresult;
+	}
+
+
+	HRESULT SwitchFullScreen()
+	{
+		if (!fullScreen)
+		{
+			hresult = SetFullScreen();
+
+			if FAILED(hresult)
+			{
+				std::cout << "Failed to set full screen: " << format_error(hresult) << endl;
+				return hresult;
+			}
+
+			fullScreen = true;
+		}
+		else if (fullScreen)
+		{
+			hresult = SetLeaveFullScreen();
+			if FAILED(hresult)
+			{
+				std::cout << "Failed to set full screen: " << format_error(hresult) << endl;
+				return hresult;
+			}
+			fullScreen = false;
+		}
+
+		return hresult;
+	}
+
+
+
+	void EmergencyExit()
+	{
+		if(pdisp) pdisp->Release();
+		if(punk) punk->Release();
+
+		OleUninitialize();
 	}
 
 private:

@@ -111,6 +111,7 @@ void CleanupExit()
 	g_HandsGenerator.Release();
 	g_GestureGenerator.Release();
 	g_Context.Release();
+	command.EmergencyExit();
 
 	exit(1);
 }
@@ -272,6 +273,7 @@ void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircl
 {
 	printf("\nCircle Detected\n");
 	g_pCircle->Reset();
+	CleanupExit();
 }
 
 void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCircleReason eReason, void* pUserCxt)
@@ -435,7 +437,7 @@ int main(int argc, char ** argv)
 
 	//logic and registration for the swipe detector and its 4 events
 	g_pSwipe = new XnVSwipeDetector;
-	g_pSwipe->SetSteadyDuration(400);
+	g_pSwipe->SetSteadyDuration(500);
 	g_pSwipe->RegisterSwipeDown(NULL, &SwipeDownCB);
 	g_pSwipe->RegisterSwipeLeft(NULL, &SwipeLeftCB);
 	g_pSwipe->RegisterSwipeRight(NULL, &SwipeRightCB);
