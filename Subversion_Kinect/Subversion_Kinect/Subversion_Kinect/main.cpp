@@ -34,64 +34,10 @@ int main(int agrc, char *argv)
 	int temp;
 	cin >> temp;
 	
-	while (temp!=9)
-	{
-	switch (temp)
-	{
-		case(1):
-			{
-				hr = command.SetPause();
-
-				if FAILED(hr)
-				{
-					cout << "Main - Failed to SetPause. " << format_error(hr) << endl;
-					goto exit;
-				}
-				break;
-			}
-		case(2):
-			{
-				hr= command.SetPlay();
-				
-				if FAILED(hr)
-				{
-					cout << "Main - Failed to SetPlay. " << format_error(hr) << endl;
-					goto exit;
-				}
-				break;
-			}
-		case(3):
-			{
-				hr = command.SetFullScreen();
-
-				if(FAILED(hr))
-				{
-					cout<<"Main - Failed to SetPlay." << format_error(hr) << endl;
-					goto exit;
-				}
-				break;
-			}
-		case(4):
-			{
-				hr = command.SetStop();
-
-				if (FAILED(hr))
-				{
-					cout<<"Main - Failed to SetStop. " << format_error(hr) << endl;
-					goto exit;
-				}
-				break;
-			}
-		default:
-			{
-				cout << "DEFAULT ERROR!" << endl;
-				break;
-			}
-	}
+//insert gesture code here.
 exit:
 	cout << "What Should I do next?" << endl;
 	cin >> temp;
-	}
 	return temp;
 
 error:
