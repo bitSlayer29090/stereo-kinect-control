@@ -2,8 +2,42 @@
 
 int main(int agrc, char *argv)
 {
-	HRESULT hr;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	HRESULT hr;
 
 	//prepare the file to be opened by the computer
 	string filename = "C:\\Users\\Public\\Videos\\VascularVoyage.wmv";
