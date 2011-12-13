@@ -5,7 +5,44 @@
 #include <XnLog.h>
 
 //header for NITE
+#include "PointDrawer.h"
 
+
+
+
+#define CHECK_RC(rc, what)											\
+	if (rc != XN_STATUS_OK)											\
+	{																\
+		printf("%s failed: %s\n", what, xnGetStatusString(rc));		\
+		return rc;													\
+	}
+
+#define CHECK_ERRORS(rc, errors, what)		\
+	if (rc == XN_STATUS_NO_NODE_PRESENT)	\
+	{										\
+		XnChar strError[1024];				\
+		errors.ToString(strError, 1024);	\
+		printf("%s\n", strError);			\
+		return (rc);						\
+	}
+
+#ifdef USE_GLUT
+	#if (XN_PLATFORM == XN_PLATFORM_MACOSX)
+		#include <GLUT/glut.h>
+	#else
+		#include <GL/glut.h>
+	#endif
+#elif defined(USE_GLES)
+	#include "opengles.h"
+	#include "kbhit.h"
+#endif
+#include "signal_catch.h"
+
+#ifdef USE_GLES
+static EGLDisplay display = EGL_NO_DISPLAY;
+static EGLSurface surface = EGL_NO_SURFACE;
+static EGLContext context = EGL_NO_CONTEXT;
+#endif
 
 int main(int agrc, char *argv)
 {
