@@ -12,6 +12,9 @@
 #include "stereoCommand.h" //COM Automation
 #include "vrpnClient.h" //VRPN Server/Client
 
+//instantiate new instance of COMMAND class as "command"
+COMMAND command;
+HRESULT hr;
 
 //Pointers to StereoPlayer control functions
 
@@ -28,7 +31,7 @@
 	{																\
 		printf("%s failed: %s\n", what, xnGetStatusString(rc));		\
 		return rc;													\
-	}
+	}																\
 
 #define CHECK_ERRORS(rc, errors, what)		\
 	if (rc == XN_STATUS_NO_NODE_PRESENT)	\
@@ -279,17 +282,36 @@ void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCir
 void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	
-	printf("\nSwipe Down\n");
+	printf("\nSwipe Down -- SET PAUSE\n");
+	hr =command.SetPause();
+
+	if FAILED(hr)
+	{
+		std::cout << "COMMAND ERROR: " << format_error(hr) << endl;
+	}
+
 }
 
 void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	printf("\nSwipe Up\n");
+	printf("\nSwipe Up -- SET PLAY\n");
+	hr = command.SetPlay();
+
+	if FAILED(hr)
+	{
+		std::cout << "COMMAND ERROR: " << format_error(hr)<<endl;
+	}
 }
 
 void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	printf("\nSwipe Left\n");
+	printf("\nSwipe Left -- SET STOP\n");
+	hr = command.SetStop();
+
+	if FAILED(hr)
+	{
+		std::cout << "COMMAND ERROR: " << format_error(hr) << endl;
+	}
 }
 
 void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
@@ -318,7 +340,6 @@ void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 int main(int argc, char ** argv)
 {
 	//error handling variables
-	HRESULT hr;
 	XnStatus rc = XN_STATUS_OK;
 	xn::EnumerationErrors errors;
 
@@ -330,9 +351,6 @@ int main(int argc, char ** argv)
 	//prepare the file to be opened by the computer
 	string filename = "C:\\Users\\Public\\Videos\\VascularVoyage.wmv";
 	cout << "File to Open: " << filename << endl;
-	
-	//instantiate new instance of COMMAND class as "command"
-	COMMAND command;
 
 	//create instance using COMMAND::CreateInstance
 	hr = command.CreateInstance();

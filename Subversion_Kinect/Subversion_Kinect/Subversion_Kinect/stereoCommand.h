@@ -50,6 +50,8 @@ class COMMAND
 	LPCWSTR str;
 
 public:
+
+
 	//this is the constructor for the class
 	COMMAND() 
 	{
