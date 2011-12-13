@@ -228,7 +228,13 @@ public:
 		if(pdisp) pdisp->Release();
 		if(punk) punk->Release();
 
+
+		pOLEStr = OLESTR("ClosePlayer");
+		set_params(&dispparams,8,0);
+		hresult = myInvoke();
+
 		OleUninitialize();
+		exit(1);
 	}
 
 private:

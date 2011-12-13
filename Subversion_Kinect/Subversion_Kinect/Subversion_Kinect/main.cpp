@@ -284,13 +284,7 @@ void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCir
 void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	
-	printf("\nSwipe Down -- SET PAUSE\n");
-	hr =command.SetPause();
-
-	if FAILED(hr)
-	{
-		std::cout << "COMMAND ERROR: " << format_error(hr) << endl;
-	}
+	printf("\nSwipe Down\n");
 
 }
 
@@ -307,7 +301,9 @@ void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCx
 
 void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	hr = command.SetFullScreen();
+	printf("\n Left Swipe -- SWITCH FULLSCREEN STATE\n");
+	
+	hr = command.SwitchFullScreen();
 
 	if FAILED(hr)
 	{
@@ -321,7 +317,7 @@ void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUse
 {
 	printf("\nSwipe Right\n");
 
-	hr = command.SetLeaveFullScreen();
+	hr = command.SetPause();
 
 	if FAILED(hr)
 	{
