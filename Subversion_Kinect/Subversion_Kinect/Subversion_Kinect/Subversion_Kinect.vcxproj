@@ -82,6 +82,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PointDrawer.h" />
+    <ClInclude Include="Resource-NITE.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stereoCommand.h" />
     <ClInclude Include="vrpnClient.h" />
   </ItemGroup>
@@ -89,6 +91,9 @@
     <None Include="..\Lib\glut32.dll" />
     <None Include="..\Lib\vrpndll.dll" />
     <None Include="AppIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NITE.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
