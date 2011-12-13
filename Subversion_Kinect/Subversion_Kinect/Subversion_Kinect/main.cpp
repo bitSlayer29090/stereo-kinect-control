@@ -84,6 +84,9 @@ XnVSteadyDetector* g_pSteady = NULL;
 //wave detector
 XnVWaveDetector* g_pWave = NULL;
 
+//push detector
+XnVPushDetector* g_pPush = NULL;
+
 #define GL_WIN_SIZE_X 720
 #define GL_WIN_SIZE_Y 480
 
@@ -138,12 +141,12 @@ void XN_CALLBACK_TYPE NoHands(void * UserCxt)
 
 void XN_CALLBACK_TYPE TouchingCallback(xn::HandTouchingFOVEdgeCapability& generator, XnUserID id, const XnPoint3D* pPosition, XnFloat fTime, XnDirection eDir, void* pCookie)
 {
-	printf("Hand at edge of FIELD OF VIEW\n");
+	//printf("Hand at edge of FIELD OF VIEW\n");
 
 	g_pDrawer->SetTouchingFOVEdge(id);
 }
 
-
+//the glutDisplay loop gets called on every frame
 void glutDisplay (void)
 {
 
@@ -265,6 +268,7 @@ void XN_CALLBACK_TYPE GestureProgressHandler(xn::GestureGenerator& generator, co
 void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircle* pCircle, void* pUserCxt)
 {
 	printf("\nCircle Detected %g\n",fTimes);
+	g_pCircle->Reset();
 }
 
 void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCircleReason eReason, void* pUserCxt)
@@ -299,6 +303,11 @@ void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUse
 void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
 {
 	printf("\nWave Detected\n");
+}
+
+void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
+{
+	printf("\nPush Detected\n");
 }
 
 //sample XML code that will initialize the OpenNI interface
@@ -388,9 +397,10 @@ int main(int argc, char ** argv)
 	g_pCircle->RegisterCircle(NULL,&CircleCB); //when circle is recognized, CircleCB will be called
 	g_pCircle->RegisterNoCircle(NULL,&NoCircleCB); //when circle stops being detector, NoCircleCB will be called
 	
+	//UNCOMMENT TO ENABLE THE CIRCLE DETECTOR
 	g_pSessionManager->AddListener(g_pCircle);
 
-	//logic and registration for the swipe detector
+	//logic and registration for the swipe detector and its 4 events
 	g_pSwipe = new XnVSwipeDetector;
 	g_pSwipe->RegisterSwipeDown(NULL, &SwipeDownCB);
 	g_pSwipe->RegisterSwipeLeft(NULL, &SwipeLeftCB);
@@ -400,11 +410,16 @@ int main(int argc, char ** argv)
 	g_pSessionManager->AddListener(g_pSwipe);
 
 	//registration for wave detector
-
 	g_pWave = new XnVWaveDetector;
 	g_pWave->RegisterWave(NULL, &WaveCB);
 
 	g_pSessionManager->AddListener(g_pWave);
+
+	//register for the push detector
+	g_pPush = new XnVPushDetector;
+	g_pPush->RegisterPush(NULL, &PushCB);
+
+	g_pSessionManager->AddListener(g_pPush);
 
 	g_pDrawer->RegisterNoPoints(NULL, NoHands);
 	g_pDrawer->SetDepthMap(g_bDrawDepthMap);
