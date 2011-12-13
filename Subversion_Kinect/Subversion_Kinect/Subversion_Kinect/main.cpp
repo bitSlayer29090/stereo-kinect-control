@@ -249,10 +249,38 @@ void XN_CALLBACK_TYPE GestureProgressHandler(xn::GestureGenerator& generator, co
 	printf("Gesture %s progress: %f (%f,%f,%f)\n", strGesture, fProgress, pPosition->X, pPosition->Y, pPosition->Z);
 }
 
-
+#define SAMPLE_XML_PATH "Sample-Tracking.xml"
 
 int main(int agrc, char *argv)
 {
+	XnStatus rc = XN_STATUS_OK;
+	xn::EnumerationErrors errors;
+
+	//Initialize the OpenNI interface to the Kinect Camera
+	rc = g_Context.InitFromXmlFile(SAMPLE_XML_PATH, g_ScriptNode,&errors);
+	CHECK_ERRORS(rc,errors,"InitFromXMLFile");
+	CHECK_RC(rc,"InitFromXMLFile");
+
+	rc=g_Context.FindExistingNode(XN_NODE_TYPE_DEPTH, g_DepthGenerator);
+	CHECK_RC(rc,"Find depth generator");
+
+	rc= g_Context.FindExistingNode(XN_NODE_TYPE_HANDS,g_HandsGenerator);
+	CHECK_RC(rc,"Find Hands Generator");
+
+	rc=g_Context.FindExistingNode(XN_NODE_TYPE_GESTURE,g_GestureGenerator);
+	CHECK_RC(rc,"Find Gesture Generator");
+
+	XnCallbackHandle h;
+
+	
+	//if we've activating the sensor for knowing whether or not the hand is near the FOV edge, register the callback
+	if (g_HandsGenerator.IsCapabilitySupported(XN_CAPABILITY_HAND_TOUCHING_FOV_EDGE))
+	{
+		g_HandsGenerator.GetHandTouchingFOVEdgeCap().RegisterToHandTouchingFOVEdge(TouchingCallback, NULL,h);
+	}
+
+
+
 
 
 
