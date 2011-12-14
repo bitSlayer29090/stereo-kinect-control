@@ -56,6 +56,7 @@ class COMMAND
 	bool pause;
 	bool stop;
 	VARIANTARG varg0;
+	double zoomLevel;
 
 public:
 	//this is the constructor for the class
@@ -83,6 +84,7 @@ public:
 		play = false;
 		pause = false;
 		stop = false;
+		zoomLevel = 1.0;
 	}
 	//this is the destructor for the class
 	~COMMAND()
@@ -318,6 +320,34 @@ public:
 		exit(1);
 	}
 
+	HRESULT SetZoomIncrement()
+	{
+		double zoomCheck = stereoCommand[9].dblVal;
+		double newZoom;
+
+		if (zoomLevel!= zoomCheck)
+		{
+			cout << "Zoom level mismatch! Expected: " << zoomLevel << " Actual: " << zoomCheck << endl;
+		}
+		else
+		{
+			cout << "Zoom level matches expectation" << endl;
+
+			newZoom = zoomLevel+(double)0.5;
+
+			stereoCommand[9].dblVal = newZoom;
+
+			pOLEStr = OLESTR("SetZoom");
+			set_params(&dispparams,9,1);
+
+
+			//set equal to new zoom
+			zoomLevel = newZoom;
+		}
+
+
+
+	}
 
 
 
@@ -465,9 +495,7 @@ private:
 		MultiByteToWideChar(CP_UTF8,0,argument.c_str(),argument.length()+1,formattedArg,MAX_PATH);
 	}
 
-	//sets up the dispparams structure with proper values for use in INVOKE
-	
-	
+	//sets up the dispparams structure with proper values for use in INVOKE	
 	void set_params(DISPPARAMS *pdispparam, int which, int howMany, bool isNull)
 	{
 		//set up the DISPPARAMS struct for use in the IDispatch::Invoke command
@@ -486,9 +514,6 @@ private:
 			pdispparam->rgvarg=NULL;
 		}
 	}
-	
-	
-	
 	void set_params(DISPPARAMS *pdispparam, int which, int howMany)
 	{
 		//set up the DISPPARAMS struct for use in the IDispatch::Invoke command
@@ -544,6 +569,10 @@ private:
 
 		//VARIANT struct for null
 		stereoCommand[8].vt = VT_EMPTY;
+
+		//VARIANT struct for Zoom
+		stereoCommand[9].vt = VT_R8;
+		stereoCommand[9].dblVal =1.0;
 		
 	}
 };
