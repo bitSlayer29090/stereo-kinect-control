@@ -117,8 +117,8 @@ public:
 		set_params(&dispparams,0,1); //setting dispparam struct
 		pOLEStr = OLESTR("OpenFile");
 
-		double duration;
-		duration = myInvoke();
+		VARIANT duration;
+		hresult = myInvoke();
 
 		
 
@@ -127,19 +127,13 @@ public:
 		pause = false;
 		stop = false;
 
-		hresult = getDuration();
-		cout<<"FILE DURATION: " << duration << " seconds" << endl;
+		duration = getDuration();
+
+		cout << "Data Type: " << duration.vt << endl;
 
 
-		if FAILED(hresult)
-		{
-			std::cout << "FAILED TO GET DURATION " << format_error(hresult) << endl;
-		}
+		//cout<<"FILE DURATION: " << duration.ulVal << " seconds" << endl;
 
-		else
-		{
-			std::cout << "FILE DURATION: " << endl;
-		}
 
 		return hresult;
 		
@@ -324,7 +318,7 @@ public:
 
 private:
 	
-	double getDuration()
+	VARIANT getDuration()
 	{
 		VARIANTARG varg0;
 		VariantInit(&varg0);
@@ -338,7 +332,7 @@ private:
 			std::cout << "ERROR: " << format_error(hresult) << endl;
 		}
 
-		return varg0.dblVal;
+		return varg0;
 	}
 	
 	HRESULT myInvoke(VARIANTARG pArgs)
@@ -381,6 +375,8 @@ private:
 			cout << "Failed at Invoke step: " << format_error(hresult) << endl;
 			return hresult;
 		}
+
+		cout << "varg0 type is " << hex << pArgs.vt << endl;
 
 		return hresult;
 	}
