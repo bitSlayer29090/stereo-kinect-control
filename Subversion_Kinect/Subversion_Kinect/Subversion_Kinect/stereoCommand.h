@@ -343,12 +343,51 @@ public:
 
 			hresult = myInvoke();
 
+			if FAILED(hresult)
+			{
+				cout << "FAILED TO INVOKE ZOOM INCREMENT: " << format_error(hresult) << endl;
+			}
+
 
 			//set equal to new zoom
 			zoomLevel = newZoom;
 			return hresult;
 		}
+	}
 
+	HRESULT SetZoomDecrement()
+	{
+		double zoomCheck = stereoCommand[9].dblVal;
+		double newZoom;
+
+		if (zoomLevel!= zoomCheck)
+		{
+			cout << "Zoom level mismatch! Expected: " << zoomLevel << " Actual: " << zoomCheck << endl;
+			return E_ABORT;
+		}
+		else
+		{
+			cout << "Zoom level matches expectation" << endl;
+
+			newZoom = zoomLevel-(double)10.0;
+
+			stereoCommand[9].dblVal = newZoom;
+
+			pOLEStr = OLESTR("SetZoom");
+			set_params(&dispparams,9,1);
+
+			hresult = myInvoke();
+
+			if FAILED(hresult)
+			{
+				cout << "FAILED TO INVOKE ZOOM INCREMENT: " << format_error(hresult) endl;
+			}
+
+
+			//set equal to new zoom
+			zoomLevel = newZoom;
+			return hresult;
+		}
 
 
 	}
