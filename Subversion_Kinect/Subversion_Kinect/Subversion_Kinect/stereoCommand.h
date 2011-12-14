@@ -54,7 +54,7 @@ class COMMAND
 	bool play;
 	bool pause;
 	bool stop;
-	VARIANT *pArgs = new VARIANT[2];
+	VARIANT *pArgs;
 
 public:
 
@@ -71,7 +71,7 @@ public:
 		}
 
 		VariantInit(&stereoCommand[0]);
-		VariantInit(&resultStruct);
+		//VariantInit(&resultStruct);
 		initalize_CommandStruct();
 
 		str = TEXT("\nConstructor Called\n");
@@ -130,7 +130,7 @@ public:
 		pause = false;
 		stop = false;
 
-		hresult = getDuration();
+		/*hresult = getDuration();
 		if FAILED(hresult)
 		{
 			std::cout << "FAILED TO GET DURATION " << format_error(hresult) << endl;
@@ -141,7 +141,7 @@ public:
 			std::cout << "FILE DURATION: " << resultStruct.lVal << endl;
 		}
 
-
+		*/
 		return hresult;
 	}
 
@@ -332,7 +332,7 @@ private:
 		set_params(&dispparams,8,0,true);
 		pOLEStr = OLESTR("GetDuration");
 		
-		hresult = myInvoke(&resultStruct);
+		//hresult = myInvoke(&resultStruct);
 
 		if FAILED(hresult)
 		{

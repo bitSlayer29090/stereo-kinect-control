@@ -357,7 +357,7 @@ int main(int argc, char ** argv)
 
 
 	//prepare the file to be opened by the computer
-	string filename = "C:\\Users\\Public\\Videos\\VascularVoyage.wmv";
+	string filename = "C:\\Users\\Public\\Videos\\Pulmonary.mov";
 	cout << "File to Open: " << filename << endl;
 
 	//create instance using COMMAND::CreateInstance
