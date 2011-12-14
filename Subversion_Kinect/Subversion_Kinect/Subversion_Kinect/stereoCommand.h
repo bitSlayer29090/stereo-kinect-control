@@ -55,8 +55,7 @@ class COMMAND
 	bool play;
 	bool pause;
 	bool stop;
-	VARIANT *pArgs;
-	VARIANTARG *results;
+	VARIANT *pvarResult;
 
 public:
 	//this is the constructor for the class
@@ -71,8 +70,7 @@ public:
 		}
 
 		VariantInit(&stereoCommand[0]);
-		VariantInit(results);
-		pArgs=results;
+
 
 		initalize_CommandStruct();
 
@@ -115,24 +113,24 @@ public:
 		//convert to VARIANT structure element using a subroutine
 		prepStringParam(filepath,stringCommand); //conversion
 		stereoCommand[0].bstrVal=SysAllocString(stringCommand); //setting VARIANT struct
+		
 		set_params(&dispparams,0,1); //setting dispparam struct
 		pOLEStr = OLESTR("OpenFile");
 
+		double duration;
+		duration = myInvoke();
 
-		hresult = myInvoke();
+		
 
-
-		if FAILED(hresult)
-		{
-			std::cout << "FAILED TO OPEN FILE " << filepath << endl;
-			return hresult;
-		}
 
 		play = true;
 		pause = false;
 		stop = false;
 
-		/*hresult = getDuration();
+		hresult = getDuration();
+		cout<<"FILE DURATION: " << duration << " seconds" << endl;
+
+
 		if FAILED(hresult)
 		{
 			std::cout << "FAILED TO GET DURATION " << format_error(hresult) << endl;
@@ -140,11 +138,11 @@ public:
 
 		else
 		{
-			std::cout << "FILE DURATION: " << resultStruct.lVal << endl;
+			std::cout << "FILE DURATION: " << endl;
 		}
 
-		*/
 		return hresult;
+		
 	}
 
 	HRESULT SetPause()
@@ -325,23 +323,25 @@ public:
 	}
 
 private:
-
-	HRESULT getDuration()
+	
+	double getDuration()
 	{
-		set_params(&dispparams,8,0);
+		VARIANTARG varg0;
+		VariantInit(&varg0);
+		set_params(&dispparams,8,0,false);
 		pOLEStr = OLESTR("GetDuration");
 		
-		//hresult = myInvoke(&resultStruct);
+		hresult = myInvoke(varg0);
 
 		if FAILED(hresult)
 		{
 			std::cout << "ERROR: " << format_error(hresult) << endl;
 		}
 
-		return hresult;
+		return varg0.dblVal;
 	}
-
-	HRESULT myInvoke(VARIANT* results)
+	
+	HRESULT myInvoke(VARIANTARG pArgs)
 	{
 		//query the interface
 		hresult = punk->QueryInterface(&pdisp);
@@ -372,7 +372,7 @@ private:
 			LOCALE_SYSTEM_DEFAULT,
 			DISPATCH_METHOD,
 			&dispparams,
-			results,
+			&pArgs,
 			NULL,
 			NULL);
 
@@ -436,6 +436,29 @@ private:
 	}
 
 	//sets up the dispparams structure with proper values for use in INVOKE
+	
+	
+	void set_params(DISPPARAMS *pdispparam, int which, int howMany, bool isNull)
+	{
+		//set up the DISPPARAMS struct for use in the IDispatch::Invoke command
+		if (!isNull)
+			howMany++;
+
+		pdispparam->cArgs = howMany;
+		pdispparam->cNamedArgs =0;
+		pdispparam->rgdispidNamedArgs = NULL;
+		if (howMany !=0)
+		{
+			pdispparam->rgvarg = &stereoCommand[which];
+		}
+		else
+		{
+			pdispparam->rgvarg=NULL;
+		}
+	}
+	
+	
+	
 	void set_params(DISPPARAMS *pdispparam, int which, int howMany)
 	{
 		//set up the DISPPARAMS struct for use in the IDispatch::Invoke command
