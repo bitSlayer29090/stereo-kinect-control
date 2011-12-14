@@ -54,7 +54,7 @@ class COMMAND
 	bool play;
 	bool pause;
 	bool stop;
-	VARIANT resultStruct;
+	VARIANT *pArgs = new VARIANT[2];
 
 public:
 
