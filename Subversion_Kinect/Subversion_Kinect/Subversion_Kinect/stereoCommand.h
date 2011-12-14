@@ -84,7 +84,7 @@ public:
 		play = false;
 		pause = false;
 		stop = false;
-		zoomLevel = 1.0;
+		zoomLevel = 100.0;
 	}
 	//this is the destructor for the class
 	~COMMAND()
@@ -124,8 +124,10 @@ public:
 		VARIANT duration;
 		hresult = myInvoke();
 
-		
-
+		if FAILED(hresult)
+		{
+			cout<<"FAILED TO OPEN FILE: " << format_error(hresult) << endl;
+		}
 
 		play = true;
 		pause = false;
@@ -133,10 +135,8 @@ public:
 
 		duration = getDuration();
 
-		cout << "Data Type: " << duration.vt << endl;
-
-
-		//cout<<"FILE DURATION: " << duration.ulVal << " seconds" << endl;
+		//eventually want to wrap into IF DURATION << 60 seconds
+		SetRepeatTrue();
 
 
 		return hresult;
@@ -328,31 +328,30 @@ public:
 		if (zoomLevel!= zoomCheck)
 		{
 			cout << "Zoom level mismatch! Expected: " << zoomLevel << " Actual: " << zoomCheck << endl;
+			return E_ABORT;
 		}
 		else
 		{
 			cout << "Zoom level matches expectation" << endl;
 
-			newZoom = zoomLevel+(double)0.5;
+			newZoom = zoomLevel+(double)10.0;
 
 			stereoCommand[9].dblVal = newZoom;
 
 			pOLEStr = OLESTR("SetZoom");
 			set_params(&dispparams,9,1);
 
+			hresult = myInvoke();
+
 
 			//set equal to new zoom
 			zoomLevel = newZoom;
+			return hresult;
 		}
 
 
 
 	}
-
-
-
-
-private:
 
 	HRESULT SetRepeatTrue()
 	{
@@ -364,6 +363,8 @@ private:
 		{
 			cout << "FAILED TO SET REPEAT TRUE " << format_error(hresult) << endl;
 		}
+		else
+			cout << "Repeat set to TRUE" << endl;
 
 		return hresult;
 	}
@@ -378,9 +379,17 @@ private:
 		{
 			cout << "FAILED TO SET REPEAT FALSE " << format_error(hresult) << endl;
 		}
+		else
+			cout << "Repeat set to FALSE" << endl;
 
 		return hresult;
 	}
+
+
+
+private:
+
+
 
 
 
@@ -572,7 +581,7 @@ private:
 
 		//VARIANT struct for Zoom
 		stereoCommand[9].vt = VT_R8;
-		stereoCommand[9].dblVal =1.0;
+		stereoCommand[9].dblVal =100.0;
 		
 	}
 };
