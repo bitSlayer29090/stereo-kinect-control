@@ -55,7 +55,7 @@ class COMMAND
 	bool play;
 	bool pause;
 	bool stop;
-	VARIANT *pvarResult;
+	VARIANTARG varg0;
 
 public:
 	//this is the constructor for the class
@@ -76,6 +76,8 @@ public:
 
 		str = TEXT("\nConstructor Called\n");
 		OutputDebugString(str);
+
+		VariantInit(&varg0);
 
 		fullScreen = false;
 		play = false;
@@ -316,12 +318,44 @@ public:
 		exit(1);
 	}
 
+
+
+
+
 private:
-	
+
+	HRESULT SetRepeatTrue()
+	{
+		set_params(&dispparams,6,1);
+		pOLEStr = OLESTR("SetRepeat");
+		hresult = myInvoke();
+
+		if FAILED(hresult)
+		{
+			cout << "FAILED TO SET REPEAT TRUE " << format_error(hresult) << endl;
+		}
+
+		return hresult;
+	}
+
+	HRESULT SetRepeatFalse()
+	{
+		set_params(&dispparams,7,1);
+		pOLEStr = OLESTR("SetRepeat");
+		hresult = myInvoke();
+
+		if FAILED(hresult)
+		{
+			cout << "FAILED TO SET REPEAT FALSE " << format_error(hresult) << endl;
+		}
+
+		return hresult;
+	}
+
+
+
 	VARIANT getDuration()
 	{
-		VARIANTARG varg0;
-		VariantInit(&varg0);
 		set_params(&dispparams,8,0,false);
 		pOLEStr = OLESTR("GetDuration");
 		
