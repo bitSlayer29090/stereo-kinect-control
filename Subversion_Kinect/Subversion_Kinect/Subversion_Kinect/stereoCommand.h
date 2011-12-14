@@ -11,6 +11,7 @@
 #include <InitGuid.h>
 #include <sstream>
 #include <iomanip>
+#include <OAIdl.h>
 
 
 using namespace std;
@@ -55,10 +56,9 @@ class COMMAND
 	bool pause;
 	bool stop;
 	VARIANT *pArgs;
+	VARIANTARG *results;
 
 public:
-
-
 	//this is the constructor for the class
 	COMMAND() 
 	{
@@ -71,7 +71,9 @@ public:
 		}
 
 		VariantInit(&stereoCommand[0]);
-		//VariantInit(&resultStruct);
+		VariantInit(results);
+		pArgs=results;
+
 		initalize_CommandStruct();
 
 		str = TEXT("\nConstructor Called\n");
@@ -113,7 +115,7 @@ public:
 		//convert to VARIANT structure element using a subroutine
 		prepStringParam(filepath,stringCommand); //conversion
 		stereoCommand[0].bstrVal=SysAllocString(stringCommand); //setting VARIANT struct
-		set_params(&dispparams,0,1,false); //setting dispparam struct
+		set_params(&dispparams,0,1); //setting dispparam struct
 		pOLEStr = OLESTR("OpenFile");
 
 
@@ -148,7 +150,7 @@ public:
 	HRESULT SetPause()
 	{
 		//sets up the dispparams structure for sending to the INVOKE command
-		set_params(&dispparams,1,1,false);
+		set_params(&dispparams,1,1);
 
 		//identify the command to invoke
 		pOLEStr = OLESTR("SetPlaybackState");
@@ -165,7 +167,7 @@ public:
 	HRESULT SetPlay()
 	{
 		//sets up the dispparams structure for sending to the INVOKE command
-		set_params(&dispparams,3,1,false);
+		set_params(&dispparams,3,1);
 
 		//identify the command to invoke
 		pOLEStr = OLESTR("SetPlaybackState");
@@ -182,7 +184,7 @@ public:
 
 	HRESULT SetFF()
 	{
-		set_params(&dispparams,4,1,false);
+		set_params(&dispparams,4,1);
 
 		pOLEStr = OLESTR("SetPlaybackState");
 
@@ -194,7 +196,7 @@ public:
 
 	HRESULT SetRW()
 	{
-		set_params(&dispparams,5,1,false);
+		set_params(&dispparams,5,1);
 
 		pOLEStr = OLESTR("SetPlaybackState");
 
@@ -206,7 +208,7 @@ public:
 	HRESULT SetFullScreen()
 	{
 		pOLEStr = OLESTR("EnterFullscreenMode");
-		set_params(&dispparams,6,1,false);
+		set_params(&dispparams,6,1);
 		hresult = myInvoke();
 
 		if FAILED(hresult)
@@ -222,7 +224,7 @@ public:
 
 	HRESULT SetStop()
 	{
-		set_params(&dispparams,2,1,false);
+		set_params(&dispparams,2,1);
 		pOLEStr = OLESTR("SetPlaybackState");
 		
 		hresult = myInvoke();
@@ -242,7 +244,7 @@ public:
 
 	HRESULT SetLeaveFullScreen()
 	{
-		set_params(&dispparams,8,0,false);
+		set_params(&dispparams,8,0);
 		pOLEStr = OLESTR("LeaveFullscreenMode");
 
 		hresult = myInvoke();
@@ -257,7 +259,6 @@ public:
 
 		return hresult;
 	}
-
 
 	HRESULT SwitchFullScreen()
 	{
@@ -309,8 +310,6 @@ public:
 		}
 	}
 
-
-
 	void EmergencyExit()
 	{
 		if(pdisp) pdisp->Release();
@@ -318,7 +317,7 @@ public:
 
 
 		pOLEStr = OLESTR("ClosePlayer");
-		set_params(&dispparams,8,0,false);
+		set_params(&dispparams,8,0);
 		hresult = myInvoke();
 
 		OleUninitialize();
@@ -329,7 +328,7 @@ private:
 
 	HRESULT getDuration()
 	{
-		set_params(&dispparams,8,0,true);
+		set_params(&dispparams,8,0);
 		pOLEStr = OLESTR("GetDuration");
 		
 		//hresult = myInvoke(&resultStruct);
@@ -385,9 +384,7 @@ private:
 
 		return hresult;
 	}
-
-
-
+	
 	HRESULT myInvoke()
 	{
 		//query the interface
@@ -439,19 +436,11 @@ private:
 	}
 
 	//sets up the dispparams structure with proper values for use in INVOKE
-	void set_params(DISPPARAMS *pdispparam, int which, int howMany, bool outParm)
+	void set_params(DISPPARAMS *pdispparam, int which, int howMany)
 	{
 		//set up the DISPPARAMS struct for use in the IDispatch::Invoke command
 		
-		if (!outParm)	
-		{
-			pdispparam->cArgs = howMany;
-		}
-		else
-		{
-			pdispparam->cArgs = howMany +1;
-		}
-
+		pdispparam->cArgs = howMany;
 		pdispparam->cNamedArgs =0;
 		pdispparam->rgdispidNamedArgs = NULL;
 		if (howMany !=0)
