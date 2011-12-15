@@ -434,6 +434,45 @@ public:
 		return hresult;
 	}
 
+	HRESULT SetOpenLRFiles(string LeftFile, string RightFile)
+	{
+		pOLEStr = OLESTR("OpenLeftRightFiles");
+		
+		//set LeftFile into stereoCommand structure
+		prepStringParam(LeftFile,stringCommand);
+		stereoCommand[10].bstrVal = SysAllocString(stringCommand);
+		set_params(&dispparams,10,1);
+
+		//set up right file
+		prepStringParam(RightFile,stringCommand);
+		stereoCommand[11].bstrVal = SysAllocString(stringCommand);
+		set_params(&dispparams,11,1);
+
+
+
+
+	}
+
+	HRESULT SetOpenLRFiles(string LeftFile, string RightFile, string AudioFile)
+	{
+		pOLEStr = OLESTR("OpenLeftRightFiles");
+
+		//set LeftFile into stereoCommand structure
+		prepStringParam(LeftFile,stringCommand);
+		stereoCommand[10].bstrVal = SysAllocString(stringCommand);
+		set_params(&dispparams,10,1);
+
+		//set up right file
+		prepStringParam(RightFile,stringCommand);
+		stereoCommand[11].bstrVal = SysAllocString(stringCommand);
+		set_params(&dispparams,11,1);
+
+		prepStringParam(AudioFile,stringCommand);
+		stereoCommand[14].bstrVal = SysAllocString(stringCommand);
+		set_params(&dispparams,14,1);
+	}
+	
+
 
 
 private:
@@ -456,7 +495,7 @@ private:
 			return VT_UNKNOWN;
 		}
 	}
-
+	//TO DO:: FIX THE getDURATION method!
 	void getDuration()
 	{
 		set_params(&dispparams,8,0,false);
@@ -655,7 +694,14 @@ private:
 		stereoCommand[11].vt = VT_BSTR;
 		//stereoCommand[11] - cannot set here, must be done with SetString
 
+		//VARIANT struct for the AudioMode parameter of the OpenLeftRightFiles
+		stereoCommand[12].vt = VT_UI4;
+		stereoCommand[12].lVal = NOAUDIO;
+		stereoCommand[13].vt = VT_UI4;
+		stereoCommand[13].lVal = SEPAUDIO;
 
+		//VARIANT struct for audio file
+		stereoCommand[14].vt = VT_BSTR;
 		
 	}
 };
