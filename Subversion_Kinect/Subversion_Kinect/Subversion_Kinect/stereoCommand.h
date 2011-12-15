@@ -28,8 +28,12 @@ DEFINE_GUID(StereoPlayer, 0x73b28b6e, 0xd306, 0x4589, 0xb0, 0x32, 0x9e, 0xd1, 0x
 #define STOP 2.0
 #define FASTF 3.0
 #define RWIND 4.0
+
+//enumeration for the AudioMode method
 #define NOAUDIO 0.0
 #define SEPAUDIO 1.0
+#define LEFTAUDIO 2.0
+#define RIGHTAUDIO 3.0
 
 //error handling subroutine returns the string of the error back to main
 string format_error(unsigned __int32 hr)
@@ -434,7 +438,7 @@ public:
 		return hresult;
 	}
 
-	HRESULT SetOpenLRFiles(string LeftFile, string RightFile)
+	HRESULT SetOpenLRFiles(string LeftFile, string RightFile, int AudioMode)
 	{
 		pOLEStr = OLESTR("OpenLeftRightFiles");
 		
@@ -448,28 +452,45 @@ public:
 		stereoCommand[11].bstrVal = SysAllocString(stringCommand);
 		set_params(&dispparams,11,1);
 
+		if (AudioMode ==1)
+		{
+			std::cout << "ERROR Parameters indicate a separate audio file is expected, but none was indicated." << endl;
+			return DISP_E_BADPARAMCOUNT;
+		}
+
 
 
 
 	}
 
-	HRESULT SetOpenLRFiles(string LeftFile, string RightFile, string AudioFile)
+	HRESULT SetOpenLRFiles(string LeftFile, string RightFile, int AudioMode, string AudioFile)
 	{
-		pOLEStr = OLESTR("OpenLeftRightFiles");
+		if(AudioMode != 1)
+		{
+			pOLEStr = OLESTR("OpenLeftRightFiles");
 
-		//set LeftFile into stereoCommand structure
-		prepStringParam(LeftFile,stringCommand);
-		stereoCommand[10].bstrVal = SysAllocString(stringCommand);
-		set_params(&dispparams,10,1);
+			//set LeftFile into stereoCommand structure
+			prepStringParam(LeftFile,stringCommand);
+			stereoCommand[10].bstrVal = SysAllocString(stringCommand);
+			set_params(&dispparams,10,1);
 
-		//set up right file
-		prepStringParam(RightFile,stringCommand);
-		stereoCommand[11].bstrVal = SysAllocString(stringCommand);
-		set_params(&dispparams,11,1);
+			//set up right file
+			prepStringParam(RightFile,stringCommand);
+			stereoCommand[11].bstrVal = SysAllocString(stringCommand);
+			set_params(&dispparams,11,1);
 
-		prepStringParam(AudioFile,stringCommand);
-		stereoCommand[14].bstrVal = SysAllocString(stringCommand);
-		set_params(&dispparams,14,1);
+			prepStringParam(AudioFile,stringCommand);
+			stereoCommand[14].bstrVal = SysAllocString(stringCommand);
+			set_params(&dispparams,14,1);
+
+
+
+		}
+		else
+		{
+			std::cout << "ERROR Parameters indicate a separate audio file is expected, but none was indicated." << endl;
+			return DISP_E_BADPARAMCOUNT;
+		}
 	}
 	
 
@@ -696,9 +717,7 @@ private:
 
 		//VARIANT struct for the AudioMode parameter of the OpenLeftRightFiles
 		stereoCommand[12].vt = VT_UI4;
-		stereoCommand[12].lVal = NOAUDIO;
-		stereoCommand[13].vt = VT_UI4;
-		stereoCommand[13].lVal = SEPAUDIO;
+		//stereoCommand[12].lVal - to be implemented by calling function
 
 		//VARIANT struct for audio file
 		stereoCommand[14].vt = VT_BSTR;

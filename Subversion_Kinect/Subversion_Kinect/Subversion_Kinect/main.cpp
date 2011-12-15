@@ -361,6 +361,23 @@ int main(int argc, char ** argv)
 	string filename = "C:\\Users\\Public\\Videos\\Pulmonary.mov";
 	cout << "File to Open: " << filename << endl;
 
+
+	//prepare left, right video file names
+	string LeftFile = "C:\\Users\\Public\\Videos\\IliacLeft.mov";
+	cout <<"---Left Video File: " << LeftFile << endl;
+	string RightFile = "C:\\Users\\Public\\Videos\\IliacRight.mov";
+	cout <<"---Right Video File: " << RightFile << endl;
+	int AudioMode = 2;
+	string AudioFile = NULL;
+	if (AudioFile==NULL)
+	{
+		cout << "No audio file was indicated. Setting AudioMode to 0" << endl;
+		AudioMode = 0;
+	}
+
+
+
+
 	//create instance using COMMAND::CreateInstance
 	hr = command.CreateInstance();
 	if FAILED(hr)
