@@ -12,6 +12,7 @@
 #include <sstream>
 #include <iomanip>
 #include <OAIdl.h>
+#include <Windows.h>
 
 
 using namespace std;
@@ -27,6 +28,8 @@ DEFINE_GUID(StereoPlayer, 0x73b28b6e, 0xd306, 0x4589, 0xb0, 0x32, 0x9e, 0xd1, 0x
 #define STOP 2.0
 #define FASTF 3.0
 #define RWIND 4.0
+#define NOAUDIO 0.0
+#define SEPAUDIO 1.0
 
 //error handling subroutine returns the string of the error back to main
 string format_error(unsigned __int32 hr)
@@ -137,10 +140,9 @@ public:
 
 			getDuration();
 
-			duration = varg0.dblVal;
+			//determine_vtType(&varg0);
 
 			cout << "varg0 type is: " << varg0.vt << endl;
-			cout << "varg0 value is: " << duration << endl;
 
 			//eventually want to wrap into IF DURATION << 60 seconds
 			SetRepeatTrue();
@@ -436,6 +438,25 @@ public:
 
 private:
 
+	VARENUM determine_vtType(VARIANT *test)
+	{
+		switch (test->vt)
+		{
+		case 0:
+			return VT_EMPTY;
+		case 1:
+			return VT_NULL;
+		case 2:
+			return VT_I2;
+		case 3:
+			return VT_I4;
+		case 4:
+			return VT_R4;
+		default:
+			return VT_UNKNOWN;
+		}
+	}
+
 	void getDuration()
 	{
 		set_params(&dispparams,8,0,false);
@@ -447,7 +468,7 @@ private:
 		//error checking
 		hresult = pdisp->GetIDsOfNames(IID_NULL, &pOLEStr,  1, LOCALE_USER_DEFAULT, &dispid);
 		//error checking
-		hresult = pdisp->Invoke(dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_METHOD,&dispparams,&varg0,NULL,NULL);
+		hresult = pdisp->Invoke(dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_PROPERTYGET,&dispparams,&varg0,NULL,NULL);
 
 	}
 	
@@ -480,7 +501,7 @@ private:
 		hresult = pdisp->Invoke(dispid,
 			IID_NULL,
 			LOCALE_SYSTEM_DEFAULT,
-			DISPATCH_METHOD,
+			DISPATCH_PROPERTYGET,
 			&dispparams,
 			&pArgs,
 			NULL,
@@ -625,6 +646,16 @@ private:
 		//VARIANT struct for Zoom
 		stereoCommand[9].vt = VT_R8;
 		stereoCommand[9].dblVal =100.0;
+
+		//VARIANT struct for left video file
+		stereoCommand[10].vt = VT_BSTR;
+		//stereoCommand[10] - cannot not set here
+
+		//VARIANT struct for right video file
+		stereoCommand[11].vt = VT_BSTR;
+		//stereoCommand[11] - cannot set here, must be done with SetString
+
+
 		
 	}
 };
