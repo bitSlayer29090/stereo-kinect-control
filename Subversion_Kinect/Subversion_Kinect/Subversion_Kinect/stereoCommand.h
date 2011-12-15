@@ -121,25 +121,33 @@ public:
 		set_params(&dispparams,0,1); //setting dispparam struct
 		pOLEStr = OLESTR("OpenFile");
 
-		VARIANT duration;
+		double duration;
 		hresult = myInvoke();
 
 		if FAILED(hresult)
 		{
 			cout<<"FAILED TO OPEN FILE: " << format_error(hresult) << endl;
+			return hresult;
 		}
+		else
+		{
+			play = true;
+			pause = false;
+			stop = false;
 
-		play = true;
-		pause = false;
-		stop = false;
+			getDuration();
 
-		duration = getDuration();
+			duration = varg0.dblVal;
 
-		//eventually want to wrap into IF DURATION << 60 seconds
-		SetRepeatTrue();
+			cout << "varg0 type is: " << varg0.vt << endl;
+			cout << "varg0 value is: " << duration << endl;
+
+			//eventually want to wrap into IF DURATION << 60 seconds
+			SetRepeatTrue();
 
 
-		return hresult;
+			return hresult;
+		}
 		
 	}
 
@@ -380,7 +388,7 @@ public:
 
 			if FAILED(hresult)
 			{
-				cout << "FAILED TO INVOKE ZOOM INCREMENT: " << format_error(hresult) endl;
+				cout << "FAILED TO INVOKE ZOOM DECREMENT: " << format_error(hresult) << endl;
 			}
 
 
@@ -428,23 +436,19 @@ public:
 
 private:
 
-
-
-
-
-	VARIANT getDuration()
+	void getDuration()
 	{
 		set_params(&dispparams,8,0,false);
 		pOLEStr = OLESTR("GetDuration");
 		
-		hresult = myInvoke(varg0);
+		//hresult = myInvoke(varg0);
 
-		if FAILED(hresult)
-		{
-			std::cout << "ERROR: " << format_error(hresult) << endl;
-		}
+		hresult = punk ->QueryInterface(&pdisp);
+		//error checking
+		hresult = pdisp->GetIDsOfNames(IID_NULL, &pOLEStr,  1, LOCALE_USER_DEFAULT, &dispid);
+		//error checking
+		hresult = pdisp->Invoke(dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_METHOD,&dispparams,&varg0,NULL,NULL);
 
-		return varg0;
 	}
 	
 	HRESULT myInvoke(VARIANTARG pArgs)

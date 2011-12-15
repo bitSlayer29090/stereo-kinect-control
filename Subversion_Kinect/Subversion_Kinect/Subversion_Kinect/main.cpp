@@ -285,6 +285,7 @@ void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUser
 {
 	
 	printf("\nSwipe Down\n");
+	command.SetZoomDecrement();
 
 }
 
@@ -372,8 +373,11 @@ int main(int argc, char ** argv)
 	hr = command.OpenFile(filename);
 	if FAILED(hr)
 	{
-		cout << "Main - Failed to Open File: " << format_error(hr) << endl;
-		goto error;
+		//cout << "Main - Failed to Open File: " << format_error(hr) << endl;
+		cout << "Will now exit.  Press any key to continue..." << endl;
+		int temp;
+		cin >> temp;
+		CleanupExit();
 	}
 	
 	//Initialize the OpenNI interface to the Kinect Camera
