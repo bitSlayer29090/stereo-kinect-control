@@ -503,13 +503,6 @@ int main(int argc, char ** argv)
 	cout << "Please press a key" << endl;
 	int temp;
 	cin >> temp;
-	
-//insert gesture code here.
-exit:
-	cout << "What Should I do next?" << endl;
-	cin >> temp;
-	return temp;
-
 error:
     return hr;
 }
