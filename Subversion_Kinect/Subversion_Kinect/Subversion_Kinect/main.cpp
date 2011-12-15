@@ -368,15 +368,12 @@ int main(int argc, char ** argv)
 	string RightFile = "C:\\Users\\Public\\Videos\\IliacRight.mov";
 	cout <<"---Right Video File: " << RightFile << endl;
 	int AudioMode = 2;
-	string AudioFile = NULL;
-	if (AudioFile==NULL)
+	string AudioFile;
+	if (AudioFile.empty())
 	{
 		cout << "No audio file was indicated. Setting AudioMode to 0" << endl;
 		AudioMode = 0;
 	}
-
-
-
 
 	//create instance using COMMAND::CreateInstance
 	hr = command.CreateInstance();

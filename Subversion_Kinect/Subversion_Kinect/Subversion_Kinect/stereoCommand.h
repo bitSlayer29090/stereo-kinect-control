@@ -528,7 +528,7 @@ private:
 		//error checking
 		hresult = pdisp->GetIDsOfNames(IID_NULL, &pOLEStr,  1, LOCALE_USER_DEFAULT, &dispid);
 		//error checking
-		hresult = pdisp->Invoke(dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_PROPERTYGET,&dispparams,&varg0,NULL,NULL);
+		hresult = pdisp->Invoke(dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_METHOD | DISPATCH_PROPERTYGET,&dispparams,&varg0,NULL,NULL);
 
 	}
 	
