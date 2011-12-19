@@ -53,7 +53,7 @@ class COMMAND
 	UINT nArgErr;
 	OLECHAR * pOLEStr;
 	VARIANT stereoCommand[15]; //for most commands
-	VARIANTARG lrFile[4];
+
 	WCHAR stringCommand[MAX_PATH];  //MAX_PATH defined as 260
 	LPCWSTR str;
 	float videoDuration;
@@ -78,7 +78,6 @@ public:
 		}
 
 		VariantInit(&stereoCommand[0]);
-		VariantInit(&lrFile[0]);
 
 
 		initalize_CommandStruct();
@@ -447,13 +446,16 @@ public:
 		
 		//set LeftFile into stereoCommand structure
 		prepStringParam(LeftFile,stringCommand);
-		lrFile[0].bstrVal = SysAllocString(stringCommand);
+		dispparams.rgvarg[0].vt = VT_BSTR;
+		dispparams.rgvarg[0].bstrVal = SysAllocString(stringCommand);
 		
 		//set up right file
 		prepStringParam(RightFile,stringCommand);
-		lrFile[1].bstrVal = SysAllocString(stringCommand);
+		dispparams.rgvarg[1].vt = VT_BSTR;
+		dispparams.rgvarg[1].bstrVal = SysAllocString(stringCommand);
 
-		lrFile[2].vt = VT_EMPTY;
+		//there is no separate audio file to identify
+		dispparams.rgvarg[2].vt = VT_EMPTY;
 
 		if (AudioMode ==1)
 		{
@@ -461,14 +463,8 @@ public:
 			return DISP_E_BADPARAMCOUNT;
 		}
 
-		lrFile[3].lVal = (long)AudioMode;
-
-		//manually setting the parameters
-
-
-		dispparams.rgvarg[0].vt = VT_BSTR;
-		dispparams.rgvarg[1].vt = VT_BSTR;
-		dispparams.rgvarg[2].vt = VT_EMPTY;
+		dispparams.rgvarg[3].vt = VT_UI4;
+		dispparams.rgvarg[3].llVal = (long)AudioMode;
 
 
 
@@ -480,7 +476,7 @@ public:
 
 		//error checking
 
-		hresult = pdisp->Invoke(&dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_METHOD,&dispparams, &varg0,NULL,NULL);
+		hresult = pdisp->Invoke(dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_METHOD,&dispparams, &varg0,NULL,NULL);
 
 
 
@@ -499,18 +495,18 @@ public:
 
 			//set LeftFile into stereoCommand structure
 			prepStringParam(LeftFile,stringCommand);
-			lrFile[0].bstrVal = SysAllocString(stringCommand);
+
 			
 			//set up right file
 			prepStringParam(RightFile,stringCommand);
-			lrFile[1].bstrVal = SysAllocString(stringCommand);
+
 			
 			//set up audio file
 			prepStringParam(AudioFile,stringCommand);
-			lrFile[2].bstrVal = SysAllocString(stringCommand);
+
 			
 			//set audio mode
-			lrFile[3].lVal = (long)AudioMode;
+
 
 
 
@@ -738,12 +734,5 @@ private:
 		stereoCommand[9].vt = VT_R8;
 		stereoCommand[9].dblVal =100.0;
 
-
-
-		//VARIANT struct for OpenLeftRightFile command
-		lrFile[0].vt = VT_BSTR; //left file
-		lrFile[1].vt = VT_BSTR; //right file
-		lrFile[2].vt = VT_BSTR; //audio file
-		lrFile[3].vt = VT_UI4; //audio mode
 	}
 };
