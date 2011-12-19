@@ -53,7 +53,7 @@ class COMMAND
 	UINT nArgErr;
 	OLECHAR * pOLEStr;
 	VARIANT stereoCommand[15]; //for most commands
-	VARIANT lrFile[4];
+	VARIANTARG lrFile[4];
 	WCHAR stringCommand[MAX_PATH];  //MAX_PATH defined as 260
 	LPCWSTR str;
 	float videoDuration;
@@ -441,15 +441,19 @@ public:
 
 	HRESULT SetOpenLRFiles(string LeftFile, string RightFile, int AudioMode)
 	{
+		//this function is for audio modes 0 (no audio), 2 (left video file's audio) or 3 (right video file's audio)
+		//AudioMode=1 indicates that a separate file for audio is expected; this will throw an exception
 		pOLEStr = OLESTR("OpenLeftRightFiles");
 		
 		//set LeftFile into stereoCommand structure
 		prepStringParam(LeftFile,stringCommand);
-		stereoCommand[10].bstrVal = SysAllocString(stringCommand);
+		lrFile[0].bstrVal = SysAllocString(stringCommand);
 		
 		//set up right file
 		prepStringParam(RightFile,stringCommand);
-		stereoCommand[11].bstrVal = SysAllocString(stringCommand);
+		lrFile[1].bstrVal = SysAllocString(stringCommand);
+
+		lrFile[2].vt = VT_EMPTY;
 
 		if (AudioMode ==1)
 		{
@@ -457,7 +461,28 @@ public:
 			return DISP_E_BADPARAMCOUNT;
 		}
 
-		stereoCommand[12].lVal = (long)AudioMode;
+		lrFile[3].lVal = (long)AudioMode;
+
+		//manually setting the parameters
+
+
+		dispparams.rgvarg[0].vt = VT_BSTR;
+		dispparams.rgvarg[1].vt = VT_BSTR;
+		dispparams.rgvarg[2].vt = VT_EMPTY;
+
+
+
+		hresult = punk->QueryInterface(&pdisp);
+
+		//error checking
+
+		hresult = pdisp->GetIDsOfNames(IID_NULL,&pOLEStr, 1, LOCALE_USER_DEFAULT, &dispid);
+
+		//error checking
+
+		hresult = pdisp->Invoke(&dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_METHOD,&dispparams, &varg0,NULL,NULL);
+
+
 
 
 
@@ -485,9 +510,7 @@ public:
 			lrFile[2].bstrVal = SysAllocString(stringCommand);
 			
 			//set audio mode
-			
-			
-			set_params(&dispparams,14,1);
+			lrFile[3].lVal = (long)AudioMode;
 
 
 
@@ -653,6 +676,8 @@ private:
 			pdispparam->rgvarg=NULL;
 		}
 	}
+
+
 	void set_params(DISPPARAMS *pdispparam, int which, int howMany)
 	{
 		//set up the DISPPARAMS struct for use in the IDispatch::Invoke command
