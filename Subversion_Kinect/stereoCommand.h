@@ -12,7 +12,6 @@
 #include <sstream>
 #include <iomanip>
 #include <OAIdl.h>
-#include "stereoplayer.h"
 
 using namespace std;
 

@@ -79,17 +79,18 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PointDrawer.cpp" />
+    <ClCompile Include="StereoPlayer_i.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PointDrawer.h" />
     <ClInclude Include="Resource-NITE.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stereoCommand.h" />
+    <ClInclude Include="stereoplayer.h" />
     <ClInclude Include="vrpnClient.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="mainicon.ico" />
-    <None Include="stereoplayer.tlb" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NITE.rc" />

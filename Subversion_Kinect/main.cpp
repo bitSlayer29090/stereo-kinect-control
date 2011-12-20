@@ -16,6 +16,7 @@
 COMMAND command;
 HRESULT hr;
 
+
 //Pointers to StereoPlayer control functions
 
 

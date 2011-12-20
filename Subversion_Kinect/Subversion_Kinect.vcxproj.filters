@@ -21,12 +21,12 @@
     <ClCompile Include="PointDrawer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StereoPlayer_i.c">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="mainicon.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="stereoplayer.tlb">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -45,6 +45,9 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stereoplayer.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
