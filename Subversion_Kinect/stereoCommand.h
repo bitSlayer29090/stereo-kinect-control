@@ -18,7 +18,9 @@ using namespace std;
 
 //GUID for the StereoPlayer automation class
 // {73B28B6E-D306-4589-9ED17AA4D182}
+
 DEFINE_GUID(StereoPlayer, 0x73b28b6e, 0xd306, 0x4589, 0xb0, 0x32, 0x9e, 0xd1, 0x7a, 0xa4, 0xd1, 0x82);
+
 //Could use the IDispatch::CoCreatefromProgID method, but this is more likely to work
 
 //enumeration for the SetPlaybackState method
@@ -53,7 +55,7 @@ class COMMAND
 	UINT nArgErr;
 	OLECHAR * pOLEStr;
 	VARIANT stereoCommand[15]; //for most commands
-
+	VARIANTARG lrFile[4];
 	WCHAR stringCommand[MAX_PATH];  //MAX_PATH defined as 260
 	LPCWSTR str;
 	float videoDuration;
@@ -64,6 +66,8 @@ class COMMAND
 	bool stop;
 	VARIANTARG varg0;
 	double zoomLevel;
+	CLSID clsid;
+	//LPCOLESTR pszProgID = "StereoPlayer.Automation";
 
 public:
 	//this is the constructor for the class
@@ -77,7 +81,12 @@ public:
 			cout << "Failed to initialize OLE Object" << endl;
 		}
 
+		//hresult = CLSIDFromProgID(pszProgID,&clsid);
+
+
+
 		VariantInit(&stereoCommand[0]);
+		VariantInit(&lrFile[0]);
 
 
 		initalize_CommandStruct();
@@ -438,36 +447,13 @@ public:
 		return hresult;
 	}
 
-	HRESULT SetOpenLRFiles(string LeftFile, string RightFile, int AudioMode)
+	HRESULT SetOpenLRFiles(string LeftFile, string RightFile, long AudioMode)
 	{
 		//this function is for audio modes 0 (no audio), 2 (left video file's audio) or 3 (right video file's audio)
 		//AudioMode=1 indicates that a separate file for audio is expected; this will throw an exception
 		pOLEStr = OLESTR("OpenLeftRightFiles");
+
 		
-		//set LeftFile into stereoCommand structure
-		prepStringParam(LeftFile,stringCommand);
-		dispparams.rgvarg[0].vt = VT_BSTR;
-		dispparams.rgvarg[0].bstrVal = SysAllocString(stringCommand);
-		
-		//set up right file
-		prepStringParam(RightFile,stringCommand);
-		dispparams.rgvarg[1].vt = VT_BSTR;
-		dispparams.rgvarg[1].bstrVal = SysAllocString(stringCommand);
-
-		//there is no separate audio file to identify
-		dispparams.rgvarg[2].vt = VT_EMPTY;
-
-		if (AudioMode ==1)
-		{
-			std::cout << "ERROR Parameters indicate a separate audio file is expected, but none was indicated." << endl;
-			return DISP_E_BADPARAMCOUNT;
-		}
-
-		dispparams.rgvarg[3].vt = VT_UI4;
-		dispparams.rgvarg[3].llVal = (long)AudioMode;
-
-
-
 		hresult = punk->QueryInterface(&pdisp);
 
 		//error checking
@@ -475,12 +461,36 @@ public:
 		hresult = pdisp->GetIDsOfNames(IID_NULL,&pOLEStr, 1, LOCALE_USER_DEFAULT, &dispid);
 
 		//error checking
+		
+		//set LeftFile into stereoCommand structure
+		prepStringParam(LeftFile,stringCommand);
+		lrFile[3].bstrVal = SysAllocString(stringCommand);
+		
+		//set up right file
+		prepStringParam(RightFile,stringCommand);
+		lrFile[2].bstrVal = SysAllocString(stringCommand);
 
-		hresult = pdisp->Invoke(dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_METHOD,&dispparams, &varg0,NULL,NULL);
+		//there is no separate audio file to identify
+		lrFile[1].vt = VT_ERROR;
+		lrFile[1].scode = DISP_E_PARAMNOTFOUND;
+
+		if (AudioMode ==1)
+		{
+			std::cout << "ERROR Parameters indicate a separate audio file is expected, but none was indicated." << endl;
+			return DISP_E_BADPARAMCOUNT;
+		}
+
+		lrFile[0].lVal = AudioMode;
+
+		dispparams.cArgs=4;
+		dispparams.cNamedArgs=0;
+		dispparams.rgdispidNamedArgs=NULL;
+		dispparams.rgvarg = &lrFile;
 
 
 
 
+		hresult = pdisp->Invoke(dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_METHOD,&dispparams,NULL,NULL,NULL);
 
 
 
@@ -733,6 +743,11 @@ private:
 		//VARIANT struct for Zoom
 		stereoCommand[9].vt = VT_R8;
 		stereoCommand[9].dblVal =100.0;
+
+		lrFile[0].vt = VT_BSTR;
+		lrFile[1].vt = VT_BSTR;
+		lrFile[2].vt = VT_BSTR;
+		lrFile[3].vt = VT_UI4;
 
 	}
 };
