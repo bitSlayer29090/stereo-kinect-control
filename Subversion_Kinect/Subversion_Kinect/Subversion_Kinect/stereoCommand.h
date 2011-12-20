@@ -608,9 +608,9 @@ protected:
 	HRESULT getDuration()
 	{
 		cout << "Function: Get Duration" << endl;
-		
-		varg0.vt = VT_EMPTY;
 
+
+		varg0.vt = VT_EMPTY;
 		dispparams.cArgs=1;
 		dispparams.cNamedArgs=0;
 		dispparams.rgvarg = &varg0;
@@ -644,14 +644,20 @@ protected:
 			LOCALE_SYSTEM_DEFAULT,
 			DISPATCH_METHOD,
 			&dispparams,
-			NULL,
-			NULL,
-			NULL);
+			&varg0,
+			&excepinfo,
+			&nArgErr);
 
 		if FAILED(hresult)
 		{
 			cout << "Failed at INVOKE step." << format_error(hresult) << endl;
 			return hresult;
+		}
+		else
+		{
+			
+			if (nArgErr >= 1)
+			{cout << "puArgErr: " << nArgErr << endl;cout << "pExepInfo: " << excepinfo.bstrDescription << endl;}
 		}
 
 		return hresult;
