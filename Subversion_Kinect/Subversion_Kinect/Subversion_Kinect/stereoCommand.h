@@ -54,6 +54,7 @@ class COMMAND
 	OLECHAR * pOLEStr;
 	VARIANT stereoCommand[15]; //for most commands
 	VARIANT lrFile[4];
+	VARIANT result;
 	WCHAR stringCommand[MAX_PATH];  //MAX_PATH defined as 260
 	LPCWSTR str;
 	float videoDuration;
@@ -62,7 +63,7 @@ class COMMAND
 	bool play;
 	bool pause;
 	bool stop;
-	VARIANTARG varg0;
+	VARIANT varg0[1];
 	double zoomLevel;
 
 public:
@@ -79,14 +80,15 @@ public:
 
 		VariantInit(&stereoCommand[0]);
 		VariantInit(&lrFile[0]);
-
+		VariantInit(&result);
+		VariantInit(&varg0[0]);
 
 		initalize_CommandStruct();
 
 		str = TEXT("\nConstructor Called\n");
 		OutputDebugString(str);
 
-		VariantInit(&varg0);
+		
 
 		fullScreen = false;
 		play = false;
@@ -121,6 +123,7 @@ public:
 	
 	HRESULT OpenFile(string filepath)
 	{
+		cout << "Open File..." << endl;
 		//get string with file path and set the proper stereoCommand element
 		//convert to VARIANT structure element using a subroutine
 		prepStringParam(filepath,stringCommand); //conversion
@@ -143,11 +146,17 @@ public:
 			pause = false;
 			stop = false;
 
-			getDuration();
+			hresult = getDuration();
+			if FAILED(hresult)
+			{
+			cout << "Failed to get duration." << format_error(hresult) << endl;
+			int temp;
+			cout << "Press any key to continue..." << endl;
+			cin >> temp;
+			return hresult;
+			}
 
-			//determine_vtType(&varg0);
-
-			cout << "varg0 type is: " << varg0.vt << endl;
+		
 
 			//eventually want to wrap into IF DURATION << 60 seconds
 			SetRepeatTrue();
@@ -445,96 +454,104 @@ public:
 		
 		//set LeftFile into stereoCommand structure
 		prepStringParam(LeftFile,stringCommand);
-		stereoCommand[10].bstrVal = SysAllocString(stringCommand);
+		lrFile[3].vt = VT_BSTR;
+		lrFile[3].bstrVal = SysAllocString(stringCommand);
 		
 		//set up right file
 		prepStringParam(RightFile,stringCommand);
-		stereoCommand[11].bstrVal = SysAllocString(stringCommand);
+		lrFile[2].vt = VT_BSTR;
+		lrFile[2].bstrVal = SysAllocString(stringCommand);
 
-		if (AudioMode ==1)
+		if (AudioMode ==1.0)
 		{
 			std::cout << "ERROR Parameters indicate a separate audio file is expected, but none was indicated." << endl;
 			return DISP_E_BADPARAMCOUNT;
 		}
+		//we are not specifying an audio file so we need to nullify this array element
+		lrFile[1].vt = VT_ERROR;
+		lrFile[1].scode = DISP_E_PARAMNOTFOUND;
 
-		stereoCommand[12].lVal = (long)AudioMode;
+		//set audio mode
+		lrFile[0].vt = VT_UI4;
+		lrFile[0].lVal = (long)AudioMode;
 
+		hresult = punk->QueryInterface(&pdisp);
+		hresult = pdisp->GetIDsOfNames(IID_NULL,&pOLEStr,1,LOCALE_USER_DEFAULT,&dispid);
 
+		dispparams.rgvarg = lrFile;
+		dispparams.cArgs = 4;
+		dispparams.cNamedArgs = 0;
+		dispparams.rgdispidNamedArgs = NULL;
 
-
-
-
-	}
-
-	HRESULT SetOpenLRFiles(string LeftFile, string RightFile, int AudioMode, string AudioFile)
-	{
-		if(AudioMode != 1)
-		{
-			pOLEStr = OLESTR("OpenLeftRightFiles");
-
-			//set LeftFile into stereoCommand structure
-			prepStringParam(LeftFile,stringCommand);
-			lrFile[0].bstrVal = SysAllocString(stringCommand);
-			
-			//set up right file
-			prepStringParam(RightFile,stringCommand);
-			lrFile[1].bstrVal = SysAllocString(stringCommand);
-			
-			//set up audio file
-			prepStringParam(AudioFile,stringCommand);
-			lrFile[2].bstrVal = SysAllocString(stringCommand);
-			
-			//set audio mode
-			
-			
-			set_params(&dispparams,14,1);
+		hresult = pdisp->Invoke(dispid,
+			IID_NULL,
+			LOCALE_SYSTEM_DEFAULT,
+			DISPATCH_METHOD,
+			&dispparams,
+			NULL,
+			NULL,
+			NULL);
 
 
 
-		}
-		else
-		{
-			std::cout << "ERROR Parameters indicate a separate audio file is expected, but none was indicated." << endl;
-			return DISP_E_BADPARAMCOUNT;
-		}
+
+
+
 	}
 	
 
 
 
 private:
+	HRESULT getDuration()
+	{
+		cout << "Function: Get Duration" << endl;
+		result.vt = VT_EMPTY;
+		varg0[0].vt = VT_EMPTY;
 
-	VARENUM determine_vtType(VARIANT *test)
-	{
-		switch (test->vt)
-		{
-		case 0:
-			return VT_EMPTY;
-		case 1:
-			return VT_NULL;
-		case 2:
-			return VT_I2;
-		case 3:
-			return VT_I4;
-		case 4:
-			return VT_R4;
-		default:
-			return VT_UNKNOWN;
-		}
-	}
-	//TO DO:: FIX THE getDURATION method!
-	void getDuration()
-	{
-		set_params(&dispparams,8,0,false);
+		dispparams.cArgs=1;
+		dispparams.cNamedArgs=0;
+		dispparams.rgvarg=varg0;
+		dispparams.rgdispidNamedArgs=NULL;
+
 		pOLEStr = OLESTR("GetDuration");
 		
-		//hresult = myInvoke(varg0);
 
 		hresult = punk ->QueryInterface(&pdisp);
 		//error checking
+
+		if FAILED(hresult)
+		{
+			cout << "Failed to query interface." << format_error(hresult) << endl;
+			int temp;
+			cout << "Press any key to continue..." << endl;
+			cin >> temp;
+			return hresult;
+		}
+
+
+
 		hresult = pdisp->GetIDsOfNames(IID_NULL, &pOLEStr,  1, LOCALE_USER_DEFAULT, &dispid);
 		//error checking
-		hresult = pdisp->Invoke(dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_METHOD | DISPATCH_PROPERTYGET,&dispparams,&varg0,NULL,NULL);
+		if FAILED(hresult)
+		{
+			cout << "Failed to find Method." << format_error(hresult) << endl;
+			int temp;
+			cout << "Press any key to continue..." << endl;
+			cin >> temp;
+			return hresult;
+		}
+		hresult = pdisp->Invoke(dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_METHOD,&dispparams,&result,NULL,NULL);
+		if FAILED(hresult)
+		{
+			cout << "Failed at INVOKE step." << format_error(hresult) << endl;
+			int temp;
+			cout << "Press any key to continue..." << endl;
+			cin >> temp;
+			return hresult;
+		}
+
+		return hresult;
 
 	}
 	
@@ -712,13 +729,5 @@ private:
 		//VARIANT struct for Zoom
 		stereoCommand[9].vt = VT_R8;
 		stereoCommand[9].dblVal =100.0;
-
-
-
-		//VARIANT struct for OpenLeftRightFile command
-		lrFile[0].vt = VT_BSTR; //left file
-		lrFile[1].vt = VT_BSTR; //right file
-		lrFile[2].vt = VT_BSTR; //audio file
-		lrFile[3].vt = VT_UI4; //audio mode
 	}
 };
