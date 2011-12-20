@@ -80,7 +80,7 @@ public:
 
 		VariantInit(&stereoCommand[0]);
 		VariantInit(&lrFile[0]);
-		VariantInit(&result);
+		//VariantInit(&result);
 		VariantInit(&varg0[0]);
 
 		initalize_CommandStruct();
@@ -147,6 +147,8 @@ public:
 			stop = false;
 
 			hresult = getDuration();
+
+
 			if FAILED(hresult)
 			{
 			cout << "Failed to get duration." << format_error(hresult) << endl;
@@ -155,6 +157,8 @@ public:
 			cin >> temp;
 			return hresult;
 			}
+
+			cout << "duration: " << result.lVal << varg0[0].lVal << endl;
 
 		
 
@@ -468,16 +472,37 @@ public:
 			return DISP_E_BADPARAMCOUNT;
 		}
 		//we are not specifying an audio file so we need to nullify this array element
-		lrFile[1].vt = VT_ERROR;
-		lrFile[1].scode = DISP_E_PARAMNOTFOUND;
+		lrFile[1].vt = VT_EMPTY;
+		//lrFile[2].scode = DISP_E_PARAMNOTFOUND;
 
 		//set audio mode
-		lrFile[0].vt = VT_UI4;
-		lrFile[0].lVal = (long)AudioMode;
+		lrFile[0].vt = VT_EMPTY;
+		lrFile[0].lVal = AudioMode;
 
-		hresult = punk->QueryInterface(&pdisp);
+		
+		hresult = punk ->QueryInterface(&pdisp);
+		if FAILED(hresult)
+		{
+			cout << "Failed to query interface." << format_error(hresult) << endl;
+			int temp;
+			cout << "Press any key to continue..." << endl;
+			cin >> temp;
+			return hresult;
+		}
+
 		hresult = pdisp->GetIDsOfNames(IID_NULL,&pOLEStr,1,LOCALE_USER_DEFAULT,&dispid);
+		if FAILED(hresult)
+		{
+			cout << "Failed to find method." << format_error(hresult) << endl;
+			int temp;
+			cout << "Press any key to continue..." << endl;
+			cin >> temp;
+			return hresult;
+		}
 
+		//cout << "DISPID: " << hex << dispid << endl;
+
+		
 		dispparams.rgvarg = lrFile;
 		dispparams.cArgs = 4;
 		dispparams.cNamedArgs = 0;
@@ -492,24 +517,107 @@ public:
 			NULL,
 			NULL);
 
+		if FAILED(hresult)
+		{
+			cout << "Failed to Invoke command." << format_error(hresult) << endl;
+			return hresult;
+		}
+
+		
+		return hresult;
+	}
+	
+
+	HRESULT SetOpenLRFiles(string LeftFile, string RightFile, string AudioFile, int AudioMode)
+	{
+		pOLEStr = OLESTR("OpenLeftRightFiles");
+		
+		//set LeftFile into stereoCommand structure
+		prepStringParam(LeftFile,stringCommand);
+		lrFile[3].vt = VT_BSTR;
+		lrFile[3].bstrVal = SysAllocString(stringCommand);
+		
+		//set up right file
+		prepStringParam(RightFile,stringCommand);
+		lrFile[2].vt = VT_BSTR;
+		lrFile[2].bstrVal = SysAllocString(stringCommand);
+
+		if (AudioMode ==1.0)
+		{
+			std::cout << "ERROR Parameters indicate a separate audio file is expected, but none was indicated." << endl;
+			return DISP_E_BADPARAMCOUNT;
+		}
+		
+		//set audio file
+		prepStringParam(AudioFile,stringCommand);
+		lrFile[1].vt = VT_BSTR;
+		lrFile[1].bstrVal = SysAllocString(stringCommand);
+
+		//set audio mode
+		lrFile[0].vt = VT_EMPTY;
+		lrFile[0].lVal = AudioMode;
+
+		
+		hresult = punk ->QueryInterface(&pdisp);
+		if FAILED(hresult)
+		{
+			cout << "Failed to query interface." << format_error(hresult) << endl;
+			int temp;
+			cout << "Press any key to continue..." << endl;
+			cin >> temp;
+			return hresult;
+		}
+
+		hresult = pdisp->GetIDsOfNames(IID_NULL,&pOLEStr,1,LOCALE_USER_DEFAULT,&dispid);
+		if FAILED(hresult)
+		{
+			cout << "Failed to find method." << format_error(hresult) << endl;
+			int temp;
+			cout << "Press any key to continue..." << endl;
+			cin >> temp;
+			return hresult;
+		}
+
+		//cout << "DISPID: " << hex << dispid << endl;
+
+		
+		dispparams.rgvarg = lrFile;
+		dispparams.cArgs = 4;
+		dispparams.cNamedArgs = 0;
+		dispparams.rgdispidNamedArgs = NULL;
+
+		hresult = pdisp->Invoke(dispid,
+			IID_NULL,
+			LOCALE_SYSTEM_DEFAULT,
+			DISPATCH_METHOD,
+			&dispparams,
+			NULL,
+			NULL,
+			NULL);
+
+		if FAILED(hresult)
+		{
+			cout << "Failed to Invoke command." << format_error(hresult) << endl;
+			return hresult;
+		}
+
+		
+		return hresult;
 
 
 
 
 
 	}
-	
-
-
 
 private:
 	HRESULT getDuration()
 	{
 		cout << "Function: Get Duration" << endl;
 		result.vt = VT_EMPTY;
-		varg0[0].vt = VT_EMPTY;
+		varg0[0].vt = VT_UI4;
 
-		dispparams.cArgs=1;
+		dispparams.cArgs=0;
 		dispparams.cNamedArgs=0;
 		dispparams.rgvarg=varg0;
 		dispparams.rgdispidNamedArgs=NULL;
@@ -541,7 +649,14 @@ private:
 			cin >> temp;
 			return hresult;
 		}
-		hresult = pdisp->Invoke(dispid,IID_NULL,LOCALE_SYSTEM_DEFAULT,DISPATCH_METHOD,&dispparams,&result,NULL,NULL);
+		hresult = pdisp->Invoke(dispid,
+			IID_NULL,
+			LOCALE_SYSTEM_DEFAULT,
+			DISPATCH_PROPERTYGET,
+			&dispparams,
+			&result,
+			NULL,
+			NULL);
 		if FAILED(hresult)
 		{
 			cout << "Failed at INVOKE step." << format_error(hresult) << endl;
