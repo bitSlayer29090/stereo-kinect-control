@@ -13,7 +13,6 @@
 #include <iomanip>
 #include <OAIdl.h>
 
-
 using namespace std;
 
 //GUID for the StereoPlayer automation class
@@ -62,8 +61,7 @@ class COMMAND
 	bool play;
 	bool pause;
 	bool stop;
-	VARIANT vResult;
-	VARIANT vParam;
+	VARIANTARG vParam;
 	double zoomLevel;
 
 public:
@@ -80,7 +78,6 @@ public:
 
 		VariantInit(&stereoCommand[0]);
 		VariantInit(&lrFile[0]);
-		VariantInit(&vResult);
 
 		initalize_CommandStruct();
 
@@ -633,10 +630,12 @@ protected:
 			return hresult;
 		}
 
-		dispparams.cArgs =1;
+		vParam.vt=VT_EMPTY;
+
+		dispparams.cArgs = 0;
 		dispparams.cNamedArgs =0;
 		dispparams.rgdispidNamedArgs = NULL;
-		dispparams.rgvarg = &vParam; //NULL
+		dispparams.rgvarg = NULL; //NULL
 
 
 		hresult = pdisp->Invoke(dispid,
@@ -647,7 +646,7 @@ protected:
 			NULL,
 			&excepinfo,
 			&nArgErr);
-
+		
 		if FAILED(hresult)
 		{
 			cout << "Failed at INVOKE step.  " << format_error(hresult) << endl;
