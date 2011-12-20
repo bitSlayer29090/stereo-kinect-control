@@ -12,6 +12,7 @@
 #include <sstream>
 #include <iomanip>
 #include <OAIdl.h>
+#include "stereoplayer.h"
 
 using namespace std;
 
@@ -84,7 +85,7 @@ public:
 		str = TEXT("\nConstructor Called\n");
 		OutputDebugString(str);
 
-		
+				
 
 		fullScreen = false;
 		play = false;
@@ -142,7 +143,9 @@ public:
 			pause = false;
 			stop = false;
 
-			hresult = getDuration();
+			//hresult = getDuration();
+
+			
 
 
 			if FAILED(hresult)

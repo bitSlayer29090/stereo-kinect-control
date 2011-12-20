@@ -352,8 +352,6 @@ int main(int argc, char ** argv)
 	XnStatus rc = XN_STATUS_OK;
 	xn::EnumerationErrors errors;
 
-
-
 	
 
 
