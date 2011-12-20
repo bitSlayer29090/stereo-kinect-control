@@ -384,9 +384,9 @@ int main(int argc, char ** argv)
 	}
 
 	//open the file of interest using COMMAND::OpenFile() where the argument is the string of the filepath
-	//hr = command.OpenFile(filename);
+	hr = command.OpenFile(filename);
 
-	hr = command.SetOpenLRFiles(LeftFile,RightFile,0);
+	//hr = command.SetOpenLRFiles(LeftFile,RightFile,0);
 	if FAILED(hr)
 	{
 		//cout << "Main - Failed to Open File: " << format_error(hr) << endl;

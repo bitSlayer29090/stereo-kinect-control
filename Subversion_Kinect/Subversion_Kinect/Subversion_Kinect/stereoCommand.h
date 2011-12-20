@@ -54,7 +54,6 @@ class COMMAND
 	OLECHAR * pOLEStr;
 	VARIANT stereoCommand[15]; //for most commands
 	VARIANT lrFile[4];
-	VARIANT result;
 	WCHAR stringCommand[MAX_PATH];  //MAX_PATH defined as 260
 	LPCWSTR str;
 	float videoDuration;
@@ -63,7 +62,7 @@ class COMMAND
 	bool play;
 	bool pause;
 	bool stop;
-	VARIANT varg0[1];
+	VARIANTARG varg0;
 	double zoomLevel;
 
 public:
@@ -80,8 +79,6 @@ public:
 
 		VariantInit(&stereoCommand[0]);
 		VariantInit(&lrFile[0]);
-		//VariantInit(&result);
-		VariantInit(&varg0[0]);
 
 		initalize_CommandStruct();
 
@@ -151,14 +148,11 @@ public:
 
 			if FAILED(hresult)
 			{
-			cout << "Failed to get duration." << format_error(hresult) << endl;
-			int temp;
-			cout << "Press any key to continue..." << endl;
-			cin >> temp;
-			return hresult;
+				cout << "Failed to get duration." << format_error(hresult) << endl;
+				return hresult;
 			}
 
-			cout << "duration: " << result.lVal << varg0[0].lVal << endl;
+			cout << "duration: " << varg0.lVal << endl;
 
 		
 
@@ -610,20 +604,18 @@ public:
 
 	}
 
-private:
+protected:
 	HRESULT getDuration()
 	{
 		cout << "Function: Get Duration" << endl;
-		result.vt = VT_EMPTY;
-		varg0[0].vt = VT_UI4;
+		
+		varg0.vt = VT_EMPTY;
 
-		dispparams.cArgs=0;
+		dispparams.cArgs=1;
 		dispparams.cNamedArgs=0;
-		dispparams.rgvarg=varg0;
-		dispparams.rgdispidNamedArgs=NULL;
+		dispparams.rgvarg = &varg0;
 
 		pOLEStr = OLESTR("GetDuration");
-		
 
 		hresult = punk ->QueryInterface(&pdisp);
 		//error checking
@@ -636,8 +628,6 @@ private:
 			cin >> temp;
 			return hresult;
 		}
-
-
 
 		hresult = pdisp->GetIDsOfNames(IID_NULL, &pOLEStr,  1, LOCALE_USER_DEFAULT, &dispid);
 		//error checking
@@ -652,17 +642,15 @@ private:
 		hresult = pdisp->Invoke(dispid,
 			IID_NULL,
 			LOCALE_SYSTEM_DEFAULT,
-			DISPATCH_PROPERTYGET,
+			DISPATCH_METHOD,
 			&dispparams,
-			&result,
+			NULL,
 			NULL,
 			NULL);
+
 		if FAILED(hresult)
 		{
 			cout << "Failed at INVOKE step." << format_error(hresult) << endl;
-			int temp;
-			cout << "Press any key to continue..." << endl;
-			cin >> temp;
 			return hresult;
 		}
 
