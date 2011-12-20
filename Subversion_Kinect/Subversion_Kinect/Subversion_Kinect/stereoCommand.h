@@ -62,7 +62,8 @@ class COMMAND
 	bool play;
 	bool pause;
 	bool stop;
-	VARIANTARG varg0;
+	VARIANT vResult;
+	VARIANT vParam;
 	double zoomLevel;
 
 public:
@@ -79,6 +80,7 @@ public:
 
 		VariantInit(&stereoCommand[0]);
 		VariantInit(&lrFile[0]);
+		VariantInit(&vResult);
 
 		initalize_CommandStruct();
 
@@ -151,8 +153,6 @@ public:
 				cout << "Failed to get duration." << format_error(hresult) << endl;
 				return hresult;
 			}
-
-			cout << "duration: " << varg0.lVal << endl;
 
 		
 
@@ -608,18 +608,11 @@ protected:
 	HRESULT getDuration()
 	{
 		cout << "Function: Get Duration" << endl;
-
-
-		varg0.vt = VT_EMPTY;
-		dispparams.cArgs=1;
-		dispparams.cNamedArgs=0;
-		dispparams.rgvarg = &varg0;
-
 		pOLEStr = OLESTR("GetDuration");
 
 		hresult = punk ->QueryInterface(&pdisp);
-		//error checking
 
+		//error checking
 		if FAILED(hresult)
 		{
 			cout << "Failed to query interface." << format_error(hresult) << endl;
@@ -639,25 +632,32 @@ protected:
 			cin >> temp;
 			return hresult;
 		}
+
+		dispparams.cArgs =1;
+		dispparams.cNamedArgs =0;
+		dispparams.rgdispidNamedArgs = NULL;
+		dispparams.rgvarg = &vParam; //NULL
+
+
 		hresult = pdisp->Invoke(dispid,
 			IID_NULL,
 			LOCALE_SYSTEM_DEFAULT,
 			DISPATCH_METHOD,
 			&dispparams,
-			&varg0,
+			NULL,
 			&excepinfo,
 			&nArgErr);
 
 		if FAILED(hresult)
 		{
-			cout << "Failed at INVOKE step." << format_error(hresult) << endl;
+			cout << "Failed at INVOKE step.  " << format_error(hresult) << endl;
 			return hresult;
 		}
 		else
 		{
 			
 			if (nArgErr >= 1)
-			{cout << "puArgErr: " << nArgErr << endl;cout << "pExepInfo: " << excepinfo.bstrDescription << endl;}
+			{cout << "Count of Errors: " << nArgErr << endl << "pExepInfo: " << excepinfo.bstrDescription << endl;}
 		}
 
 		return hresult;
@@ -704,8 +704,6 @@ protected:
 			cout << "Failed at Invoke step: " << format_error(hresult) << endl;
 			return hresult;
 		}
-
-		cout << "varg0 type is " << hex << pArgs.vt << endl;
 
 		return hresult;
 	}
