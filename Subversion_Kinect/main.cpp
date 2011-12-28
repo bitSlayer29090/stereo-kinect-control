@@ -14,7 +14,12 @@
 
 //instantiate new instance of COMMAND class as "command"
 COMMAND command;
+
 HRESULT hr;
+#include "stereoplayer_h.h"
+#import "./Debug/Subversion_Kinect.tlb" named_guids
+using namespace StereoPlayer;
+
 
 //Pointers to StereoPlayer control functions
 
@@ -352,8 +357,6 @@ int main(int argc, char ** argv)
 	XnStatus rc = XN_STATUS_OK;
 	xn::EnumerationErrors errors;
 
-
-
 	
 
 
@@ -384,9 +387,9 @@ int main(int argc, char ** argv)
 	}
 
 	//open the file of interest using COMMAND::OpenFile() where the argument is the string of the filepath
-	hr = command.OpenFile(filename);
+	//hr = command.OpenFile(filename);
 
-	//hr = command.SetOpenLRFiles(LeftFile,RightFile,0);
+	hr = command.SetOpenLRFiles(LeftFile,RightFile,0);
 	if FAILED(hr)
 	{
 		//cout << "Main - Failed to Open File: " << format_error(hr) << endl;

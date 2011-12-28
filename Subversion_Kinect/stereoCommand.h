@@ -84,7 +84,7 @@ public:
 		str = TEXT("\nConstructor Called\n");
 		OutputDebugString(str);
 
-		
+				
 
 		fullScreen = false;
 		play = false;
@@ -142,7 +142,9 @@ public:
 			pause = false;
 			stop = false;
 
-			hresult = getDuration();
+			//hresult = getDuration();
+
+			
 
 
 			if FAILED(hresult)
