@@ -5,18 +5,18 @@
 /* link this file in with the server and any clients */
 
 
- /* File created by MIDL compiler version 7.00.0500 */
-/* at Tue Dec 20 17:01:31 2011
+ /* File created by MIDL compiler version 7.00.0555 */
+/* at Wed Dec 28 12:36:41 2011
  */
-/* Compiler settings for StereoPlayer.IDL:
-    Oicf, W1, Zp8, env=Win32 (32b run)
+/* Compiler settings for stereoplayer.idl:
+    Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 7.00.0555 
     protocol : dce , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
          DECLSPEC_UUID(), MIDL_INTERFACE()
 */
-//@@MIDL_FILE_HEADING(  )
+/* @@MIDL_FILE_HEADING(  ) */
 
 #pragma warning( disable: 4049 )  /* more than 64k source lines */
 
@@ -67,13 +67,13 @@ typedef IID CLSID;
 
 #endif !_MIDL_USE_GUIDDEF_
 
-MIDL_DEFINE_GUID(CLSID, CLSID_Automation,0x73B28B6E,0xD306,0x4589,0xB0,0x32,0x9E,0xD1,0x7A,0xA4,0xD1,0x82);
-
-
 MIDL_DEFINE_GUID(IID, LIBID_StereoPlayer,0xA357E802,0xBA6C,0x479E,0xA4,0x00,0x02,0x70,0xED,0x8A,0x26,0xB9);
 
 
 MIDL_DEFINE_GUID(IID, IID_IAutomation,0x54150FC5,0xF6D5,0x419A,0xBC,0x0D,0xE2,0xBE,0x08,0x55,0x89,0x34);
+
+
+MIDL_DEFINE_GUID(CLSID, CLSID_Automation,0x73B28B6E,0xD306,0x4589,0xB0,0x32,0x9E,0xD1,0x7A,0xA4,0xD1,0x82);
 
 #undef MIDL_DEFINE_GUID
 
