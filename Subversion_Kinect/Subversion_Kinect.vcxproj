@@ -91,9 +91,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="mainicon.ico" />
+    <None Include="stereoplayer.tlb" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NITE.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="stereoplayer.idl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
