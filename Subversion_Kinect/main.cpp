@@ -3,24 +3,6 @@
 #include <XnCppWrapper.h>
 #include <XnHash.h>
 #include <XnLog.h>
-
-//header for NITE
-#include <XnVNite.h>
-
-//local headers
-#include "PointDrawer.h"
-
-
-HRESULT hr;
-#include "stereoplayer_h.h"
-#import "./Debug/Subversion_Kinect.tlb" named_guids
-
-HRESULT hresult;
-int temp;
-VARIANT vResult;
-VARIANT_BOOL vBoolTrue = true;
-VARIANT_BOOL vBoolFalse = false;
-
 #include <ole2.h>
 #include <OleAuto.h>
 #include <ObjBase.h>
@@ -35,6 +17,22 @@ VARIANT_BOOL vBoolFalse = false;
 #include <sstream>
 #include <iomanip>
 #include <OAIdl.h>
+#include <XnVNite.h>
+#include "PointDrawer.h"
+#include "stereoplayer_h.h"
+#import "./Debug/Subversion_Kinect.tlb" named_guids
+
+HRESULT hr;
+HRESULT hresult;
+int temp;
+VARIANT vResult;
+VARIANT_BOOL vBoolTrue = true;
+VARIANT_BOOL vBoolFalse = false;
+
+bool play;
+bool stop;
+bool pause;
+bool fullScreen;
 
 using namespace StereoPlayer;
 using namespace std;
@@ -275,6 +273,8 @@ void glInit (int * pargc, char ** argv)
 }
 #endif
 
+void togglePlay();
+
 void XN_CALLBACK_TYPE GestureIntermediateStageCompletedHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
 {
 	printf("Gesture %s: Intermediate stage complete (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
@@ -320,6 +320,8 @@ void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUser
 void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	printf("\nSwipe Right\n");
+	togglePlay();
+
 }
 
 void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
@@ -335,35 +337,53 @@ void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 //sample XML code that will initialize the OpenNI interface
 #define SAMPLE_XML_PATH "Sample-Tracking.xml"
 
+
 void togglePlay()
+{
+
+	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
+	
+	if(play)
+	{
+		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Pause);
+		play = false;
+		pause = true;
+		stop = false;
+	}
+	else if(pause)
+	{
+		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Stop);
+		pause = false;
+		stop = true;
+		play = false;
+	}
+	else if(stop)
+	{
+		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
+		play = true;
+		pause = false;
+		stop = false;
+	}
+
+}
+
+void toggleScreen()
 {
 	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
 
-	pApp->GetPlaybackState(&vResult);
 
-	int state;
-
-	state = vResult.dblVal;
-
-	switch(state)
+	if(!fullScreen)
 	{
-	case 0:
-		{
-			pApp->SetPlaybackState(StereoPlayer::PlaybackState_Pause);
-		}
-	case 1:
-		{
-			pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
-		}
-	case 2:
-		{
-			pApp->SetPlaybackState(StereoPlayer::PlaybackState_Stop);
-		}
+		pApp->EnterFullscreenMode(vBoolTrue);
+	}
+	else if (fullscreen)
+	{
+		pApp->LeaveFullscreenMode();
 	}
 }
 
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
 	//error handling variables
 	XnStatus rc = XN_STATUS_OK;
@@ -371,6 +391,10 @@ int main(int argc, char ** argv)
 
 
 	hr = CoInitialize(NULL);
+	play = false;
+	pause = false;
+	stop = false;
+	fullScreen = false;
 
 	if FAILED(hr)
 	{
@@ -401,8 +425,7 @@ int main(int argc, char ** argv)
 	*/
 
 	hr = app->OpenFile(L"C:\\Users\\Public\\Videos\\Pulmonary.mov");
-
-	togglePlay();
+	play = true;
 
 	if FAILED(hr)
 		goto error;
