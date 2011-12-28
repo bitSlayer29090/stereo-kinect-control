@@ -58,6 +58,9 @@
       <AdditionalLibraryDirectories>$(OPEN_NI_LIB);Libs;../Libs;../Lib;Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>OpenNI.lib;XnVNite_1_4_2.lib;glut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Midl>
+      <TypeLibFormat>NewFormat</TypeLibFormat>
+    </Midl>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

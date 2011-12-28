@@ -16,6 +16,7 @@
 COMMAND command;
 
 HRESULT hr;
+#include "stereoplayer_h.h"
 #import "./Debug/Subversion_Kinect.tlb" named_guids
 using namespace StereoPlayer;
 
