@@ -16,6 +16,8 @@
 COMMAND command;
 
 HRESULT hr;
+#import "./Debug/Subversion_Kinect.tlb" named_guids
+using namespace StereoPlayer;
 
 
 //Pointers to StereoPlayer control functions
