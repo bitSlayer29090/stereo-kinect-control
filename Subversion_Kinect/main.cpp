@@ -14,6 +14,13 @@
 HRESULT hr;
 #include "stereoplayer_h.h"
 #import "./Debug/Subversion_Kinect.tlb" named_guids
+
+HRESULT hresult;
+int temp;
+VARIANT vResult;
+VARIANT_BOOL vBoolTrue = true;
+VARIANT_BOOL vBoolFalse = false;
+
 #include <ole2.h>
 #include <OleAuto.h>
 #include <ObjBase.h>
@@ -28,6 +35,7 @@ HRESULT hr;
 #include <sstream>
 #include <iomanip>
 #include <OAIdl.h>
+
 using namespace StereoPlayer;
 using namespace std;
 
@@ -123,7 +131,9 @@ void CleanupExit()
 	g_HandsGenerator.Release();
 	g_GestureGenerator.Release();
 	g_Context.Release();
-	/*command.EmergencyExit();*/
+	
+	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
+	pApp->ClosePlayer();
 
 	exit(1);
 }
@@ -294,31 +304,22 @@ void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCir
 
 void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	
 	printf("\nSwipe Down\n");
-	
-
 }
 
 void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	printf("\nSwipe Up\n");
-	
 }
 
 void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	printf("\n Left Swipe -- SWITCH FULLSCREEN STATE\n");
-
-
 }
 
 void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	printf("\nSwipe Right\n");
-
-
-
 }
 
 void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
@@ -329,14 +330,37 @@ void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
 void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 {
 	printf("\nPush Detected\n");
-
-
-
 }
 
 //sample XML code that will initialize the OpenNI interface
 #define SAMPLE_XML_PATH "Sample-Tracking.xml"
 
+void togglePlay()
+{
+	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
+
+	pApp->GetPlaybackState(&vResult);
+
+	int state;
+
+	state = vResult.dblVal;
+
+	switch(state)
+	{
+	case 0:
+		{
+			pApp->SetPlaybackState(StereoPlayer::PlaybackState_Pause);
+		}
+	case 1:
+		{
+			pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
+		}
+	case 2:
+		{
+			pApp->SetPlaybackState(StereoPlayer::PlaybackState_Stop);
+		}
+	}
+}
 
 
 int main(int argc, char ** argv)
@@ -345,9 +369,18 @@ int main(int argc, char ** argv)
 	XnStatus rc = XN_STATUS_OK;
 	xn::EnumerationErrors errors;
 
+
+	hr = CoInitialize(NULL);
+
+	if FAILED(hr)
+	{
+		cout << "Error" << endl;
+	}
+
+	StereoPlayer::IAutomationPtr app(__uuidof(StereoPlayer::Automation));
+
 	
-
-
+	/*
 	//prepare the file to be opened by the computer
 	string filename = "C:\\Users\\Public\\Videos\\Pulmonary.mov";
 	cout << "File to Open: " << filename << endl;
@@ -365,6 +398,14 @@ int main(int argc, char ** argv)
 		cout << "No audio file was indicated. Setting AudioMode to 0" << endl;
 		AudioMode = 0;
 	}
+	*/
+
+	hr = app->OpenFile(L"C:\\Users\\Public\\Videos\\Pulmonary.mov");
+
+	togglePlay();
+
+	if FAILED(hr)
+		goto error;
 
 	//create instance using COMMAND::CreateInstance
 	//hr = command.CreateInstance();
