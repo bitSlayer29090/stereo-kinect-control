@@ -1,16 +1,16 @@
 ﻿  stereoplayer.idl
   Processing .\stereoplayer.idl
-  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\oaidl.idl
   oaidl.idl
-  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\objidl.idl
+  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\oaidl.idl
   objidl.idl
-  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\unknwn.idl
+  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\objidl.idl
   unknwn.idl
-  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\wtypes.idl
+  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\unknwn.idl
   wtypes.idl
-  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\basetsd.h
+  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\wtypes.idl
   basetsd.h
-  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\guiddef.h
+  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\basetsd.h
   guiddef.h
-  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\oaidl.acf
+  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\guiddef.h
   oaidl.acf
+  Processing C:\Program Files\Microsoft SDKs\Windows\v7.0A\include\oaidl.acf

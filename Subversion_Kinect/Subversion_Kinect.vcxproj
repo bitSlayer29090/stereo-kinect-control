@@ -91,7 +91,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="mainicon.ico" />
-    <None Include="stereoplayer.tlb" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NITE.rc" />
