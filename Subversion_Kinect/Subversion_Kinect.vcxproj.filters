@@ -31,9 +31,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stereoCommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PointDrawer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -48,6 +45,9 @@
     </ClInclude>
     <ClInclude Include="stereoplayer.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stereoplayer_h.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

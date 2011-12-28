@@ -9,20 +9,13 @@
 
 //local headers
 #include "PointDrawer.h"
-#include "stereoCommand.h" //COM Automation
 #include "vrpnClient.h" //VRPN Server/Client
 
-//instantiate new instance of COMMAND class as "command"
-COMMAND command;
 
 HRESULT hr;
 #include "stereoplayer_h.h"
 #import "./Debug/Subversion_Kinect.tlb" named_guids
 using namespace StereoPlayer;
-
-
-//Pointers to StereoPlayer control functions
-
 
 //headers for gesture recognition
 #include <XnVSwipeDetector.h>
@@ -258,7 +251,6 @@ void glInit (int * pargc, char ** argv)
 }
 #endif
 
-
 void XN_CALLBACK_TYPE GestureIntermediateStageCompletedHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
 {
 	printf("Gesture %s: Intermediate stage complete (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
@@ -290,26 +282,19 @@ void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUser
 {
 	
 	printf("\nSwipe Down\n");
-	command.SetZoomDecrement();
+	
 
 }
 
 void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	printf("\nSwipe Up\n");
-	command.SetZoomIncrement();
+	
 }
 
 void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	printf("\n Left Swipe -- SWITCH FULLSCREEN STATE\n");
-	
-	hr = command.SwitchFullScreen();
-
-	if FAILED(hr)
-	{
-		std::cout << "COMMAND ERROR: " << format_error(hr) << endl;
-	}
 
 
 }
@@ -318,12 +303,7 @@ void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUse
 {
 	printf("\nSwipe Right\n");
 
-	hr = command.togglePlay();
 
-	if FAILED(hr)
-	{
-		std::cout << "COMMAND ERROR: " << format_error(hr) << endl;
-	}
 
 }
 
@@ -336,12 +316,6 @@ void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 {
 	printf("\nPush Detected\n");
 
-	hr = command.SetStop();
-
-	if FAILED(hr)
-	{
-		std::cout << "COMMAND ERROR: " << format_error(hr) << endl;
-	}
 
 
 }
