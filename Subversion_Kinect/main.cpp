@@ -9,13 +9,27 @@
 
 //local headers
 #include "PointDrawer.h"
-#include "vrpnClient.h" //VRPN Server/Client
 
 
 HRESULT hr;
 #include "stereoplayer_h.h"
 #import "./Debug/Subversion_Kinect.tlb" named_guids
+#include <ole2.h>
+#include <OleAuto.h>
+#include <ObjBase.h>
+#include <iostream>
+#include <string>
+#include <stdlib.h>
+#include <math.h>
+#include <stdio.h>
+#include <WinError.h>
+#include <Guiddef.h>
+#include <InitGuid.h>
+#include <sstream>
+#include <iomanip>
+#include <OAIdl.h>
 using namespace StereoPlayer;
+using namespace std;
 
 //headers for gesture recognition
 #include <XnVSwipeDetector.h>
@@ -109,7 +123,7 @@ void CleanupExit()
 	g_HandsGenerator.Release();
 	g_GestureGenerator.Release();
 	g_Context.Release();
-	command.EmergencyExit();
+	/*command.EmergencyExit();*/
 
 	exit(1);
 }
@@ -353,25 +367,25 @@ int main(int argc, char ** argv)
 	}
 
 	//create instance using COMMAND::CreateInstance
-	hr = command.CreateInstance();
-	if FAILED(hr)
-	{
-		cout << "Main - Failed to CreateInstance: " << format_error(hr) << endl;
-		goto error;
-	}
+	//hr = command.CreateInstance();
+	//if FAILED(hr)
+	//{
+	//	cout << "Main - Failed to CreateInstance: " << format_error(hr) << endl;
+	//	goto error;
+	//}
 
 	//open the file of interest using COMMAND::OpenFile() where the argument is the string of the filepath
 	//hr = command.OpenFile(filename);
 
-	hr = command.SetOpenLRFiles(LeftFile,RightFile,0);
-	if FAILED(hr)
-	{
-		//cout << "Main - Failed to Open File: " << format_error(hr) << endl;
-		cout << "Will now exit.  Press any key to continue..." << endl;
-		int temp;
-		cin >> temp;
-		CleanupExit();
-	}
+	//hr = command.SetOpenLRFiles(LeftFile,RightFile,0);
+	//if FAILED(hr)
+	//{
+	//	//cout << "Main - Failed to Open File: " << format_error(hr) << endl;
+	//	cout << "Will now exit.  Press any key to continue..." << endl;
+	//	int temp;
+	//	cin >> temp;
+	//	CleanupExit();
+	//}
 	
 	//Initialize the OpenNI interface to the Kinect Camera
 	rc = g_Context.InitFromXmlFile(SAMPLE_XML_PATH, g_ScriptNode,&errors);
