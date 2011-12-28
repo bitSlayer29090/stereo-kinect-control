@@ -33,6 +33,7 @@ bool play;
 bool stop;
 bool pause;
 bool fullScreen;
+double zoom = 100.0;
 
 using namespace StereoPlayer;
 using namespace std;
@@ -273,71 +274,6 @@ void glInit (int * pargc, char ** argv)
 }
 #endif
 
-void togglePlay();
-
-void XN_CALLBACK_TYPE GestureIntermediateStageCompletedHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
-{
-	printf("Gesture %s: Intermediate stage complete (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
-}
-
-void XN_CALLBACK_TYPE GestureReadyForNextIntermediateStageHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
-{
-	printf("Gesture %s: Ready for next intermediate stage (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
-}
-
-void XN_CALLBACK_TYPE GestureProgressHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, XnFloat fProgress, void* pCookie)
-{
-	printf("Gesture %s progress: %f (%f,%f,%f)\n", strGesture, fProgress, pPosition->X, pPosition->Y, pPosition->Z);
-}
-
-void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircle* pCircle, void* pUserCxt)
-{
-	printf("\nCircle Detected\n");
-	g_pCircle->Reset();
-	CleanupExit();
-}
-
-void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCircleReason eReason, void* pUserCxt)
-{
-	//nothing goes here
-}
-
-void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
-{
-	printf("\nSwipe Down\n");
-}
-
-void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
-{
-	printf("\nSwipe Up\n");
-}
-
-void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
-{
-	printf("\n Left Swipe -- SWITCH FULLSCREEN STATE\n");
-}
-
-void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
-{
-	printf("\nSwipe Right\n");
-	togglePlay();
-
-}
-
-void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
-{
-	printf("\nWave Detected\n");
-}
-
-void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
-{
-	printf("\nPush Detected\n");
-}
-
-//sample XML code that will initialize the OpenNI interface
-#define SAMPLE_XML_PATH "Sample-Tracking.xml"
-
-
 void togglePlay()
 {
 
@@ -370,17 +306,138 @@ void togglePlay()
 void toggleScreen()
 {
 	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
-
-
+	
 	if(!fullScreen)
 	{
 		pApp->EnterFullscreenMode(vBoolTrue);
+		fullScreen = true;
 	}
-	else if (fullscreen)
+	else
 	{
 		pApp->LeaveFullscreenMode();
+		fullScreen = false;
 	}
 }
+
+void increaseZoom()
+{
+	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
+
+	double tempZoom;
+	double newZoom;
+	pApp->GetZoom(&vResult);
+	tempZoom = vResult.dblVal;
+
+	if (zoom==tempZoom)
+	{
+		newZoom = zoom + 10.0;
+		pApp->SetZoom(newZoom);
+		zoom = newZoom;
+	}
+	else
+	{
+		cout <<"Warning: The zoom setting is not consistently set. Check the initial settings." << endl;
+
+		zoom = tempZoom;
+		newZoom = zoom + 10.0;
+		pApp->SetZoom(newZoom);
+		zoom = newZoom;
+	}
+}
+
+
+void decreaseZoom()
+{
+	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
+
+	double tempZoom;
+	double newZoom;
+	pApp->GetZoom(&vResult);
+	tempZoom = vResult.dblVal;
+
+	if (zoom==tempZoom)
+	{
+		newZoom = zoom - 10.0;
+		pApp->SetZoom(newZoom);
+		OutputDebugString(TEXT("NEW ZOOM LEVEL: %g\n",newZoom));
+		zoom = newZoom;
+	}
+	else
+	{
+		cout <<"Warning: The zoom setting is not consistently set. Check the initial settings." << endl;
+
+		zoom = tempZoom;
+		newZoom = zoom - 10.0;
+		pApp->SetZoom(newZoom);
+		zoom = newZoom;
+	}
+}
+
+void XN_CALLBACK_TYPE GestureIntermediateStageCompletedHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
+{
+	printf("Gesture %s: Intermediate stage complete (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
+}
+
+void XN_CALLBACK_TYPE GestureReadyForNextIntermediateStageHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
+{
+	printf("Gesture %s: Ready for next intermediate stage (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
+}
+
+void XN_CALLBACK_TYPE GestureProgressHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, XnFloat fProgress, void* pCookie)
+{
+	printf("Gesture %s progress: %f (%f,%f,%f)\n", strGesture, fProgress, pPosition->X, pPosition->Y, pPosition->Z);
+}
+
+void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircle* pCircle, void* pUserCxt)
+{
+	printf("\nCircle Detected\n");
+	g_pCircle->Reset();
+	CleanupExit();
+}
+
+void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCircleReason eReason, void* pUserCxt)
+{
+	//nothing goes here
+}
+
+void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
+{
+	printf("\nSwipe Down\n");
+	decreaseZoom();
+}
+
+void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
+{
+	printf("\nSwipe Up\n");
+	increaseZoom();
+}
+
+void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
+{
+	printf("\n Left Swipe -- SWITCH FULLSCREEN STATE\n");
+	toggleScreen();
+}
+
+void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
+{
+	printf("\nSwipe Right\n");
+	togglePlay();
+}
+
+void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
+{
+	printf("\nWave Detected\n");
+}
+
+void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
+{
+	printf("\nPush Detected\n");
+}
+
+//sample XML code that will initialize the OpenNI interface
+#define SAMPLE_XML_PATH "Sample-Tracking.xml"
+
+
 
 
 int main(int argc, char** argv)
@@ -563,3 +620,4 @@ int main(int argc, char** argv)
 error:
     return hr;
 }
+
