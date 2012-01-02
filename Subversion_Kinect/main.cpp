@@ -114,7 +114,7 @@ XnVWaveDetector* g_pWave = NULL;
 XnVPushDetector* g_pPush = NULL;
 
 //slider detector
-XnVSlider1D* g_pSlide = NULL;
+XnVSelectableSlider1D* g_pSlider = NULL;
 
 #define GL_WIN_SIZE_X 720
 #define GL_WIN_SIZE_Y 480
@@ -293,6 +293,8 @@ void glInit (int * pargc, char ** argv)
 }
 #endif
 
+
+/*DJ's Functions*/
 void togglePlay()
 {
 
@@ -393,6 +395,9 @@ void decreaseZoom()
 		zoom = newZoom;
 	}
 }
+
+/*End DJ's Functions*/
+
 
 void XN_CALLBACK_TYPE GestureIntermediateStageCompletedHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
 {
@@ -514,7 +519,6 @@ int main(int argc, char** argv)
 		app->SetRepeat(vBoolTrue);
 	}
 
-	
 	//Initialize the OpenNI interface to the Kinect Camera
 	rc = g_Context.InitFromXmlFile(SAMPLE_XML_PATH, g_ScriptNode,&errors);
 	CHECK_ERRORS(rc,errors,"InitFromXMLFile");
@@ -586,6 +590,12 @@ int main(int argc, char** argv)
 	g_pPush->RegisterPush(NULL, &PushCB);
 
 	g_pSessionManager->AddListener(g_pPush);
+
+
+
+	//register for the slider event
+	g_pSlider = new XnVSelectableSlider1D;
+
 
 	g_pDrawer->RegisterNoPoints(NULL, NoHands);
 	g_pDrawer->SetDepthMap(g_bDrawDepthMap);
