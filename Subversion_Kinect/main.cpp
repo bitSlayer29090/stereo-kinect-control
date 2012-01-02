@@ -496,6 +496,24 @@ int main(int argc, char** argv)
 	if FAILED(hr)
 		goto error;
 
+
+	hr = app->GetDuration(&vResult);
+	double duration;
+	duration = vResult.dblVal;
+
+	if (duration >= 60)
+	{
+		cout << "Video duration is greater than 60 seconds. Turning off repeat..." << endl;
+		app->SetRepeat(vBoolFalse);
+	}
+
+	else
+	{
+		cout << "Video duration less than 60 seconds. Turning on repeat..." << endl;
+		app->SetRepeat(vBoolTrue);
+	}
+
+
 	//create instance using COMMAND::CreateInstance
 	//hr = command.CreateInstance();
 	//if FAILED(hr)
