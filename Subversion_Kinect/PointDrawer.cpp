@@ -414,7 +414,7 @@ void PrintSessionInstructions(int command)
 		sprintf(printString,"Left: Enter/Leave Fullscreen; Right: Play/Pause");
 		break;
 	case 1:
-		sprintf(printString,"Use Left/Right position to select playback position");
+		sprintf(printString,"Use Left/Right position to select playback position. Perform Circle to exit.");
 		break;
 	case 2:
 		sprintf(printString,"Preparing gesture recognition algorithms.");
@@ -425,6 +425,8 @@ void PrintSessionInstructions(int command)
 	case 4:
 		sprintf(printString,"Hands have extended beyond Field of View.");
 		break;
+	case 5:
+		sprintf(printString,"EXITING....");
 	}
 	glPrintString(GLUT_BITMAP_HELVETICA_18,printString);
 }

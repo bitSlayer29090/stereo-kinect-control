@@ -355,6 +355,10 @@ void increaseZoom()
 	pApp->GetZoom(&vResult);
 	tempZoom = vResult.dblVal;
 
+	printf("tempZoom = %g\n",tempZoom);
+
+	
+
 	if (zoom==tempZoom)
 	{
 		newZoom = zoom + 10.0;
@@ -403,6 +407,16 @@ void decreaseZoom()
 	}
 }
 
+void getPlaybackState()
+{
+	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
+	hr = pApp->GetPlaybackState(&vResult);
+
+	printf("Playback state: %g\n",vResult.dblVal);
+
+
+}
+
 /*End DJ's Functions*/
 
 
@@ -447,6 +461,8 @@ void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircl
 	//you must make the circle gesture twice to exit
 	else if (circleCount ==1)
 	{
+		commandState = 5;
+
 		CleanupExit();
 		circleCount = 0;
 	}
@@ -480,6 +496,8 @@ void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUse
 {
 	printf("\nSwipe Right -- TOGGLE PLAY/PAUSE\n");
 	togglePlay();
+
+	getPlaybackState();
 }
 
 void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
@@ -513,6 +531,7 @@ void XN_CALLBACK_TYPE SlideCB(XnFloat fValue, void* pUserCxt)
 {
 	if(!sliderMode)
 	{
+		printf("\tPosition - %g\n",fValue);
 		playbackPosition = fValue;
 	}
 
@@ -520,9 +539,6 @@ void XN_CALLBACK_TYPE SlideCB(XnFloat fValue, void* pUserCxt)
 
 //sample XML code that will initialize the OpenNI interface
 #define SAMPLE_XML_PATH "Sample-Tracking.xml"
-
-
-
 
 int main(int argc, char** argv)
 {
@@ -534,7 +550,7 @@ int main(int argc, char** argv)
 	pause = false;
 	stop = false;
 	fullScreen = false;
-	zoom = 100.0;
+	zoom = 100;
 	circleCount = 0;
 	sliderMode = false;
 	commandState = 2;
@@ -549,10 +565,15 @@ int main(int argc, char** argv)
 	StereoPlayer::IAutomationPtr app(__uuidof(StereoPlayer::Automation));
 	
 	hr = app->OpenFile(L"C:\\Users\\Public\\Videos\\Pulmonary.mov");
-	play = true;
 
+	play = true;
 	if FAILED(hr)
-		goto error;
+		goto error;	
+
+
+
+
+
 
 	hr = app->GetDuration(&vResult);
 
