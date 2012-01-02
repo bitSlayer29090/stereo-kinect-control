@@ -410,11 +410,21 @@ void PrintSessionInstructions(int command)
 
 	switch (command)
 	{
-	case(0):
+	case 0:
 		sprintf(printString,"Left: Enter/Leave Fullscreen; Right: Play/Pause");
-	case(1):
+		break;
+	case 1:
 		sprintf(printString,"Use Left/Right position to select playback position");
-
+		break;
+	case 2:
+		sprintf(printString,"Preparing gesture recognition algorithms.");
+		break;
+	case 3:
+		sprintf(printString,"No hand to track....");
+		break;
+	case 4:
+		sprintf(printString,"Hands have extended beyond Field of View.");
+		break;
 	}
 	glPrintString(GLUT_BITMAP_HELVETICA_18,printString);
 }

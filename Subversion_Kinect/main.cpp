@@ -39,6 +39,8 @@ double zoom;
 int circleCount;
 bool sliderMode;
 int commandState;
+XnFloat playbackPosition;
+double duration;
 
 using namespace StereoPlayer;
 using namespace std;
@@ -126,7 +128,7 @@ XnBool g_bDrawDepthMap = true;
 XnBool g_bPrintFrameID = false;
 
 //use smoothing?
-XnFloat g_fSmoothing = 0.5f;
+XnFloat g_fSmoothing = 0.8f;
 XnBool g_bPause = false;
 XnBool g_bQuit = false;
 
@@ -182,12 +184,14 @@ void XN_CALLBACK_TYPE NoHands(void * UserCxt)
 	{
 		printf("Quick refocus state\n");
 	}
+	commandState = 3;
 	g_SessionState = QUICK_REFOCUS;
 }
 
 void XN_CALLBACK_TYPE TouchingCallback(xn::HandTouchingFOVEdgeCapability& generator, XnUserID id, const XnPoint3D* pPosition, XnFloat fTime, XnDirection eDir, void* pCookie)
 {
 	//printf("Hand at edge of FIELD OF VIEW\n");
+	commandState = 4;
 
 	g_pDrawer->SetTouchingFOVEdge(id);
 }
@@ -495,7 +499,13 @@ void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 	if(sliderMode)
 	{
 		printf("\nPush Detected -- SET PLAYBACK POSITION\n");
-		//sds
+		sliderMode = false;
+		StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
+
+		pApp->SetPosition((double)playbackPosition*duration);
+		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
+
+		circleCount = 0;
 	}
 }
 
@@ -503,7 +513,7 @@ void XN_CALLBACK_TYPE SlideCB(XnFloat fValue, void* pUserCxt)
 {
 	if(!sliderMode)
 	{
-		printf("\n   VALUE CHANGE CB %g\n",fValue);
+		playbackPosition = fValue;
 	}
 
 }
@@ -527,7 +537,7 @@ int main(int argc, char** argv)
 	zoom = 100.0;
 	circleCount = 0;
 	sliderMode = false;
-	commandState = 0;
+	commandState = 2;
 
 	hr = CoInitialize(NULL);
 
@@ -545,7 +555,7 @@ int main(int argc, char** argv)
 		goto error;
 
 	hr = app->GetDuration(&vResult);
-	double duration;
+
 	duration = vResult.dblVal;
 	printf("Duration: %g\n",duration);
 
@@ -635,8 +645,6 @@ int main(int argc, char** argv)
 	
 	//register for the slider event
 	g_pSlider = new XnVSelectableSlider1D(1,5,AXIS_X,0,0.5,250);
-
-	//g_pSlider->get
 	g_pSlider->RegisterValueChange(NULL, SlideCB);
 
 	g_pSessionManager->AddListener(g_pSlider);
