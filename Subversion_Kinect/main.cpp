@@ -47,6 +47,7 @@ using namespace std;
 #include <XnVCircleDetector.h>
 #include <XnVWaveDetector.h>
 #include <XnVPushDetector.h>
+#include <XnVSlider1D.h>
 
 #define CHECK_RC(rc, what)											\
 	if (rc != XN_STATUS_OK)											\
@@ -111,6 +112,9 @@ XnVWaveDetector* g_pWave = NULL;
 
 //push detector
 XnVPushDetector* g_pPush = NULL;
+
+//slider detector
+XnVSlider1D* g_pSlide = NULL;
 
 #define GL_WIN_SIZE_X 720
 #define GL_WIN_SIZE_Y 480
@@ -361,7 +365,6 @@ void increaseZoom()
 	}
 }
 
-
 void decreaseZoom()
 {
 	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
@@ -487,36 +490,13 @@ int main(int argc, char** argv)
 	{
 		cout << "Error" << endl;
 	}
-
 	StereoPlayer::IAutomationPtr app(__uuidof(StereoPlayer::Automation));
-
 	
-	/*
-	//prepare the file to be opened by the computer
-	string filename = "C:\\Users\\Public\\Videos\\Pulmonary.mov";
-	cout << "File to Open: " << filename << endl;
-
-
-	//prepare left, right video file names
-	string LeftFile = "C:\\Users\\Public\\Videos\\IliacLeft.mov";
-	cout <<"---Left Video File: " << LeftFile << endl;
-	string RightFile = "C:\\Users\\Public\\Videos\\IliacRight.mov";
-	cout <<"---Right Video File: " << RightFile << endl;
-	int AudioMode = 2;
-	string AudioFile;
-	if (AudioFile.empty())
-	{
-		cout << "No audio file was indicated. Setting AudioMode to 0" << endl;
-		AudioMode = 0;
-	}
-	*/
-
 	hr = app->OpenFile(L"C:\\Users\\Public\\Videos\\Pulmonary.mov");
 	play = true;
 
 	if FAILED(hr)
 		goto error;
-
 
 	hr = app->GetDuration(&vResult);
 	double duration;
@@ -534,27 +514,6 @@ int main(int argc, char** argv)
 		app->SetRepeat(vBoolTrue);
 	}
 
-
-	//create instance using COMMAND::CreateInstance
-	//hr = command.CreateInstance();
-	//if FAILED(hr)
-	//{
-	//	cout << "Main - Failed to CreateInstance: " << format_error(hr) << endl;
-	//	goto error;
-	//}
-
-	//open the file of interest using COMMAND::OpenFile() where the argument is the string of the filepath
-	//hr = command.OpenFile(filename);
-
-	//hr = command.SetOpenLRFiles(LeftFile,RightFile,0);
-	//if FAILED(hr)
-	//{
-	//	//cout << "Main - Failed to Open File: " << format_error(hr) << endl;
-	//	cout << "Will now exit.  Press any key to continue..." << endl;
-	//	int temp;
-	//	cin >> temp;
-	//	CleanupExit();
-	//}
 	
 	//Initialize the OpenNI interface to the Kinect Camera
 	rc = g_Context.InitFromXmlFile(SAMPLE_XML_PATH, g_ScriptNode,&errors);
@@ -668,4 +627,3 @@ int main(int argc, char** argv)
 error:
     return hr;
 }
-
