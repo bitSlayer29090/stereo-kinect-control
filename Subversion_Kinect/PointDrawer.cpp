@@ -401,4 +401,21 @@ void PrintSessionState(SessionState eState)
 
 	glPrintString(GLUT_BITMAP_HELVETICA_18, strLabel);
 }
+
+void PrintSessionInstructions(int command)
+{
+	glColor4f(1,0,0,1);
+	glRasterPos2i(20,40);
+	XnChar printString[200];
+
+	switch (command)
+	{
+	case(0):
+		sprintf(printString,"Left: Enter/Leave Fullscreen; Right: Play/Pause");
+	case(1):
+		sprintf(printString,"Use Left/Right position to select playback position");
+
+	}
+	glPrintString(GLUT_BITMAP_HELVETICA_18,printString);
+}
 #endif

@@ -29,14 +29,16 @@ VARIANT vResult;
 VARIANT_BOOL vBoolTrue = true;
 VARIANT_BOOL vBoolFalse = false;
 
-bool print_debug = false;
+bool print_debug = true;
 
 bool play;
 bool stop;
 bool pause;
 bool fullScreen;
-double zoom = 100.0;
-int circleCount = 0;
+double zoom;
+int circleCount;
+bool sliderMode;
+int commandState;
 
 using namespace StereoPlayer;
 using namespace std;
@@ -47,7 +49,7 @@ using namespace std;
 #include <XnVCircleDetector.h>
 #include <XnVWaveDetector.h>
 #include <XnVPushDetector.h>
-#include <XnVSlider1D.h>
+#include <XnVSelectableSlider1D.h>
 
 #define CHECK_RC(rc, what)											\
 	if (rc != XN_STATUS_OK)											\
@@ -219,6 +221,7 @@ void glutDisplay (void)
 		g_pSessionManager->Update(&g_Context);
 #ifdef USE_GLUT
 		PrintSessionState(g_SessionState);
+		PrintSessionInstructions(commandState);
 #endif
 	}
 
@@ -422,12 +425,28 @@ void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircl
 	printf("\nCircle Detected\n");
 	g_pCircle->Reset();
 
-	circleCount ++;
+	if (circleCount == 0)
+	{
+		sliderMode = true;
+		commandState=1;
+		if(print_debug)
+		{
+			cout << "Slide Mode activated." << endl;
+		}
+
+		//activate progress sliders here
+		
+		circleCount ++;
+	}
 
 
 	//you must make the circle gesture twice to exit
-	if (circleCount >=2)
+	else if (circleCount ==1)
+	{
 		CleanupExit();
+		circleCount = 0;
+	}
+	
 }
 
 void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCircleReason eReason, void* pUserCxt)
@@ -466,8 +485,27 @@ void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
 
 void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 {
-	printf("\nPush Detected -- STOP PLAYBACK\n");
-	setStop();
+
+	if(!sliderMode)
+	{
+		printf("\nPush Detected -- STOP PLAYBACK\n");
+		setStop();
+	}
+
+	if(sliderMode)
+	{
+		printf("\nPush Detected -- SET PLAYBACK POSITION\n");
+		//sds
+	}
+}
+
+void XN_CALLBACK_TYPE SlideCB(XnFloat fValue, void* pUserCxt)
+{
+	if(!sliderMode)
+	{
+		printf("\n   VALUE CHANGE CB %g\n",fValue);
+	}
+
 }
 
 //sample XML code that will initialize the OpenNI interface
@@ -482,14 +520,17 @@ int main(int argc, char** argv)
 	XnStatus rc = XN_STATUS_OK;
 	xn::EnumerationErrors errors;
 
-
-	hr = CoInitialize(NULL);
 	play = false;
 	pause = false;
 	stop = false;
 	fullScreen = false;
 	zoom = 100.0;
 	circleCount = 0;
+	sliderMode = false;
+	commandState = 0;
+
+	hr = CoInitialize(NULL);
+
 
 	if FAILED(hr)
 	{
@@ -506,6 +547,7 @@ int main(int argc, char** argv)
 	hr = app->GetDuration(&vResult);
 	double duration;
 	duration = vResult.dblVal;
+	printf("Duration: %g\n",duration);
 
 	if (duration >= 60)
 	{
@@ -590,11 +632,14 @@ int main(int argc, char** argv)
 	g_pPush->RegisterPush(NULL, &PushCB);
 
 	g_pSessionManager->AddListener(g_pPush);
-
-
-
+	
 	//register for the slider event
-	g_pSlider = new XnVSelectableSlider1D;
+	g_pSlider = new XnVSelectableSlider1D(1,5,AXIS_X,0,0.5,250);
+
+	//g_pSlider->get
+	g_pSlider->RegisterValueChange(NULL, SlideCB);
+
+	g_pSessionManager->AddListener(g_pSlider);
 
 
 	g_pDrawer->RegisterNoPoints(NULL, NoHands);

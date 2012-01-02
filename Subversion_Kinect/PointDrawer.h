@@ -25,6 +25,8 @@ void PrintSessionState(SessionState eState);
  * This is a point control, which stores the history of every point
  * It can draw all the points as well as the depth map.
  */
+
+void PrintSessionInstructions(int command);
 class XnVPointDrawer : public XnVPointControl
 {
 public:
