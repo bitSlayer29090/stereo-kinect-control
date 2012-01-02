@@ -318,8 +318,8 @@ void togglePlay()
 	{
 		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
 		pause = false;
-		stop = true;
-		play = false;
+		stop = false;
+		play = true;
 	}
 }
 
@@ -412,7 +412,7 @@ void getPlaybackState()
 	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
 	hr = pApp->GetPlaybackState(&vResult);
 
-	printf("Playback state: %g\n",vResult.dblVal);
+	cout << "Playback State: " << vResult.dblVal << endl;
 
 
 }
@@ -509,7 +509,6 @@ void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUse
 	{
 		printf("\nSwipe Right -- TOGGLE PLAY/PAUSE\n");
 		togglePlay();
-		getPlaybackState();
 	}
 }
 
@@ -530,12 +529,11 @@ void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 	if(sliderMode)
 	{
 		printf("\nPush Detected -- SET PLAYBACK POSITION\n");
-		sliderMode = false;
 		StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
 
 		pApp->SetPosition((double)playbackPosition*duration);
 		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
-
+		sliderMode = false;
 		circleCount = 0;
 	}
 }
@@ -582,8 +580,6 @@ int main(int argc, char** argv)
 	play = true;
 	if FAILED(hr)
 		goto error;
-
-	getPlaybackState();
 
 	hr = app->GetDuration(&vResult);
 	duration = vResult.dblVal;
