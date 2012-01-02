@@ -446,7 +446,7 @@ void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircl
 	if (circleCount == 0)
 	{
 		sliderMode = true;
-		commandState=1;
+		commandState = 1;
 		if(print_debug)
 		{
 			cout << "Slide Mode activated." << endl;
@@ -462,7 +462,7 @@ void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircl
 	else if (circleCount ==1)
 	{
 		commandState = 5;
-
+		sliderMode= true;
 		CleanupExit();
 		circleCount = 0;
 	}
@@ -476,28 +476,41 @@ void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCir
 
 void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	printf("\nSwipe Down -- DECREASE ZOOM\n");
-	decreaseZoom();
+	if(!sliderMode)
+	{
+		printf("\nSwipe Down -- DECREASE ZOOM\n");
+		decreaseZoom();
+	}
 }
 
 void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	printf("\nSwipe Up -- INCREASE ZOOM\n");
-	increaseZoom();
+	if(!sliderMode)
+	{
+		printf("\nSwipe Up -- INCREASE ZOOM\n");
+		increaseZoom();
+	}
 }
 
 void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	printf("\n Left Swipe -- SWITCH FULLSCREEN STATE\n");
-	toggleScreen();
+	if(!sliderMode)
+	{
+		printf("\n Left Swipe -- SWITCH FULLSCREEN STATE\n");
+		toggleScreen();
+	}
 }
 
 void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	printf("\nSwipe Right -- TOGGLE PLAY/PAUSE\n");
-	togglePlay();
-
-	getPlaybackState();
+	
+	
+	if(!sliderMode)
+	{
+		printf("\nSwipe Right -- TOGGLE PLAY/PAUSE\n");
+		togglePlay();
+		getPlaybackState();
+	}
 }
 
 void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
@@ -529,7 +542,7 @@ void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 
 void XN_CALLBACK_TYPE SlideCB(XnFloat fValue, void* pUserCxt)
 {
-	if(!sliderMode)
+	if(sliderMode)
 	{
 		printf("\tPosition - %g\n",fValue);
 		playbackPosition = fValue;
@@ -568,29 +581,26 @@ int main(int argc, char** argv)
 
 	play = true;
 	if FAILED(hr)
-		goto error;	
+		goto error;
 
-
-
-
-
+	getPlaybackState();
 
 	hr = app->GetDuration(&vResult);
-
 	duration = vResult.dblVal;
-	printf("Duration: %g\n",duration);
+	printf("Duration: %g seconds\n",duration);
 
 	if (duration >= 60)
 	{
 		cout << "Video duration is greater than 60 seconds. Turning off repeat..." << endl;
 		app->SetRepeat(vBoolFalse);
 	}
-
 	else
 	{
 		cout << "Video duration less than 60 seconds. Turning on repeat..." << endl;
 		app->SetRepeat(vBoolTrue);
 	}
+
+	commandState = 0;
 
 	//Initialize the OpenNI interface to the Kinect Camera
 	rc = g_Context.InitFromXmlFile(SAMPLE_XML_PATH, g_ScriptNode,&errors);
