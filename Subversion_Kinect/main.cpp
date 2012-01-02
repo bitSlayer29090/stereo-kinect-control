@@ -34,6 +34,7 @@ bool stop;
 bool pause;
 bool fullScreen;
 double zoom = 100.0;
+int circleCount = 0;
 
 using namespace StereoPlayer;
 using namespace std;
@@ -286,21 +287,20 @@ void togglePlay()
 		pause = true;
 		stop = false;
 	}
-	else if(pause)
+	else if(pause | stop)
 	{
-		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Stop);
+		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
 		pause = false;
 		stop = true;
 		play = false;
 	}
-	else if(stop)
-	{
-		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
-		play = true;
-		pause = false;
-		stop = false;
-	}
+}
 
+void setStop()
+{
+	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
+
+	pApp->SetPlaybackState(StereoPlayer::PlaybackState_Stop);
 }
 
 void toggleScreen()
@@ -392,7 +392,13 @@ void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircl
 {
 	printf("\nCircle Detected\n");
 	g_pCircle->Reset();
-	CleanupExit();
+
+	circleCount ++;
+
+
+	//you must make the circle gesture twice to exit
+	if (circleCount >=2)
+		CleanupExit();
 }
 
 void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCircleReason eReason, void* pUserCxt)
@@ -432,6 +438,7 @@ void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
 void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 {
 	printf("\nPush Detected\n");
+	setStop();
 }
 
 //sample XML code that will initialize the OpenNI interface
@@ -452,6 +459,8 @@ int main(int argc, char** argv)
 	pause = false;
 	stop = false;
 	fullScreen = false;
+	zoom = 100.0;
+	circleCount = 0;
 
 	if FAILED(hr)
 	{
