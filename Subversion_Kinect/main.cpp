@@ -29,6 +29,8 @@ VARIANT vResult;
 VARIANT_BOOL vBoolTrue = true;
 VARIANT_BOOL vBoolFalse = false;
 
+bool print_debug = false;
+
 bool play;
 bool stop;
 bool pause;
@@ -135,6 +137,8 @@ void CleanupExit()
 	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
 	pApp->ClosePlayer();
 
+	cout << "Exiting and closing..." << endl;
+
 	exit(1);
 }
 
@@ -147,21 +151,31 @@ void XN_CALLBACK_TYPE FocusProgress(const XnChar* strFocus, const XnPoint3D& ptP
 //callback function for when the session begin
 void XN_CALLBACK_TYPE SessionStarting(const XnPoint3D& ptPosition, void* UserCxt)
 {
-	printf("Session start: (%f, %f, %f)\n",ptPosition.X, ptPosition.Y, ptPosition.Z);
+
+	if(print_debug)
+	{
+		printf("Session start: (%f, %f, %f)\n",ptPosition.X, ptPosition.Y, ptPosition.Z);
+	}
 	g_SessionState = IN_SESSION;
 }
 
 //callback for the session getting teminated
 void XN_CALLBACK_TYPE SessionEnding(void* UserCxt)
 {
-	printf("Session end\n");
+	if(print_debug)
+	{
+		printf("Session end\n");
+	}
 	g_SessionState = NOT_IN_SESSION;
 }
 
 //this function gets called when the system detects that someone has removed their hands from the tracking area
 void XN_CALLBACK_TYPE NoHands(void * UserCxt)
 {
-	printf("Quick refocus state\n");
+	if(print_debug)
+	{
+		printf("Quick refocus state\n");
+	}
 	g_SessionState = QUICK_REFOCUS;
 }
 
@@ -336,8 +350,10 @@ void increaseZoom()
 	}
 	else
 	{
-		cout <<"Warning: The zoom setting is not consistently set. Check the initial settings." << endl;
-
+		if(print_debug)
+		{
+			cout <<"Warning: The zoom setting is not consistently set. Check the initial settings." << endl;
+		}
 		zoom = tempZoom;
 		newZoom = zoom + 10.0;
 		pApp->SetZoom(newZoom);
@@ -364,8 +380,10 @@ void decreaseZoom()
 	}
 	else
 	{
-		cout <<"Warning: The zoom setting is not consistently set. Check the initial settings." << endl;
-
+		if(print_debug)
+		{
+			cout <<"Warning: The zoom setting is not consistently set. Check the initial settings." << endl;
+		}
 		zoom = tempZoom;
 		newZoom = zoom - 10.0;
 		pApp->SetZoom(newZoom);
@@ -375,17 +393,20 @@ void decreaseZoom()
 
 void XN_CALLBACK_TYPE GestureIntermediateStageCompletedHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
 {
-	printf("Gesture %s: Intermediate stage complete (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
+	if(print_debug)
+		printf("Gesture %s: Intermediate stage complete (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
 }
 
 void XN_CALLBACK_TYPE GestureReadyForNextIntermediateStageHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
 {
-	printf("Gesture %s: Ready for next intermediate stage (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
+	if(print_debug)
+		printf("Gesture %s: Ready for next intermediate stage (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
 }
 
 void XN_CALLBACK_TYPE GestureProgressHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, XnFloat fProgress, void* pCookie)
 {
-	printf("Gesture %s progress: %f (%f,%f,%f)\n", strGesture, fProgress, pPosition->X, pPosition->Y, pPosition->Z);
+	if(print_debug)
+		printf("Gesture %s progress: %f (%f,%f,%f)\n", strGesture, fProgress, pPosition->X, pPosition->Y, pPosition->Z);
 }
 
 void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircle* pCircle, void* pUserCxt)
@@ -408,13 +429,13 @@ void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCir
 
 void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	printf("\nSwipe Down\n");
+	printf("\nSwipe Down -- DECREASE ZOOM\n");
 	decreaseZoom();
 }
 
 void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	printf("\nSwipe Up\n");
+	printf("\nSwipe Up -- INCREASE ZOOM\n");
 	increaseZoom();
 }
 
@@ -426,7 +447,7 @@ void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUser
 
 void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
-	printf("\nSwipe Right\n");
+	printf("\nSwipe Right -- TOGGLE PLAY/PAUSE\n");
 	togglePlay();
 }
 
@@ -437,7 +458,7 @@ void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
 
 void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 {
-	printf("\nPush Detected\n");
+	printf("\nPush Detected -- STOP PLAYBACK\n");
 	setStop();
 }
 
