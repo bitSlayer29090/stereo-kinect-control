@@ -588,6 +588,8 @@ int main(int argc, char** argv)
 	XnStatus rc = XN_STATUS_OK;
 	xn::EnumerationErrors errors;
 
+
+	//set initial values to these flag/logic variables
 	play = false;
 	pause = false;
 	stop = false;
@@ -597,18 +599,26 @@ int main(int argc, char** argv)
 	sliderMode = false;
 	commandState = 2;
 
+	/* command state 0 = left swipe: enter/leave full screen
+	command state 1 = circular set playback position
+	command state 2 = preparing gesture algorithms (opening sequence)
+	command state 3 = no hand to track (hand has left screen after having been tracked)
+	command state 4 = hand extends beyong depth display window
+	command state 5 = in the process of exiting
+	*/
+
+
+	//opens instantiation of stereopscopic player
 	hr = CoInitialize(NULL);
 
-
+	//error catching
 	if FAILED(hr)
-	{
-		cout << "Error" << endl;
-	}
+		goto error;
+	
+	//create smart pointer to the stereoscopic player automation object
 	StereoPlayer::IAutomationPtr app(__uuidof(StereoPlayer::Automation));
 
-
-	ready = false;
-
+	//keeps the program waiting until the stereo player is ready for the next command
 	while(!ready)
 	{
 		app->GetReady(&vResult);
@@ -621,28 +631,41 @@ int main(int argc, char** argv)
 			ready = false;
 	}
 
-
+	//opens a standard video file, followed by error checking
 	hr = app->OpenFile(L"C:\\Users\\Public\\Videos\\Pulmonary.mov");
 	if FAILED(hr)
 		goto error;
+
+	//tells the stero player to play the video, followed by error checking
 	hr = app->SetPlaybackState(StereoPlayer::PlaybackState_Play);
-	play = true;
 	if FAILED(hr)
 		goto error;
 
+	//set the PLAY flag to true to tell the program the player is actively playing a file
+	play = true;
+	
+	//get the length of the video being played (in seconds), followed by error checking
 	hr = app->GetDuration(&vResult);
 	if FAILED(hr)
 		goto error;
+	
+	//set the length of the video to the duration variable
 	duration = vResult.dblVal;
-	printf("Duration: %g seconds\n",duration);
 
+	//only print the duration of the vide if the print debug flag is set
+	if(print_debug)
+		printf("Duration: %g seconds\n",duration);
+
+
+	//if the video is less than 60 seconds in length, tell the player to continuously repeat;
+	//otherwise the player will stop after 1 play
 	if (duration >= 60)
 	{
 		if(print_debug)
 		{
 			cout << "Video duration is greater than 60 seconds. Turning off repeat..." << endl;
 		}
-		app->SetRepeat(vBoolFalse);
+		app->SetRepeat(vBoolFalse); //tell the program to turn off repeat
 	}
 	else
 	{
@@ -650,7 +673,7 @@ int main(int argc, char** argv)
 		{
 			cout << "Video duration less than 60 seconds. Turning on repeat..." << endl;
 		}
-		app->SetRepeat(vBoolTrue);
+		app->SetRepeat(vBoolTrue); //tell the program to turn on repeatt
 	}
 
 	commandState = 0;
@@ -685,7 +708,7 @@ int main(int argc, char** argv)
 	//We already created OpenNI objects, now we need to Create NITE objects
 
 	g_pSessionManager = new XnVSessionManager;
-	rc = g_pSessionManager->Initialize(&g_Context,"Click,Wave","RaiseHand");
+	rc = g_pSessionManager->Initialize(&g_Context,"Click,Wave","RaiseHand"); //can use any of the three focus gestures
 	CHECK_RC(rc, "SessionManager Initialization");
 
 	g_pSessionManager->RegisterSession(NULL,SessionStarting,SessionEnding,FocusProgress);
@@ -697,21 +720,20 @@ int main(int argc, char** argv)
 	//will now draw the circle on the hand
 	g_pSessionManager->AddListener(g_pFlowRouter);
 
-	//logic and registration for the circle detector
+	//attach the pointer to an object of the XnVCircleDetector class
 	g_pCircle = new XnVCircleDetector;
 	g_pCircle->RegisterCircle(NULL,&CircleCB); //when circle is recognized, CircleCB will be called
-	g_pCircle->RegisterNoCircle(NULL,&NoCircleCB); //when circle stops being detector, NoCircleCB will be called
-	
-	//UNCOMMENT TO ENABLE THE CIRCLE DETECTOR
-	g_pSessionManager->AddListener(g_pCircle);
+	g_pCircle->RegisterNoCircle(NULL,&NoCircleCB); //when circle stops being detected, NoCircleCB will be called
+	g_pSessionManager->AddListener(g_pCircle); //tell the session manager to listen for circle recognition events
 
-	//logic and registration for the swipe detector and its 4 events
+	//attach the swipe pointer to an object of the XnVSwipeDetector class
 	g_pSwipe = new XnVSwipeDetector;
 
-	//change default settings to optimize the gesture recognition accuracy
-	g_pSwipe->SetSteadyDuration(500);
-	g_pSwipe->SetMotionSpeedThreshold(0.20);
-	g_pSwipe->SetMotionTime(500);
+	//change default settings to optimize the gesture recognition accuracy:
+	g_pSwipe->SetSteadyDuration(100); //in ms, how much time required between two consecutive gesture recognition events
+
+	g_pSwipe->SetMotionSpeedThreshold(0.20); //in m/s, minimum speed of hand for the software to recognize a swipe
+	g_pSwipe->SetMotionTime(500); //in ms, 
 	g_pSwipe->SetXAngleThreshold(45);
 	g_pSwipe->SetYAngleThreshold(45);
 
