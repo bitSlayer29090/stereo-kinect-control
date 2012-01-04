@@ -31,7 +31,7 @@ VARIANT vResult; //empty variant variable to store output from OLE automation co
 VARIANT_BOOL vBoolTrue = true; //a general variable that can be used as "true" arguments for Automation
 VARIANT_BOOL vBoolFalse = false; //same as above except for false
 
-bool print_debug = true;
+bool print_debug = true;//if true, will print a large amount of debugging information
 
 bool play; //indicates if the player is in playbackstate = 0
 bool stop; // playback state = 1;
@@ -70,6 +70,9 @@ using namespace std;
 		printf("%s\n", strError);			\
 		return (rc);						\
 	}
+
+#define PRINT_ERROR(hr, line, what)					\
+	printf("ERROR: Line %d  %s\n",line,what);		\
 
 #ifdef USE_GLUT
 	#if (XN_PLATFORM == XN_PLATFORM_MACOSX)
@@ -309,21 +312,27 @@ void togglePlay()
 	ready = false;
 
 	/*verify the player is ready by checking; note VT_BOOL=-1 is true; VT_BOOL=0 is false*/
-	pApp->GetReady(&vResult);
+	hr = pApp->GetReady(&vResult);
+	if FAILED(hr)
+		PRINT_ERROR(hr,__LINE__,"Unable to get Ready status of player [FUNC: togglePlay].");
 
 	/*only perform the action if the player is ready*/
 	if(vResult.boolVal == -1)
 	{
 		if(play)
 		{
-			pApp->SetPlaybackState(StereoPlayer::PlaybackState_Pause);
+			hr = pApp->SetPlaybackState(StereoPlayer::PlaybackState_Pause);
+			if FAILED(hr)
+				PRINT_ERROR(hr,__LINE__,"Unable to set player to Pause state [FUNC: togglePlay].");
 			play = false;
 			pause = true;
 			stop = false;
 		}
 		else if(pause | stop)
 		{
-			pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
+			hr = pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
+			if FAILED(hr)
+				PRINT_ERROR(hr,__LINE__,"Unable to set player to Play state [FUNC: togglePlay].");
 			pause = false;
 			stop = false;
 			play = true;
@@ -335,12 +344,16 @@ void setStop()
 {
 	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
 	/*verify the player is ready by checking; note VT_BOOL=-1 is true; VT_BOOL=0 is false*/
-	pApp->GetReady(&vResult);
+	hr = pApp->GetReady(&vResult);
+	if FAILED(hr)
+		PRINT_ERROR(hr,__LINE__,"Unable to get Ready status of player [FUNC: setStop].");
 
 	/*only perform the action if the player is ready*/
 	if(vResult.boolVal == -1)
 	{
-		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Stop);
+		hr = pApp->SetPlaybackState(StereoPlayer::PlaybackState_Stop);
+		if FAILED(hr)
+			PRINT_ERROR(hr,__LINE__,"Unable to set player to Stop status [FUNC: setStop].");
 	}
 }
 
@@ -349,19 +362,28 @@ void toggleScreen()
 	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
 	
 	/*verify the player is ready by checking; note VT_BOOL=-1 is true; VT_BOOL=0 is false*/
-	pApp->GetReady(&vResult);
+	hr = pApp->GetReady(&vResult);
+	if FAILED(hr)
+		PRINT_ERROR(hr,__LINE__,"Unable to get Ready status from player [FUNC: toggleSceen].");
 
 	/*only perform the action if the player is ready*/
 	if(vResult.boolVal == -1)
 	{
 		if(!fullScreen)
 		{
-			pApp->EnterFullscreenMode(vBoolTrue);
+			hr = pApp->EnterFullscreenMode(vBoolTrue);
+			if FAILED(hr)
+				PRINT_ERROR(hr,__LINE__,"Unable to enter full screen mode [FUNC: toggleScreen].");
+
 			fullScreen = true;
 		}
 		else
 		{
-			pApp->LeaveFullscreenMode();
+			hr = pApp->LeaveFullscreenMode();
+
+			if FAILED(hr)
+				PRINT_ERROR(hr,__LINE__,"Unable to leave full screen mode [FUNC: toggleScreen].");
+
 			fullScreen = false;
 		}
 	}
@@ -608,12 +630,12 @@ int main(int argc, char** argv)
 	*/
 
 
+
 	//opens instantiation of stereopscopic player
 	hr = CoInitialize(NULL);
 
 	//error catching
-	if FAILED(hr)
-		goto error;
+
 	
 	//create smart pointer to the stereoscopic player automation object
 	StereoPlayer::IAutomationPtr app(__uuidof(StereoPlayer::Automation));
@@ -622,7 +644,10 @@ int main(int argc, char** argv)
 	while(!ready)
 	{
 		app->GetReady(&vResult);
-		
+		if(print_debug)
+		{
+			cout << "Not Ready at " << __LINE__ << endl;
+		}
 		if(vResult.boolVal == -1 )
 		{
 			ready = true;
@@ -638,16 +663,15 @@ int main(int argc, char** argv)
 
 	//tells the stero player to play the video, followed by error checking
 	hr = app->SetPlaybackState(StereoPlayer::PlaybackState_Play);
-	if FAILED(hr)
-		goto error;
+
+	PRINT_ERROR(hr,__LINE__,"Everything is OK.");
 
 	//set the PLAY flag to true to tell the program the player is actively playing a file
 	play = true;
 	
 	//get the length of the video being played (in seconds), followed by error checking
 	hr = app->GetDuration(&vResult);
-	if FAILED(hr)
-		goto error;
+
 	
 	//set the length of the video to the duration variable
 	duration = vResult.dblVal;
@@ -796,8 +820,6 @@ int main(int argc, char** argv)
 
 
 error:
-
-	
 	cout << "ERROR: " << endl;
     return hr;
 }
