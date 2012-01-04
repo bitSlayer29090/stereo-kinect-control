@@ -41,6 +41,7 @@ bool sliderMode; //true if the left/right slider is being used to track position
 int commandState; //the variable that tells the function PrintSessionInstructions what to print on the screen
 XnFloat playbackPosition; //a number between 0 and 1 indicating the desired playback start position
 double duration; //the duration of the video in seconds
+bool ready; //true if the player is in "ready" state
 
 using namespace StereoPlayer;
 using namespace std;
@@ -307,42 +308,64 @@ void togglePlay()
 
 	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
 	
-	if(play)
+	ready = false;
+
+	/*verify the player is ready by checking; note VT_BOOL=-1 is true; VT_BOOL=0 is false*/
+	pApp->GetReady(&vResult);
+
+	/*only perform the action if the player is ready*/
+	if(vResult.boolVal == -1)
 	{
-		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Pause);
-		play = false;
-		pause = true;
-		stop = false;
-	}
-	else if(pause | stop)
-	{
-		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
-		pause = false;
-		stop = false;
-		play = true;
+		if(play)
+		{
+			pApp->SetPlaybackState(StereoPlayer::PlaybackState_Pause);
+			play = false;
+			pause = true;
+			stop = false;
+		}
+		else if(pause | stop)
+		{
+			pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
+			pause = false;
+			stop = false;
+			play = true;
+		}
 	}
 }
 
 void setStop()
 {
 	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
+	/*verify the player is ready by checking; note VT_BOOL=-1 is true; VT_BOOL=0 is false*/
+	pApp->GetReady(&vResult);
 
-	pApp->SetPlaybackState(StereoPlayer::PlaybackState_Stop);
+	/*only perform the action if the player is ready*/
+	if(vResult.boolVal == -1)
+	{
+		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Stop);
+	}
 }
 
 void toggleScreen()
 {
 	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
 	
-	if(!fullScreen)
+	/*verify the player is ready by checking; note VT_BOOL=-1 is true; VT_BOOL=0 is false*/
+	pApp->GetReady(&vResult);
+
+	/*only perform the action if the player is ready*/
+	if(vResult.boolVal == -1)
 	{
-		pApp->EnterFullscreenMode(vBoolTrue);
-		fullScreen = true;
-	}
-	else
-	{
-		pApp->LeaveFullscreenMode();
-		fullScreen = false;
+		if(!fullScreen)
+		{
+			pApp->EnterFullscreenMode(vBoolTrue);
+			fullScreen = true;
+		}
+		else
+		{
+			pApp->LeaveFullscreenMode();
+			fullScreen = false;
+		}
 	}
 }
 
@@ -356,25 +379,32 @@ void increaseZoom()
 	tempZoom = vResult.dblVal;
 
 	printf("tempZoom = %g\n",tempZoom);
-
 	
 
-	if (zoom==tempZoom)
+	/*verifying that the player is ready to receive a command*/
+	pApp->GetReady(&vResult);
+
+	/*only perform these commands if the player is ready*/
+	if (vResult.boolVal == -1)
 	{
-		newZoom = zoom + 10.0;
-		pApp->SetZoom(newZoom);
-		zoom = newZoom;
-	}
-	else
-	{
-		if(print_debug)
+
+		if (zoom==tempZoom)
 		{
-			cout <<"Warning: The zoom setting is not consistently set. Check the initial settings." << endl;
+			newZoom = zoom + 10.0;
+			pApp->SetZoom(newZoom);
+			zoom = newZoom;
 		}
-		zoom = tempZoom;
-		newZoom = zoom + 10.0;
-		pApp->SetZoom(newZoom);
-		zoom = newZoom;
+		else
+		{
+			if(print_debug)
+			{
+				cout <<"Warning: The zoom setting is not consistently set. Check the initial settings." << endl;
+			}
+			zoom = tempZoom;
+			newZoom = zoom + 10.0;
+			pApp->SetZoom(newZoom);
+			zoom = newZoom;
+		}
 	}
 }
 
@@ -387,23 +417,31 @@ void decreaseZoom()
 	pApp->GetZoom(&vResult);
 	tempZoom = vResult.dblVal;
 
-	if (zoom==tempZoom)
+
+	/*verify the player is ready by checking; note VT_BOOL=-1 is true; VT_BOOL=0 is false*/
+	pApp->GetReady(&vResult);
+
+	/*only perform the action if the player is ready*/
+	if(vResult.boolVal == -1)
 	{
-		newZoom = zoom - 10.0;
-		pApp->SetZoom(newZoom);
-		OutputDebugString(TEXT("NEW ZOOM LEVEL: %g\n",newZoom));
-		zoom = newZoom;
-	}
-	else
-	{
-		if(print_debug)
+		if (zoom==tempZoom)
 		{
-			cout <<"Warning: The zoom setting is not consistently set. Check the initial settings." << endl;
+			newZoom = zoom - 10.0;
+			pApp->SetZoom(newZoom);
+			OutputDebugString(TEXT("NEW ZOOM LEVEL: %g\n",newZoom));
+			zoom = newZoom;
 		}
-		zoom = tempZoom;
-		newZoom = zoom - 10.0;
-		pApp->SetZoom(newZoom);
-		zoom = newZoom;
+		else
+		{
+			if(print_debug)
+			{
+				cout <<"Warning: The zoom setting is not consistently set. Check the initial settings." << endl;
+			}
+			zoom = tempZoom;
+			newZoom = zoom - 10.0;
+			pApp->SetZoom(newZoom);
+			zoom = newZoom;
+		}
 	}
 }
 
@@ -576,25 +614,49 @@ int main(int argc, char** argv)
 	StereoPlayer::IAutomationPtr app(__uuidof(StereoPlayer::Automation));
 
 
-	
-	hr = app->OpenFile(L"C:\\Users\\Public\\Videos\\Pulmonary.mov");
+	ready = false;
 
+	while(!ready)
+	{
+		app->GetReady(&vResult);
+		
+		if(vResult.boolVal == -1 )
+		{
+			ready = true;
+		}
+		else if (vResult.boolVal == 0)
+			ready = false;
+	}
+
+
+	hr = app->OpenFile(L"C:\\Users\\Public\\Videos\\Pulmonary.mov");
+	if FAILED(hr)
+		goto error;
+	hr = app->SetPlaybackState(StereoPlayer::PlaybackState_Play);
 	play = true;
 	if FAILED(hr)
 		goto error;
 
 	hr = app->GetDuration(&vResult);
+	if FAILED(hr)
+		goto error;
 	duration = vResult.dblVal;
 	printf("Duration: %g seconds\n",duration);
 
 	if (duration >= 60)
 	{
-		cout << "Video duration is greater than 60 seconds. Turning off repeat..." << endl;
+		if(print_debug)
+		{
+			cout << "Video duration is greater than 60 seconds. Turning off repeat..." << endl;
+		}
 		app->SetRepeat(vBoolFalse);
 	}
 	else
 	{
-		cout << "Video duration less than 60 seconds. Turning on repeat..." << endl;
+		if(print_debug)
+		{
+			cout << "Video duration less than 60 seconds. Turning on repeat..." << endl;
+		}
 		app->SetRepeat(vBoolTrue);
 	}
 
@@ -652,6 +714,8 @@ int main(int argc, char** argv)
 
 	//logic and registration for the swipe detector and its 4 events
 	g_pSwipe = new XnVSwipeDetector;
+
+	//change default settings to optimize the gesture recognition accuracy
 	g_pSwipe->SetSteadyDuration(500);
 	g_pSwipe->SetMotionSpeedThreshold(0.20);
 	g_pSwipe->SetMotionTime(500);
