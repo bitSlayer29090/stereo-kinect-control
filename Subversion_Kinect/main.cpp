@@ -1,4 +1,4 @@
-//headers for OpenNI
+//headers for OpenNI and general system Headers
 #include <XnOpenNI.h>
 #include <XnCppWrapper.h>
 #include <XnHash.h>
@@ -8,6 +8,7 @@
 #include <ObjBase.h>
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
@@ -18,16 +19,17 @@
 #include <iomanip>
 #include <OAIdl.h>
 #include <XnVNite.h>
+
+
+//Local includes
 #include "PointDrawer.h"
 #include "stereoplayer_h.h"
-#import "./Debug/Subversion_Kinect.tlb" named_guids
+#import "./Debug/Subversion_Kinect.tlb" named_guids //this is the typelibrary for the OLE automation
 
-HRESULT hr;
-HRESULT hresult;
-int temp;
-VARIANT vResult;
-VARIANT_BOOL vBoolTrue = true;
-VARIANT_BOOL vBoolFalse = false;
+HRESULT hr; //the variable to capture errors from OLE automation commands
+VARIANT vResult; //empty variant variable to store output from OLE automation commands
+VARIANT_BOOL vBoolTrue = true; //a general variable that can be used as "true" arguments for Automation
+VARIANT_BOOL vBoolFalse = false; //same as above except for false
 
 bool print_debug = true;
 
@@ -43,14 +45,13 @@ XnFloat playbackPosition; //a number between 0 and 1 indicating the desired play
 double duration; //the duration of the video in seconds
 bool ready; //true if the player is in "ready" state
 
-using namespace StereoPlayer;
-using namespace std;
+using namespace StereoPlayer; //this namespace comes from compiling the StereoPlayer.idl file with the MIDL compiler
+using namespace std; 
 
 //headers for gesture recognition
 #include <XnVSwipeDetector.h>
 #include <XnVSteadyDetector.h>
 #include <XnVCircleDetector.h>
-#include <XnVWaveDetector.h>
 #include <XnVPushDetector.h>
 #include <XnVSelectableSlider1D.h>
 
@@ -103,17 +104,14 @@ XnVFlowRouter* g_pFlowRouter;
 //the OpenGL drawer
 XnVPointDrawer* g_pDrawer;
 
-//instantiating circle detector
+//creating a pointer (g_pCircle) to an object of type XnVCircleDetector
 XnVCircleDetector* g_pCircle = NULL;
 
-//instantiating swipe detector
+//creating a pointer (g_pSwipe) to an object of type XnVSwipeDetetor
 XnVSwipeDetector* g_pSwipe = NULL;
 
-//steady detector
+//pointer to steady detector object
 XnVSteadyDetector* g_pSteady = NULL;
-
-//wave detector
-XnVWaveDetector* g_pWave = NULL;
 
 //push detector
 XnVPushDetector* g_pPush = NULL;
@@ -550,11 +548,6 @@ void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUse
 	}
 }
 
-void XN_CALLBACK_TYPE WaveCB(void* pUserCxt)
-{
-	printf("\nWave Detected\n");
-}
-
 void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 {
 
@@ -731,11 +724,6 @@ int main(int argc, char** argv)
 
 	g_pSessionManager->AddListener(g_pSwipe);
 
-	//registration for wave detector
-	g_pWave = new XnVWaveDetector;
-	g_pWave->RegisterWave(NULL, &WaveCB);
-
-	g_pSessionManager->AddListener(g_pWave);
 
 	//register for the push detector
 	g_pPush = new XnVPushDetector;
@@ -784,9 +772,10 @@ int main(int argc, char** argv)
 	CleanupExit();
 #endif
 
-	cout << "Please press a key" << endl;
-	int temp;
-	cin >> temp;
+
 error:
+
+	
+	cout << "ERROR: " << endl;
     return hr;
 }
