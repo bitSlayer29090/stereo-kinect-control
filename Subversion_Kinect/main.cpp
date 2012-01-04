@@ -113,14 +113,14 @@ XnVSwipeDetector* g_pSwipe = NULL;
 //pointer to steady detector object
 XnVSteadyDetector* g_pSteady = NULL;
 
-//push detector
+//pointer to Push detector object
 XnVPushDetector* g_pPush = NULL;
 
-//slider detector
+//pointer to the Slider object
 XnVSelectableSlider1D* g_pSlider = NULL;
 
-#define GL_WIN_SIZE_X 720
-#define GL_WIN_SIZE_Y 480
+#define GL_WIN_SIZE_X 360
+#define GL_WIN_SIZE_Y 240
 
 //Logic for deciding whether or not to render certain pieces
 XnBool g_bDrawDepthMap = true;
@@ -283,7 +283,7 @@ void glInit (int * pargc, char ** argv)
 	glutInit(pargc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(GL_WIN_SIZE_X, GL_WIN_SIZE_Y);
-	glutCreateWindow ("PrimeSense Nite Point Viewer");
+	glutCreateWindow ("Marquette CVTEC - Stereo Control");
 	//glutFullScreen();
 	glutSetCursor(GLUT_CURSOR_NONE);
 
