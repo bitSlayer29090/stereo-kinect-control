@@ -31,16 +31,16 @@ VARIANT_BOOL vBoolFalse = false;
 
 bool print_debug = true;
 
-bool play;
-bool stop;
-bool pause;
-bool fullScreen;
-double zoom;
-int circleCount;
-bool sliderMode;
-int commandState;
-XnFloat playbackPosition;
-double duration;
+bool play; //indicates if the player is in playbackstate = 0
+bool stop; // playback state = 1;
+bool pause; //true if the player is currently paused
+bool fullScreen; //true if the player is in fullscreen mode
+double zoom; //numeric indicator of the current zoom level; default = 100
+int circleCount; //number of circle gestures made
+bool sliderMode; //true if the left/right slider is being used to track position
+int commandState; //the variable that tells the function PrintSessionInstructions what to print on the screen
+XnFloat playbackPosition; //a number between 0 and 1 indicating the desired playback start position
+double duration; //the duration of the video in seconds
 
 using namespace StereoPlayer;
 using namespace std;
@@ -574,6 +574,8 @@ int main(int argc, char** argv)
 		cout << "Error" << endl;
 	}
 	StereoPlayer::IAutomationPtr app(__uuidof(StereoPlayer::Automation));
+
+
 	
 	hr = app->OpenFile(L"C:\\Users\\Public\\Videos\\Pulmonary.mov");
 
@@ -651,6 +653,13 @@ int main(int argc, char** argv)
 	//logic and registration for the swipe detector and its 4 events
 	g_pSwipe = new XnVSwipeDetector;
 	g_pSwipe->SetSteadyDuration(500);
+	g_pSwipe->SetMotionSpeedThreshold(0.20);
+	g_pSwipe->SetMotionTime(500);
+	g_pSwipe->SetXAngleThreshold(45);
+	g_pSwipe->SetYAngleThreshold(45);
+
+
+
 	g_pSwipe->RegisterSwipeDown(NULL, &SwipeDownCB);
 	g_pSwipe->RegisterSwipeLeft(NULL, &SwipeLeftCB);
 	g_pSwipe->RegisterSwipeRight(NULL, &SwipeRightCB);
