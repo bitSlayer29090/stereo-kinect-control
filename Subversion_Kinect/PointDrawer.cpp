@@ -430,13 +430,13 @@ void PrintSessionInstructions(int command)
 	}
 	glPrintString(GLUT_BITMAP_HELVETICA_12,printString);
 }
-void PrintSessionCircleStatus(short value)
+void PrintSessionCircleStatus(float value)
 {
 	glColor4f(1,0.5,0.5,1);
 	glRasterPos2i(20,60);
 	XnChar printString[200];
 
-	sprintf(printString,"PROGRESS: %g",value);
+	sprintf(printString,"PROGRESS: %0.0f",value*100);
 
 	glPrintString(GLUT_BITMAP_HELVETICA_12,printString);
 }

@@ -27,6 +27,7 @@ void PrintSessionState(SessionState eState);
  */
 
 void PrintSessionInstructions(int command);
+void PrintSessionCircleStatus(float value);
 class XnVPointDrawer : public XnVPointControl
 {
 public:

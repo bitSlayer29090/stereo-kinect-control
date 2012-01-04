@@ -41,7 +41,7 @@ double zoom; //numeric indicator of the current zoom level; default = 100
 int circleCount; //number of circle gestures made
 bool sliderMode; //true if the left/right slider is being used to track position
 int commandState; //the variable that tells the function PrintSessionInstructions what to print on the screen
-XnFloat playbackPosition; //a number between 0 and 1 indicating the desired playback start position
+float playbackPosition; //a number between 0 and 1 indicating the desired playback start position
 double duration; //the duration of the video in seconds
 bool ready; //true if the player is in "ready" state
 
@@ -230,6 +230,10 @@ void glutDisplay (void)
 #ifdef USE_GLUT
 		PrintSessionState(g_SessionState);
 		PrintSessionInstructions(commandState);
+		if(sliderMode)
+		{
+			PrintSessionCircleStatus(playbackPosition);
+		}
 #endif
 	}
 
