@@ -72,7 +72,7 @@ using namespace std;
 	}
 
 #define PRINT_ERROR(hr, line, what)					\
-	printf("ERROR: Line %d  %s\n",line,what);		\
+	printf("ERROR 0x%x:  Line %d  %s\n",hr,line,what);		\
 
 #ifdef USE_GLUT
 	#if (XN_PLATFORM == XN_PLATFORM_MACOSX)
@@ -122,8 +122,10 @@ XnVPushDetector* g_pPush = NULL;
 //pointer to the Slider object
 XnVSelectableSlider1D* g_pSlider = NULL;
 
-#define GL_WIN_SIZE_X 360
-#define GL_WIN_SIZE_Y 240
+#define GL_WIN_SIZE_X 720
+#define GL_WIN_SIZE_Y 480
+//sample XML code that will initialize the OpenNI interface
+#define SAMPLE_XML_PATH "Sample-Tracking.xml"
 
 //Logic for deciding whether or not to render certain pieces
 XnBool g_bDrawDepthMap = true;
@@ -395,14 +397,21 @@ void increaseZoom()
 
 	double tempZoom;
 	double newZoom;
-	pApp->GetZoom(&vResult);
+
+	hr = pApp->GetZoom(&vResult);
+	if FAILED(hr)
+		PRINT_ERROR(hr,__LINE__,"Unable to get Ready status from player [FUNC: increaseZoom].");
+
 	tempZoom = vResult.dblVal;
 
-	printf("tempZoom = %g\n",tempZoom);
+	if(print_debug)
+		printf("tempZoom = %g\n",tempZoom);
 	
 
 	/*verifying that the player is ready to receive a command*/
-	pApp->GetReady(&vResult);
+	hr = pApp->GetReady(&vResult);
+	if FAILED(hr)
+		PRINT_ERROR(hr,__LINE__,"Unable to get Ready status from player [FUNC: increaseZoom].");
 
 	/*only perform these commands if the player is ready*/
 	if (vResult.boolVal == -1)
@@ -411,7 +420,9 @@ void increaseZoom()
 		if (zoom==tempZoom)
 		{
 			newZoom = zoom + 10.0;
-			pApp->SetZoom(newZoom);
+			hr = pApp->SetZoom(newZoom);
+			if FAILED(hr)
+				PRINT_ERROR(hr,__LINE__,"Unable to set new zoom level in true loop [FUNC: increaseZoom].");
 			zoom = newZoom;
 		}
 		else
@@ -422,7 +433,9 @@ void increaseZoom()
 			}
 			zoom = tempZoom;
 			newZoom = zoom + 10.0;
-			pApp->SetZoom(newZoom);
+			hr = pApp->SetZoom(newZoom);
+			if FAILED(hr)
+				PRINT_ERROR(hr,__LINE__,"Unable to set new zoom level in else loop [FUNC: increaseZoom].");
 			zoom = newZoom;
 		}
 	}
@@ -434,12 +447,16 @@ void decreaseZoom()
 
 	double tempZoom;
 	double newZoom;
-	pApp->GetZoom(&vResult);
+	hr = pApp->GetZoom(&vResult);
+	if FAILED(hr)
+		PRINT_ERROR(hr,__LINE__,"Unable to get Ready status from player [FUNC: decreaseZoom].");
 	tempZoom = vResult.dblVal;
 
 
 	/*verify the player is ready by checking; note VT_BOOL=-1 is true; VT_BOOL=0 is false*/
-	pApp->GetReady(&vResult);
+	hr = pApp->GetReady(&vResult);
+	if FAILED(hr)
+		PRINT_ERROR(hr,__LINE__,"Unable to get Ready status from player [FUNC: decreaseZoom].");
 
 	/*only perform the action if the player is ready*/
 	if(vResult.boolVal == -1)
@@ -447,7 +464,9 @@ void decreaseZoom()
 		if (zoom==tempZoom)
 		{
 			newZoom = zoom - 10.0;
-			pApp->SetZoom(newZoom);
+			hr = pApp->SetZoom(newZoom);
+			if FAILED(hr)
+				PRINT_ERROR(hr,__LINE__,"Unable to set new zoom level [FUNC: decreaseZoom].");
 			OutputDebugString(TEXT("NEW ZOOM LEVEL: %g\n",newZoom));
 			zoom = newZoom;
 		}
@@ -459,7 +478,9 @@ void decreaseZoom()
 			}
 			zoom = tempZoom;
 			newZoom = zoom - 10.0;
-			pApp->SetZoom(newZoom);
+			hr = pApp->SetZoom(newZoom);
+			if FAILED(hr)
+				PRINT_ERROR(hr,__LINE__,"Unable to set new zoom level [FUNC: decreaseZoom].");
 			zoom = newZoom;
 		}
 	}
@@ -469,8 +490,14 @@ void getPlaybackState()
 {
 	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
 	hr = pApp->GetPlaybackState(&vResult);
-
-	cout << "Playback State: " << vResult.dblVal << endl;
+	if FAILED(hr)
+	{
+		PRINT_ERROR(hr,__LINE__,"Unable to get current playback state [FUNC: getPlaybackState].");
+	}
+	else
+	{
+		cout << "Playback State: " << vResult.dblVal << endl;
+	}
 
 
 }
@@ -584,8 +611,14 @@ void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 		printf("\nPush Detected -- SET PLAYBACK POSITION\n");
 		StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
 
-		pApp->SetPosition((double)playbackPosition*duration);
-		pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
+		hr = pApp->SetPosition((double)playbackPosition*duration);
+		if FAILED(hr)
+			PRINT_ERROR(hr,__LINE__,"Unable to set playback position [FUNC: PushCB].");
+
+		hr = pApp->SetPlaybackState(StereoPlayer::PlaybackState_Play);
+		if FAILED(hr)
+			PRINT_ERROR(hr,__LINE__,"Unable to set playback state [FUNC: PushCB].");
+
 		sliderMode = false;
 		circleCount = 0;
 	}
@@ -595,14 +628,14 @@ void XN_CALLBACK_TYPE SlideCB(XnFloat fValue, void* pUserCxt)
 {
 	if(sliderMode)
 	{
+		//TODO add a function to print numeric value of slider position on the depth stream
 		printf("\tPosition - %g\n",fValue);
 		playbackPosition = fValue;
 	}
 
 }
 
-//sample XML code that will initialize the OpenNI interface
-#define SAMPLE_XML_PATH "Sample-Tracking.xml"
+
 
 int main(int argc, char** argv)
 {
@@ -658,13 +691,9 @@ int main(int argc, char** argv)
 
 	//opens a standard video file, followed by error checking
 	hr = app->OpenFile(L"C:\\Users\\Public\\Videos\\Pulmonary.mov");
-	if FAILED(hr)
-		goto error;
 
 	//tells the stero player to play the video, followed by error checking
 	hr = app->SetPlaybackState(StereoPlayer::PlaybackState_Play);
-
-	PRINT_ERROR(hr,__LINE__,"Everything is OK.");
 
 	//set the PLAY flag to true to tell the program the player is actively playing a file
 	play = true;
@@ -817,9 +846,4 @@ int main(int argc, char** argv)
 
 	CleanupExit();
 #endif
-
-
-error:
-	cout << "ERROR: " << endl;
-    return hr;
 }

@@ -428,6 +428,16 @@ void PrintSessionInstructions(int command)
 	case 5:
 		sprintf(printString,"EXITING....");
 	}
-	glPrintString(GLUT_BITMAP_HELVETICA_18,printString);
+	glPrintString(GLUT_BITMAP_HELVETICA_12,printString);
+}
+void PrintSessionCircleStatus(short value)
+{
+	glColor4f(1,0.5,0.5,1);
+	glRasterPos2i(20,60);
+	XnChar printString[200];
+
+	sprintf(printString,"PROGRESS: %g",value);
+
+	glPrintString(GLUT_BITMAP_HELVETICA_12,printString);
 }
 #endif
