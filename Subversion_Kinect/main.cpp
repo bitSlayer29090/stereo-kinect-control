@@ -71,7 +71,7 @@ using namespace std;
 		return (rc);						\
 	}
 
-#define PRINT_ERROR(hr, line, what)					\
+#define PRINT_ERROR(hr, line, what)							\
 	printf("ERROR 0x%x:  Line %d  %s\n",hr,line,what);		\
 	if FAILED(hr)											\
 	{														\
@@ -535,19 +535,25 @@ void getPlaybackState()
 void XN_CALLBACK_TYPE GestureIntermediateStageCompletedHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
 {
 	if(print_debug)
+	{
 		printf("Gesture %s: Intermediate stage complete (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
+	}
 }
 
 void XN_CALLBACK_TYPE GestureReadyForNextIntermediateStageHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, void* pCookie)
 {
 	if(print_debug)
+	{
 		printf("Gesture %s: Ready for next intermediate stage (%f,%f,%f)\n", strGesture, pPosition->X, pPosition->Y, pPosition->Z);
+	}
 }
 
 void XN_CALLBACK_TYPE GestureProgressHandler(xn::GestureGenerator& generator, const XnChar* strGesture, const XnPoint3D* pPosition, XnFloat fProgress, void* pCookie)
 {
 	if(print_debug)
+	{
 		printf("Gesture %s progress: %f (%f,%f,%f)\n", strGesture, fProgress, pPosition->X, pPosition->Y, pPosition->Z);
+	}
 }
 
 void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircle* pCircle, void* pUserCxt)
@@ -583,14 +589,17 @@ void XN_CALLBACK_TYPE CircleCB(XnFloat fTimes, XnBool bConfident, const XnVCircl
 
 void XN_CALLBACK_TYPE NoCircleCB(XnFloat fLastValue, XnVCircleDetector::XnVNoCircleReason eReason, void* pUserCxt)
 {
-	//nothing goes here
+	//circleCount = 0;
 }
 
 void XN_CALLBACK_TYPE SwipeDownCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCxt)
 {
 	if(!sliderMode)
 	{
-		printf("\nSwipe Down -- DECREASE ZOOM\n");
+		if(print_debug)
+		{
+			printf("\nSwipe Down -- DECREASE ZOOM\n");
+		}
 		decreaseZoom();
 	}
 }
@@ -599,7 +608,10 @@ void XN_CALLBACK_TYPE SwipeUpCB(XnFloat fVelocity, XnFloat fAngle, void* pUserCx
 {
 	if(!sliderMode)
 	{
-		printf("\nSwipe Up -- INCREASE ZOOM\n");
+		if(print_debug)
+		{
+			printf("\nSwipe Up -- INCREASE ZOOM\n");
+		}
 		increaseZoom();
 	}
 }
@@ -608,7 +620,11 @@ void XN_CALLBACK_TYPE SwipeLeftCB(XnFloat fVelocity, XnFloat fAngle, void* pUser
 {
 	if(!sliderMode)
 	{
-		printf("\n Left Swipe -- SWITCH FULLSCREEN STATE\n");
+		if(print_debug)
+		{
+			printf("\n Left Swipe -- SWITCH FULLSCREEN STATE\n");
+		}
+
 		toggleScreen();
 	}
 }
@@ -619,7 +635,11 @@ void XN_CALLBACK_TYPE SwipeRightCB(XnFloat fVelocity, XnFloat fAngle, void* pUse
 	
 	if(!sliderMode)
 	{
-		printf("\nSwipe Right -- TOGGLE PLAY/PAUSE\n");
+		if(print_debug)
+		{
+			printf("\nSwipe Right -- TOGGLE PLAY/PAUSE\n");
+		}
+
 		togglePlay();
 	}
 }
@@ -629,13 +649,21 @@ void XN_CALLBACK_TYPE PushCB(XnFloat fVelocity, XnFloat fAngle, void* UserCxt)
 
 	if(!sliderMode)
 	{
-		printf("\nPush Detected -- STOP PLAYBACK\n");
+		if(print_debug)
+		{
+			printf("\nPush Detected -- STOP PLAYBACK\n");
+		}
+
 		setStop();
 	}
 
 	if(sliderMode)
 	{
-		printf("\nPush Detected -- SET PLAYBACK POSITION\n");
+		if(print_debug)
+		{
+			printf("\nPush Detected -- SET PLAYBACK POSITION\n");
+		}
+
 		StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
 
 		hr = pApp->SetPosition((double)playbackPosition*duration);
@@ -655,14 +683,15 @@ void XN_CALLBACK_TYPE SlideCB(XnFloat fValue, void* pUserCxt)
 {
 	if(sliderMode)
 	{
-		//TODO add a function to print numeric value of slider position on the depth stream
-		printf("\tPosition - %g\n",fValue);
+		if(print_debug)
+		{
+			printf("\tPosition - %g\n",fValue);
+		}
+
 		playbackPosition = fValue;
 	}
 
 }
-
-
 
 int main(int argc, char** argv)
 {
