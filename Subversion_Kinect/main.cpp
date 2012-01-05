@@ -680,7 +680,8 @@ int main(int argc, char** argv)
 	sliderMode = false;
 	commandState = 2;
 
-	/* command state 0 = left swipe: enter/leave full screen
+	/*
+	command state 0 = left swipe: enter/leave full screen
 	command state 1 = circular set playback position
 	command state 2 = preparing gesture algorithms (opening sequence)
 	command state 3 = no hand to track (hand has left screen after having been tracked)
@@ -815,7 +816,7 @@ int main(int argc, char** argv)
 	//attach the pointer to an object of the XnVCircleDetector class
 	g_pCircle = new XnVCircleDetector;
 	g_pCircle->SetMinRadius(80);
-	g_pCircle->SetMaxErrors(3);
+	g_pCircle->SetMaxErrors(2);
 	g_pCircle->RegisterCircle(NULL,&CircleCB); //when circle is recognized, CircleCB will be called
 	g_pCircle->RegisterNoCircle(NULL,&NoCircleCB); //when circle stops being detected, NoCircleCB will be called
 	g_pSessionManager->AddListener(g_pCircle); //tell the session manager to listen for circle recognition events
