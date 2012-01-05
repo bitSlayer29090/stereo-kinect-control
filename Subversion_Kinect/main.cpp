@@ -31,7 +31,7 @@ VARIANT vResult; //empty variant variable to store output from OLE automation co
 VARIANT_BOOL vBoolTrue = true; //a general variable that can be used as "true" arguments for Automation
 VARIANT_BOOL vBoolFalse = false; //same as above except for false
 
-bool print_debug = true;//if true, will print a large amount of debugging information
+bool print_debug = false;//if true, will print a large amount of debugging information
 
 bool play; //indicates if the player is in playbackstate = 0
 bool stop; // playback state = 1;
