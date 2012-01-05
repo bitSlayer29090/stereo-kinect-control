@@ -393,6 +393,7 @@ void toggleScreen()
 			fullScreen = false;
 		}
 	}
+
 }
 
 void increaseZoom()
@@ -670,8 +671,8 @@ int main(int argc, char** argv)
 
 	//opens instantiation of stereopscopic player
 	hr = CoInitialize(NULL);
-
-	//error catching
+	if FAILED(hr)
+		PRINT_ERROR(hr,__LINE__,"Failed to initialize the player [FUNC: main].");
 
 	
 	//create smart pointer to the stereoscopic player automation object
@@ -681,10 +682,6 @@ int main(int argc, char** argv)
 	while(!ready)
 	{
 		app->GetReady(&vResult);
-		if(print_debug)
-		{
-			cout << "Not Ready at " << __LINE__ << endl;
-		}
 		if(vResult.boolVal == -1 )
 		{
 			ready = true;
@@ -696,14 +693,27 @@ int main(int argc, char** argv)
 	//opens a standard video file, followed by error checking
 	hr = app->OpenFile(L"C:\\Users\\Public\\Videos\\Pulmonary.mov");
 
+	if FAILED(hr)
+	{
+		PRINT_ERROR(hr,__LINE__,"Failed to open file [FUNC: main].");
+	}
+
+
+
 	//tells the stero player to play the video, followed by error checking
 	hr = app->SetPlaybackState(StereoPlayer::PlaybackState_Play);
+
+	if FAILED(hr)
+		PRINT_ERROR(hr,__LINE__,"Failed to set playback state to Play [FUNC: main].");
 
 	//set the PLAY flag to true to tell the program the player is actively playing a file
 	play = true;
 	
 	//get the length of the video being played (in seconds), followed by error checking
 	hr = app->GetDuration(&vResult);
+
+	if FAILED(hr)
+		PRINT_ERROR(hr,__LINE__,"Failed to get Duration of current video [FUNC: main].");
 
 	
 	//set the length of the video to the duration variable

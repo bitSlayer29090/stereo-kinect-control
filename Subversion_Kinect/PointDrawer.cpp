@@ -399,13 +399,13 @@ void PrintSessionState(SessionState eState)
 		sprintf(strLabel, "Raise your hand for it to be identified, or perform click or wave gestures"); break;
 	}
 
-	glPrintString(GLUT_BITMAP_HELVETICA_18, strLabel);
+	glPrintString(GLUT_BITMAP_HELVETICA_12, strLabel);
 }
 
 void PrintSessionInstructions(int command)
 {
 	glColor4f(1,0,0,1);
-	glRasterPos2i(20,40);
+	glRasterPos2i(20,30);
 	XnChar printString[200];
 
 	switch (command)
@@ -433,10 +433,10 @@ void PrintSessionInstructions(int command)
 void PrintSessionCircleStatus(float value)
 {
 	glColor4f(1,0.5,0.5,1);
-	glRasterPos2i(20,60);
+	glRasterPos2i(20,40);
 	XnChar printString[200];
 
-	sprintf(printString,"PROGRESS: %0.0f",value*100);
+	sprintf(printString,"PROGRESS: %0.0f%% - Use Push to set position, Circle to Quit",value*100);
 
 	glPrintString(GLUT_BITMAP_HELVETICA_12,printString);
 }
