@@ -815,6 +815,7 @@ int main(int argc, char** argv)
 	//attach the pointer to an object of the XnVCircleDetector class
 	g_pCircle = new XnVCircleDetector;
 	g_pCircle->SetMinRadius(80);
+	g_pCircle->SetMaxErrors(3);
 	g_pCircle->RegisterCircle(NULL,&CircleCB); //when circle is recognized, CircleCB will be called
 	g_pCircle->RegisterNoCircle(NULL,&NoCircleCB); //when circle stops being detected, NoCircleCB will be called
 	g_pSessionManager->AddListener(g_pCircle); //tell the session manager to listen for circle recognition events
@@ -823,7 +824,7 @@ int main(int argc, char** argv)
 	g_pSwipe = new XnVSwipeDetector;
 
 	//change default settings to optimize the gesture recognition accuracy:
-	g_pSwipe->SetSteadyDuration(100); //in ms, how much time required between two consecutive gesture recognition events
+	g_pSwipe->SetSteadyDuration(75); //in ms, how much time required between two consecutive gesture recognition events
 
 	g_pSwipe->SetMotionSpeedThreshold(0.20); //in m/s, minimum speed of hand for the software to recognize a swipe
 	g_pSwipe->SetMotionTime(500); //in ms, how long a swipe event must be to be considered swipe event
