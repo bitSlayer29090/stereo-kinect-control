@@ -73,6 +73,10 @@ using namespace std;
 
 #define PRINT_ERROR(hr, line, what)					\
 	printf("ERROR 0x%x:  Line %d  %s\n",hr,line,what);		\
+	if FAILED(hr)											\
+	{														\
+		CleanupExit_Error();								\
+	}														\
 
 #ifdef USE_GLUT
 	#if (XN_PLATFORM == XN_PLATFORM_MACOSX)
@@ -150,6 +154,24 @@ void CleanupExit()
 	pApp->ClosePlayer();
 
 	cout << "Exiting and closing..." << endl;
+
+	exit(1);
+}
+
+void CleanupExit_Error()
+{
+	g_ScriptNode.Release();
+	g_DepthGenerator.Release();
+	g_HandsGenerator.Release();
+	g_GestureGenerator.Release();
+	g_Context.Release();
+	
+	StereoPlayer::IAutomationPtr pApp(__uuidof(StereoPlayer::Automation));
+	pApp->ClosePlayer();
+
+	cout << "Unrecoverable Error. Press any key to continue..." << endl;
+	int temp;
+	cin >> temp;
 
 	exit(1);
 }
@@ -648,7 +670,6 @@ int main(int argc, char** argv)
 	XnStatus rc = XN_STATUS_OK;
 	xn::EnumerationErrors errors;
 
-
 	//set initial values to these flag/logic variables
 	play = false;
 	pause = false;
@@ -682,7 +703,7 @@ int main(int argc, char** argv)
 	while(!ready)
 	{
 		app->GetReady(&vResult);
-		if(vResult.boolVal == -1 )
+		if(vResult.boolVal == -1 ) //VT_BOOL= -1 is true; VT_BOOL=0 is false
 		{
 			ready = true;
 		}
@@ -732,7 +753,9 @@ int main(int argc, char** argv)
 		{
 			cout << "Video duration is greater than 60 seconds. Turning off repeat..." << endl;
 		}
-		app->SetRepeat(vBoolFalse); //tell the program to turn off repeat
+		hr = app->SetRepeat(vBoolFalse); //tell the program to turn off repeat
+		if FAILED(hr)
+			PRINT_ERROR(hr,__LINE__,"Unable to turn off repeat [FUNC: set repeat by duration].");
 	}
 	else
 	{
@@ -740,7 +763,9 @@ int main(int argc, char** argv)
 		{
 			cout << "Video duration less than 60 seconds. Turning on repeat..." << endl;
 		}
-		app->SetRepeat(vBoolTrue); //tell the program to turn on repeatt
+		hr = app->SetRepeat(vBoolTrue); //tell the program to turn on repeat
+		if FAILED(hr)
+			PRINT_ERROR(hr,__LINE__,"Unable to turn on repeat [FUNC: set repeat by duration].");
 	}
 
 	commandState = 0;
@@ -789,6 +814,7 @@ int main(int argc, char** argv)
 
 	//attach the pointer to an object of the XnVCircleDetector class
 	g_pCircle = new XnVCircleDetector;
+	g_pCircle->SetMinRadius(80);
 	g_pCircle->RegisterCircle(NULL,&CircleCB); //when circle is recognized, CircleCB will be called
 	g_pCircle->RegisterNoCircle(NULL,&NoCircleCB); //when circle stops being detected, NoCircleCB will be called
 	g_pSessionManager->AddListener(g_pCircle); //tell the session manager to listen for circle recognition events
@@ -800,12 +826,12 @@ int main(int argc, char** argv)
 	g_pSwipe->SetSteadyDuration(100); //in ms, how much time required between two consecutive gesture recognition events
 
 	g_pSwipe->SetMotionSpeedThreshold(0.20); //in m/s, minimum speed of hand for the software to recognize a swipe
-	g_pSwipe->SetMotionTime(500); //in ms, 
-	g_pSwipe->SetXAngleThreshold(45);
-	g_pSwipe->SetYAngleThreshold(45);
+	g_pSwipe->SetMotionTime(500); //in ms, how long a swipe event must be to be considered swipe event
+	g_pSwipe->SetXAngleThreshold(45);// in degrees, the biggest angular deviation allowed from x axis and still detected as horizontal swipe
+	g_pSwipe->SetYAngleThreshold(45); // in degrees, max Yaxis deviation detectable as vertical swipe
 
 
-
+	/*link each swipe event to appropriate callback function that fires stereoplayer commands*/
 	g_pSwipe->RegisterSwipeDown(NULL, &SwipeDownCB);
 	g_pSwipe->RegisterSwipeLeft(NULL, &SwipeLeftCB);
 	g_pSwipe->RegisterSwipeRight(NULL, &SwipeRightCB);
@@ -838,7 +864,7 @@ int main(int argc, char** argv)
 #ifdef USE_GLUT
 
 	glInit(&argc, argv);
-	glutMainLoop();
+	glutMainLoop(); //the glutMainLoop draws all the pretty pictures and graphics
 
 #elif defined(USE_GLES)
 	if (!opengles_init(GL_WIN_SIZE_X, GL_WIN_SIZE_Y, &display, &surface, &context))
