@@ -13,7 +13,9 @@ namespace PanelViewer
 	{
 		public ViewingPaneForm()
 		{
-			InitializeComponent(); 
+			InitializeComponent();
+
+			CheckForIllegalCrossThreadCalls = false;
 
 			#region Initializations
 			this.context = Context.CreateFromXmlFile( SAMPLE_XML_FILE, out this.scriptNode );
@@ -122,6 +124,9 @@ namespace PanelViewer
 			debug_text = "hand destroyed";
 			this.router.ActiveListener = null;
 			this.state = SessionState.QUICK_REFOCUS;
+
+			this.gesture_display.Text = "Must be in Session";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/exclamation.ico" );
 		}
 
 		void steadyDetector_Steady( object sender, SteadyEventArgs e )
@@ -146,6 +151,9 @@ namespace PanelViewer
 					debug_text = "Steady point - setting Listener to Primary Broadcast";
 				}
 			}
+
+			this.gesture_display.Text = "Steady";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/link.ico" );
 		}
 
 		private void customSwipe()
@@ -224,6 +232,8 @@ namespace PanelViewer
 				debug_text = "Downward swipe detected";
 			}
 			this.router.ActiveListener = this.steadyDetector;
+			this.gesture_display.Text = "Swipe Down";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/arrow_down.ico" );
 		}
 
 		void swipeDetector_SwipeUp( object sender, VelocityAngleEventArgs e )
@@ -237,6 +247,8 @@ namespace PanelViewer
 			}
 
 			this.router.ActiveListener = this.steadyDetector;
+			this.gesture_display.Text = "Upward Swipe";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/arrow_up.ico" );
 		}
 
 		void swipeDetector_SwipeLeft( object sender, VelocityAngleEventArgs e )
@@ -249,6 +261,9 @@ namespace PanelViewer
 				debug_text = "Left swipe detected.";
 			}
 			this.router.ActiveListener = this.steadyDetector;
+
+			this.gesture_display.Text = "Left Swipe";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/arrow_left.ico" );
 		}
 
 		void swipeDetector_SwipeRight( object sender, VelocityAngleEventArgs e )
@@ -261,6 +276,8 @@ namespace PanelViewer
 				this.debug_text = "Right swipe detected";
 			}
 			this.router.ActiveListener = this.steadyDetector;
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/arrow_right.ico" );
+			this.gesture_display.Text = "Right Swipe";
 		}
 
 		void pushDetector_Push( object sender, VelocityAngleEventArgs e )
@@ -295,6 +312,9 @@ namespace PanelViewer
 				this._print = true;
 				this.debug_text = "Push event detected";
 			}
+
+			this.gesture_display.Text = "Push Gesture";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/delete.ico" );
 		}
 
 		void sessionManager_SessionFocusProgress( object sender, SessionProgressEventArgs e )
@@ -479,6 +499,10 @@ namespace PanelViewer
 
 		private void main_window_exit( object sender, EventArgs e )
 		{
+
+			this.gesture_display.Text = "Exiting Application";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/shut_down.ico" );
+
 			control.closePlayer();
 			Application.Exit();
 			Environment.Exit( 0 );
@@ -528,6 +552,9 @@ namespace PanelViewer
 				//debug_text = playback_position.ToString();
 			}
 
+			this.gesture_display.Text = "Successfully opened file";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/add.ico" );
+
 
 		}
 
@@ -543,6 +570,9 @@ namespace PanelViewer
 				_print = true;
 				debug_text = "SUCCESS: " + result;
 			}
+
+			this.gesture_display.Text = "Successfully opened file";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/add.ico" );
 		}
 
 		private void form_open3d( object sender, EventArgs e )
@@ -555,6 +585,9 @@ namespace PanelViewer
 				_print = true;
 				debug_text = "SUCCESS: " + result;
 			}
+
+			this.gesture_display.Text = "Successfully opened file";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/add.ico" );
 		}
 
 		private void form_open_folder( object sender, EventArgs e )

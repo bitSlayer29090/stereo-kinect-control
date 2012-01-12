@@ -259,7 +259,6 @@
 			this.gesture_display.Name = "gesture_display";
 			this.gesture_display.Size = new System.Drawing.Size( 180, 21 );
 			this.gesture_display.Text = "(No Gestures Recognized)";
-			this.gesture_display.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
 			// 
 			// ViewingPaneForm
 			// 
