@@ -28,7 +28,8 @@ namespace PanelViewer
 				throw new Exception( "Viewer must have a depth node!" );
 			}
 			this.hands = context.FindExistingNode( NodeType.Hands ) as HandsGenerator;
-			this.hands.SetSmoothing( 0.8f ); 
+			this.hands.SetSmoothing( 0.8f );
+			
 			#endregion
 
 			#region Setup Components
@@ -36,11 +37,9 @@ namespace PanelViewer
 			aux_pushDect = new PushDetector( "Auxilary Push Detector" );
 			slider = new SelectableSlider1D( 1, Axis.X );
 			swipeDetector = new SwipeDetector( "SwipeDectector" );
-			this.customizeSwipe();
 			//circleDectector = new CircleDetector( "CircleDetector" );
 			//this.customizeCircle();
 			steadyDetector = new SteadyDetector( 350, 15 );
-			customizeSteady();
 			broadcaster = new Broadcaster( "Broadcaster" );
 			aux_broadcaster = new Broadcaster( "Auxilary Broadcaster" );
 			router = new FlowRouter( "router" ); 
@@ -68,19 +67,25 @@ namespace PanelViewer
 			#endregion
 
 			#region setProp values
+
+			vars = new configurationVars();
 			this.sessionManager.PrimaryStaticTimeout = 7;
-			this.SteadyReq = 1000;
-			this.SteadyStddevReq = 1;
-			this.SwipeVelmin = 0.2f;
-			this.SwipeMinDuration = 500;
-			this.SwipeXangle = 45;
-			this.SwipeYangle = 45;
-			this.CircleMaxError = 2;
-			this.CircleRadMin = 80;
-			this.SliderHeight = 100;
-			this.SliderWidth = 200;
-			this.SwipeUseSteady = true;
-			this.SwipeSteadyDur = 75;
+			vars.SteadyReq = 1000;
+			vars.SteadyStddevReq = 1;
+			vars.SwipeVelmin = 0.2f;
+			vars.SwipeMinDuration = 500;
+			vars.SwipeXangle = 45;
+			vars.SwipeYangle = 45;
+			vars.CircleMaxError = 2;
+			vars.CircleRadMin = 80;
+			vars.SliderHeight = 100;
+			vars.SliderWidth = 200;
+			vars.SwipeUseSteady = true;
+			vars.SwipeSteadyDur = 75;
+
+			this.populateConfiguration();
+			this.customizeSwipe();
+			this.customizeSteady();
 			#endregion
 
 			#region Event Registration
@@ -107,12 +112,12 @@ namespace PanelViewer
 
 		private void customizeSwipe()
 		{
-			swipeDetector.MinimumVelocity = this.SwipeVelmin;
-			swipeDetector.Duration = this.SwipeMinDuration;
-			swipeDetector.XAngleThreshold = this.swipeXangle;
-			swipeDetector.YAngleThreshold = this.SwipeYangle;
-			swipeDetector.UseSteady = this.SwipeUseSteady;
-			swipeDetector.SteadyDuration = this.SwipeSteadyDur;
+			swipeDetector.MinimumVelocity = vars.SwipeVelmin;
+			swipeDetector.Duration = vars.SwipeMinDuration;
+			swipeDetector.XAngleThreshold = vars.SwipeXangle;
+			swipeDetector.YAngleThreshold = vars.SwipeYangle;
+			swipeDetector.UseSteady = vars.SwipeUseSteady;
+			swipeDetector.SteadyDuration = vars.SwipeSteadyDur;
 
 			if (debug == true)
 			{
@@ -123,11 +128,11 @@ namespace PanelViewer
 
 		private void customizeSteady()
 		{
-			this.steadyDetector.DetectionDuration = this.SteadyReq;
+			this.steadyDetector.DetectionDuration = vars.SteadyReq;
 			if (debug == true)
 			{
 				_print = true;
-				debug_text = "Configured steady detector";
+				debug_text = "Configured steady detector : " + vars.SteadyReq.ToString();
 			}
 
 		}
@@ -136,8 +141,8 @@ namespace PanelViewer
 		{
 
 
-			circleDectector.MinRadius = this.CircleRadMin;
-			circleDectector.MaxErrors = this.CircleMaxError;
+			circleDectector.MinRadius = vars.CircleRadMin;
+			circleDectector.MaxErrors = vars.CircleMaxError;
 
 			if (debug == true)
 			{
@@ -150,9 +155,27 @@ namespace PanelViewer
 
 		private void customizeSlider()
 		{
-			this.slider.SliderSize = this.SliderWidth;
-			this.slider.BorderWidth = this.SliderHeight;
+			this.slider.SliderSize = vars.SliderWidth;
+			this.slider.BorderWidth = vars.SliderHeight;
+
+			_print = true;
+			debug_text = "Customize slider Width: " + vars.SliderWidth.ToString();
 		}
+
+		private void populateConfiguration()
+		{
+			config.form_circle_minrad.Text = vars.CircleRadMin.ToString();
+			config.form_circle_sensitivity.Text = vars.CircleMaxError.ToString();
+			config.form_slider_height.Text = vars.SliderHeight.ToString();
+			config.form_slider_width.Text = vars.SliderWidth.ToString();
+			config.form_swipe_duration.Text = vars.SwipeMinDuration.ToString();
+			config.form_swipe_minvel.Text = vars.SwipeVelmin.ToString();
+			config.form_swipe_xangle.Text = vars.SwipeXangle.ToString();
+			config.form_swipe_yangle.Text = vars.SwipeYangle.ToString();
+			config.form_steadyduration_val.Text = vars.SteadyReq.ToString();
+			config.form_steady_stddev.Text = vars.SteadyStddevReq.ToString();
+		}
+
 
 		#endregion
 
@@ -689,6 +712,7 @@ namespace PanelViewer
 		public NITE.SelectableSlider1D slider;
 		Control_Functions control = new Control_Functions();
 		config_dlg config = new config_dlg();
+		configurationVars vars;
 		protected bool gl_loaded = false;
 		private bool debug = true;
 		private SessionState state = SessionState.NOT_IN_SESSION;
@@ -702,6 +726,14 @@ namespace PanelViewer
 			IN_SESSION,
 			QUICK_REFOCUS
 		};
+
+
+
+		#endregion
+	}
+
+	public class configurationVars
+	{
 		private int steadyReq;
 		private float steadyStddevReq;
 		private float swipeVelmin;
@@ -849,9 +881,6 @@ namespace PanelViewer
 				swipeSteadyDur = value;
 			}
 		}
-		#endregion
-
-
 		#endregion
 	}
 }
