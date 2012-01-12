@@ -26,6 +26,9 @@ namespace PanelViewer
 
 		private void saveAll()
 		{
+			this._steady_duration = int.Parse( form_steadyduration_val.Text.ToString() );
+			this._steady_stddev = float.Parse( form_steady_stddev.Text.ToString() );
+			this._newvalues = true;
 		}
 
 		private void config_save_button( object sender, EventArgs e )
@@ -45,6 +48,23 @@ namespace PanelViewer
 				this.swipe_steady_duration.Enabled = false;
 			}
 		}
+
+
+		#region ConfigurationVariables
+		public int _steady_duration = 0;
+		public float _steady_stddev = 0;
+		public float _swipe_vel = 0;
+		public int _swipe_duration = 0;
+		public int _swipe_xangle = 0;
+		public int _swipe_yangle = 0;
+		public bool _swipe_usesteay = true;
+		public int _swipe_steadyDur = 0;
+		public int _circle_radmin = 0;
+		public int _circle_maxerr = 0;
+		public int _slider_height = 0;
+		public int _slider_width = 0;
+		public bool _newvalues = false;
+		#endregion
 
 	}
 }

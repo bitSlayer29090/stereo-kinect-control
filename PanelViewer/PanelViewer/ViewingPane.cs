@@ -29,7 +29,6 @@ namespace PanelViewer
 			}
 			this.hands = context.FindExistingNode( NodeType.Hands ) as HandsGenerator;
 			this.hands.SetSmoothing( 0.8f );
-			
 			#endregion
 
 			#region Setup Components
@@ -37,8 +36,6 @@ namespace PanelViewer
 			aux_pushDect = new PushDetector( "Auxilary Push Detector" );
 			slider = new SelectableSlider1D( 1, Axis.X );
 			swipeDetector = new SwipeDetector( "SwipeDectector" );
-			//circleDectector = new CircleDetector( "CircleDetector" );
-			//this.customizeCircle();
 			steadyDetector = new SteadyDetector( 350, 15 );
 			broadcaster = new Broadcaster( "Broadcaster" );
 			aux_broadcaster = new Broadcaster( "Auxilary Broadcaster" );
@@ -51,7 +48,6 @@ namespace PanelViewer
 
 			this.broadcaster.AddListener( pushDetector );
 			this.broadcaster.AddListener( swipeDetector );
-			//this.broadcaster.AddListener( circleDectector );
 
 			this.aux_broadcaster.AddListener( this.slider );
 			this.aux_broadcaster.AddListener( this.aux_pushDect );
@@ -86,6 +82,7 @@ namespace PanelViewer
 			this.populateConfiguration();
 			this.customizeSwipe();
 			this.customizeSteady();
+			this.customizeCircle();
 			#endregion
 
 			#region Event Registration
@@ -141,8 +138,8 @@ namespace PanelViewer
 		{
 
 
-			circleDectector.MinRadius = vars.CircleRadMin;
-			circleDectector.MaxErrors = vars.CircleMaxError;
+			//circleDectector.MinRadius = vars.CircleRadMin;
+			//circleDectector.MaxErrors = vars.CircleMaxError;
 
 			if (debug == true)
 			{
@@ -175,7 +172,6 @@ namespace PanelViewer
 			config.form_steadyduration_val.Text = vars.SteadyReq.ToString();
 			config.form_steady_stddev.Text = vars.SteadyStddevReq.ToString();
 		}
-
 
 		#endregion
 
@@ -541,6 +537,47 @@ namespace PanelViewer
 				_print = false;
 			}
 
+			if (config._newvalues == true)
+			{
+				if (debug == true)
+				{
+					_print = true;
+					debug_text = "NEW VALUES FROM CONFIGURATION FILE";
+				}
+
+				vars.SteadyStddevReq = config._steady_stddev;
+				vars.SteadyReq = config._steady_duration;
+				vars.SwipeMinDuration = config._swipe_duration;
+				vars.SwipeSteadyDur = config._swipe_steadyDur;
+				vars.SwipeUseSteady = config._swipe_usesteay;
+				vars.SwipeVelmin = config._swipe_vel;
+				vars.SwipeXangle = config._swipe_xangle;
+				vars.SwipeYangle = config._swipe_yangle;
+				vars.CircleMaxError = config._circle_maxerr;
+				vars.CircleRadMin = config._circle_radmin;
+				vars.SliderHeight = config._slider_height;
+				vars.SliderWidth = config._slider_width;
+
+				this.customizeCircle();
+				this.customizeSlider();
+				this.customizeSteady();
+				this.customizeSwipe();
+			}
+
+
+
+
+
+
+
+
+
+
+
+
+				config._newvalues = false;
+			}
+
 		}
 
 		protected override void OnClosing( CancelEventArgs e )
@@ -726,9 +763,6 @@ namespace PanelViewer
 			IN_SESSION,
 			QUICK_REFOCUS
 		};
-
-
-
 		#endregion
 	}
 
