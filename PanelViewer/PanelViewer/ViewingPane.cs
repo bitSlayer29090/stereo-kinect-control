@@ -34,11 +34,11 @@ namespace PanelViewer
 			aux_pushDect = new PushDetector( "Auxilary Push Detector" );
 			slider = new SelectableSlider1D( 1, Axis.X );
 			swipeDetector = new SwipeDetector( "SwipeDectector" );
-			this.customSwipe();
+			this.customizeSwipe();
 			//circleDectector = new CircleDetector( "CircleDetector" );
-			//this.customCircle();
+			//this.customizeCircle();
 			steadyDetector = new SteadyDetector( 350, 15 );
-			configureSteady();
+			customizeSteady();
 			broadcaster = new Broadcaster( "Broadcaster" );
 			aux_broadcaster = new Broadcaster( "Auxilary Broadcaster" );
 			router = new FlowRouter( "router" ); 
@@ -56,13 +56,15 @@ namespace PanelViewer
 			this.aux_broadcaster.AddListener( this.aux_pushDect );
 			#endregion
 
-
+			#region SetUp Drawing Function
 			this.histogram = new int[this.depth.DeviceMaxDepth];
 			MapOutputMode mapMode = this.depth.MapOutputMode;
 			this.bitmap = new Bitmap( (int)mapMode.XRes, (int)mapMode.YRes, System.Drawing.Imaging.PixelFormat.Format24bppRgb );
 			this.shouldRun = true;
-			this.readerThread = new Thread( ReaderThread );
-			this.readerThread.Start();
+			this.readerThread = new Thread( RenderThread );
+			this.readerThread.Start(); 
+			#endregion
+
 			this.sessionManager.PrimaryStaticTimeout = 7;
 
 			#region Event Registration
@@ -85,78 +87,9 @@ namespace PanelViewer
 			#endregion
 		}
 
-		void aux_pushDect_Push( object sender, VelocityAngleEventArgs e )
-		{
 
-			control.setPlaybackPosition( playback_position );
-			this.router.ActiveListener = this.steadyDetector;
-			control.leaveSliderMode();
-
-			if (debug == true)
-			{
-				_print = true;
-				debug_text = "Leaving Slider Mode and setting playback position--setting active listener to Steady Detector";
-			}
-		}
-
-		void slider_ValueChange( object sender, ValueEventArgs e )
-		{
-			if (debug == true)
-			{
-				_print = true;
-				debug_text = "Slider Value: " + 100 * e.Value + "%";
-			}
-
-			this.playback_position = e.Value * control.duration;
-
-		}
-
-		void hands_HandCreate( object sender, HandCreateEventArgs e )
-		{
-			_print = true;
-			debug_text = "hand created";
-			this.router.ActiveListener = this.steadyDetector;
-		}
-
-		void hands_HandDestroy( object sender, HandDestroyEventArgs e )
-		{
-			_print = true;
-			debug_text = "hand destroyed";
-			this.router.ActiveListener = null;
-			this.state = SessionState.QUICK_REFOCUS;
-
-			this.gesture_display.Text = "Must be in Session";
-			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/exclamation.ico" );
-		}
-
-		void steadyDetector_Steady( object sender, SteadyEventArgs e )
-		{
-
-
-			if (control.sliderMode == true)
-			{
-				this.router.ActiveListener = this.aux_broadcaster;
-				if (debug == true)
-				{
-					_print = true;
-					debug_text = "Steady point - setting Listener to Auxilary Broadcast";
-				}
-			}
-			else
-			{
-				this.router.ActiveListener = this.broadcaster;
-				if (debug == true)
-				{
-					_print = true;
-					debug_text = "Steady point - setting Listener to Primary Broadcast";
-				}
-			}
-
-			this.gesture_display.Text = "Steady";
-			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/link.ico" );
-		}
-
-		private void customSwipe()
+		#region Non Event Handling Functions
+		private void customizeSwipe()
 		{
 			swipeDetector.MinimumVelocity = 0.2f;
 			swipeDetector.Duration = 500;
@@ -172,7 +105,7 @@ namespace PanelViewer
 			}
 		}
 
-		private void configureSteady()
+		private void customizeSteady()
 		{
 			this.steadyDetector.DetectionDuration = steadyReq;
 			if (debug == true)
@@ -180,10 +113,10 @@ namespace PanelViewer
 				_print = true;
 				debug_text = "Configured steady detector";
 			}
-			
+
 		}
 
-		private void customCircle()
+		private void customizeCircle()
 		{
 
 
@@ -199,18 +132,9 @@ namespace PanelViewer
 
 		}
 
-		void sessionManager_SessionEnd( object sender, EventArgs e )
-		{
-			if (debug == true)
-			{
-				_print = true;
-				debug_text = "Session has ended";
-				Console.WriteLine( "Not in Session" );
-			}
-			
-			state = SessionState.NOT_IN_SESSION;
-		}
+		#endregion
 
+		#region Gesture Event Handlers
 		void circleDectector_OnCircle( object sender, CircleEventArgs e )
 		{
 			circleDectector.Reset();
@@ -264,7 +188,7 @@ namespace PanelViewer
 
 			this.gesture_display.Text = "Left Swipe";
 			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/arrow_left.ico" );
-			
+
 		}
 
 		void swipeDetector_SwipeRight( object sender, VelocityAngleEventArgs e )
@@ -328,6 +252,90 @@ namespace PanelViewer
 			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/delete.ico" );
 		}
 
+		void slider_ValueChange( object sender, ValueEventArgs e )
+		{
+			if (debug == true)
+			{
+				_print = true;
+				debug_text = "Slider Value: " + 100 * e.Value + "%";
+			}
+
+			this.playback_position = e.Value * control.duration;
+
+		}
+		void aux_pushDect_Push( object sender, VelocityAngleEventArgs e )
+		{
+
+			control.setPlaybackPosition( playback_position );
+			this.router.ActiveListener = this.steadyDetector;
+			control.leaveSliderMode();
+
+			if (debug == true)
+			{
+				_print = true;
+				debug_text = "Leaving Slider Mode and setting playback position--setting active listener to Steady Detector";
+			}
+		}
+		void steadyDetector_Steady( object sender, SteadyEventArgs e )
+		{
+
+
+			if (control.sliderMode == true)
+			{
+				this.router.ActiveListener = this.aux_broadcaster;
+				if (debug == true)
+				{
+					_print = true;
+					debug_text = "Steady point - setting Listener to Auxilary Broadcast";
+				}
+			}
+			else
+			{
+				this.router.ActiveListener = this.broadcaster;
+				if (debug == true)
+				{
+					_print = true;
+					debug_text = "Steady point - setting Listener to Primary Broadcast";
+				}
+			}
+
+			this.gesture_display.Text = "Steady";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/link.ico" );
+		}
+		#endregion
+
+		#region SessionManager Event Handlers
+
+		void hands_HandCreate( object sender, HandCreateEventArgs e )
+		{
+			_print = true;
+			debug_text = "hand created";
+			this.router.ActiveListener = this.steadyDetector;
+		}
+
+		void hands_HandDestroy( object sender, HandDestroyEventArgs e )
+		{
+			_print = true;
+			debug_text = "hand destroyed";
+			this.router.ActiveListener = null;
+			this.state = SessionState.QUICK_REFOCUS;
+
+			this.gesture_display.Text = "Must be in Session";
+			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/exclamation.ico" );
+		}
+
+		void sessionManager_SessionEnd( object sender, EventArgs e )
+		{
+			if (debug == true)
+			{
+				_print = true;
+				debug_text = "Session has ended";
+				Console.WriteLine( "Not in Session" );
+			}
+
+			state = SessionState.NOT_IN_SESSION;
+		}
+
 		void sessionManager_SessionFocusProgress( object sender, SessionProgressEventArgs e )
 		{
 
@@ -335,10 +343,10 @@ namespace PanelViewer
 			{
 				_print = true;
 				debug_text = "Gesture progress: " + 100 * e.Progress + "%";
-				Console.WriteLine( "Progress: {0}%", 100*e.Progress );
+				Console.WriteLine( "Progress: {0}%", 100 * e.Progress );
 			}
 
-			
+
 		}
 
 		void sessionManager_SessionStart( object sender, PositionEventArgs e )
@@ -354,67 +362,9 @@ namespace PanelViewer
 
 		}
 
-		protected override void OnPaint( PaintEventArgs e )
-		{
-			base.OnPaint( e );
+		#endregion
 
-			lock (this)
-			{
-				e.Graphics.DrawImage( this.bitmap,
-					this.panelViewer.Location.X,
-					this.panelViewer.Location.Y,
-					this.panelViewer.Size.Width,
-					this.panelViewer.Size.Height );
-			}
-		}
-
-		protected override void OnPaintBackground( PaintEventArgs pevent )
-		{
-			if (this.state == SessionState.IN_SESSION)
-			{
-				this.Instruction_Display.Text = "In Session";
-				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/accept.ico" );
-			}
-
-			else if (this.state == SessionState.NOT_IN_SESSION)
-			{
-				this.Instruction_Display.Text = "Not In Session";
-				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/warning.ico" );
-			}
-
-			else if (this.state == SessionState.QUICK_REFOCUS)
-			{
-				this.Instruction_Display.Text = "Quick Refocus - Raise Hand";
-				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/help.ico" );
-			}
-
-			FPS_Display.Text = "Frames Per Second: " + FPS_Temp.ToString();
-			FPS_Bar.Value = FPS_Temp;
-
-			if (_print == true)
-			{
-				this.debugBox.AppendText( "\r\n" + debug_text );
-				_print = false;
-			}
-
-		}
-
-		protected override void OnClosing( CancelEventArgs e )
-		{
-			this.shouldRun = false;
-			this.readerThread.Join();
-			base.OnClosing( e );
-		}
-
-		protected override void OnKeyPress( KeyPressEventArgs e )
-		{
-			if (e.KeyChar == 27)
-			{
-				Close();
-			}
-			base.OnKeyPress( e );
-		}
-
+		#region DepthMap Rendering Functions
 		private unsafe void CalcHist( DepthMetaData depthMD )
 		{
 			// reset
@@ -451,7 +401,7 @@ namespace PanelViewer
 			}
 		}
 
-		private unsafe void ReaderThread()
+		private unsafe void RenderThread()
 		{
 			DepthMetaData depthMD = new DepthMetaData();
 
@@ -496,6 +446,69 @@ namespace PanelViewer
 				this.Invalidate();
 				this.sessionManager.Update( this.context );
 			}
+		}
+		protected override void OnPaint( PaintEventArgs e )
+		{
+			base.OnPaint( e );
+
+			lock (this)
+			{
+				e.Graphics.DrawImage( this.bitmap,
+					this.panelViewer.Location.X,
+					this.panelViewer.Location.Y,
+					this.panelViewer.Size.Width,
+					this.panelViewer.Size.Height );
+			}
+		}
+
+		protected override void OnPaintBackground( PaintEventArgs pevent )
+		{
+			//TODO make the play_status_icon object update only when changed
+
+			if (this.state == SessionState.IN_SESSION)
+			{
+				this.Instruction_Display.Text = "In Session";
+				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/accept.ico" );
+			}
+
+			else if (this.state == SessionState.NOT_IN_SESSION)
+			{
+				this.Instruction_Display.Text = "Not In Session";
+				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/warning.ico" );
+			}
+
+			else if (this.state == SessionState.QUICK_REFOCUS)
+			{
+				this.Instruction_Display.Text = "Quick Refocus - Raise Hand";
+				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/help.ico" );
+			}
+
+			FPS_Display.Text = "Frames Per Second: " + FPS_Temp.ToString();
+			FPS_Bar.Value = FPS_Temp;
+
+			if (_print == true)
+			{
+				this.debugBox.AppendText( "\r\n" + debug_text );
+				_print = false;
+			}
+
+		}
+		#endregion
+
+		protected override void OnClosing( CancelEventArgs e )
+		{
+			this.shouldRun = false;
+			this.readerThread.Join();
+			base.OnClosing( e );
+		}
+
+		protected override void OnKeyPress( KeyPressEventArgs e )
+		{
+			if (e.KeyChar == 27)
+			{
+				Close();
+			}
+			base.OnKeyPress( e );
 		}
 
 		private void ViewingPane_Load( object sender, EventArgs e )
@@ -659,11 +672,6 @@ namespace PanelViewer
 			IN_SESSION,
 			QUICK_REFOCUS
 		};
-
-
 		#endregion
-
-
-
 	}
 }

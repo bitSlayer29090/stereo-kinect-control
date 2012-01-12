@@ -139,8 +139,6 @@ namespace PanelViewer
 
 		public string open2DFile()
 		{
-			//TODO move this code the the control_functions class
-
 			string filename;
 			DialogResult result;
 			OpenFileDialog tempclass = new OpenFileDialog();
@@ -166,7 +164,6 @@ namespace PanelViewer
 
 		public string open3DFile()
 		{
-			//TODO move this code the the control_functions class
 
 			string filename;
 			DialogResult result;

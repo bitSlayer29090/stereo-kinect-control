@@ -289,7 +289,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ViewingPaneForm";
-			this.Text = "Marquette CVTEC Lab";
+			this.Text = "Marquette CVTEC Lab - Cardiovascular Research";
 			this.Load += new System.EventHandler( this.ViewingPane_Load );
 			this.status_bar.ResumeLayout( false );
 			this.status_bar.PerformLayout();
