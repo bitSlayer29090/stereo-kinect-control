@@ -57,19 +57,19 @@
 			this.swipe_use_Steady = new System.Windows.Forms.CheckBox();
 			this.button_panel = new System.Windows.Forms.Panel();
 			this.circle_box = new System.Windows.Forms.GroupBox();
+			this.circle_rad_unit = new System.Windows.Forms.Label();
 			this.circle_sensi_unit = new System.Windows.Forms.Label();
 			this.form_circle_sensitivity = new System.Windows.Forms.TextBox();
 			this.form_circle_minrad = new System.Windows.Forms.TextBox();
 			this.circle_sensitivity_label = new System.Windows.Forms.Label();
 			this.circle_radius_label = new System.Windows.Forms.Label();
 			this.slider_box = new System.Windows.Forms.GroupBox();
+			this.slider_height_unit = new System.Windows.Forms.Label();
+			this.slider_width_unit = new System.Windows.Forms.Label();
+			this.form_slider_height = new System.Windows.Forms.TextBox();
+			this.form_slider_width = new System.Windows.Forms.TextBox();
 			this.slider_h_label = new System.Windows.Forms.Label();
 			this.slider_w_label = new System.Windows.Forms.Label();
-			this.form_slider_width = new System.Windows.Forms.TextBox();
-			this.form_slider_height = new System.Windows.Forms.TextBox();
-			this.slider_width_unit = new System.Windows.Forms.Label();
-			this.circle_rad_unit = new System.Windows.Forms.Label();
-			this.slider_height_unit = new System.Windows.Forms.Label();
 			this.steady_box.SuspendLayout();
 			this.swipe_box.SuspendLayout();
 			this.button_panel.SuspendLayout();
@@ -348,6 +348,15 @@
 			this.circle_box.TabStop = false;
 			this.circle_box.Text = "Circle Detector";
 			// 
+			// circle_rad_unit
+			// 
+			this.circle_rad_unit.AutoSize = true;
+			this.circle_rad_unit.Location = new System.Drawing.Point( 223, 20 );
+			this.circle_rad_unit.Name = "circle_rad_unit";
+			this.circle_rad_unit.Size = new System.Drawing.Size( 79, 13 );
+			this.circle_rad_unit.TabIndex = 5;
+			this.circle_rad_unit.Text = "mm (default 80)";
+			// 
 			// circle_sensi_unit
 			// 
 			this.circle_sensi_unit.AutoSize = true;
@@ -404,6 +413,38 @@
 			this.slider_box.TabStop = false;
 			this.slider_box.Text = "Sliding Value Selector";
 			// 
+			// slider_height_unit
+			// 
+			this.slider_height_unit.AutoSize = true;
+			this.slider_height_unit.Location = new System.Drawing.Point( 223, 45 );
+			this.slider_height_unit.Name = "slider_height_unit";
+			this.slider_height_unit.Size = new System.Drawing.Size( 85, 13 );
+			this.slider_height_unit.TabIndex = 5;
+			this.slider_height_unit.Text = "mm (default 100)";
+			// 
+			// slider_width_unit
+			// 
+			this.slider_width_unit.AutoSize = true;
+			this.slider_width_unit.Location = new System.Drawing.Point( 223, 19 );
+			this.slider_width_unit.Name = "slider_width_unit";
+			this.slider_width_unit.Size = new System.Drawing.Size( 85, 13 );
+			this.slider_width_unit.TabIndex = 4;
+			this.slider_width_unit.Text = "mm (default 200)";
+			// 
+			// form_slider_height
+			// 
+			this.form_slider_height.Location = new System.Drawing.Point( 113, 39 );
+			this.form_slider_height.Name = "form_slider_height";
+			this.form_slider_height.Size = new System.Drawing.Size( 100, 20 );
+			this.form_slider_height.TabIndex = 3;
+			// 
+			// form_slider_width
+			// 
+			this.form_slider_width.Location = new System.Drawing.Point( 113, 16 );
+			this.form_slider_width.Name = "form_slider_width";
+			this.form_slider_width.Size = new System.Drawing.Size( 100, 20 );
+			this.form_slider_width.TabIndex = 2;
+			// 
 			// slider_h_label
 			// 
 			this.slider_h_label.AutoSize = true;
@@ -421,47 +462,6 @@
 			this.slider_w_label.Size = new System.Drawing.Size( 35, 13 );
 			this.slider_w_label.TabIndex = 0;
 			this.slider_w_label.Text = "Width";
-			// 
-			// form_slider_width
-			// 
-			this.form_slider_width.Location = new System.Drawing.Point( 113, 16 );
-			this.form_slider_width.Name = "form_slider_width";
-			this.form_slider_width.Size = new System.Drawing.Size( 100, 20 );
-			this.form_slider_width.TabIndex = 2;
-			// 
-			// form_slider_height
-			// 
-			this.form_slider_height.Location = new System.Drawing.Point( 113, 39 );
-			this.form_slider_height.Name = "form_slider_height";
-			this.form_slider_height.Size = new System.Drawing.Size( 100, 20 );
-			this.form_slider_height.TabIndex = 3;
-			// 
-			// slider_width_unit
-			// 
-			this.slider_width_unit.AutoSize = true;
-			this.slider_width_unit.Location = new System.Drawing.Point( 223, 19 );
-			this.slider_width_unit.Name = "slider_width_unit";
-			this.slider_width_unit.Size = new System.Drawing.Size( 85, 13 );
-			this.slider_width_unit.TabIndex = 4;
-			this.slider_width_unit.Text = "mm (default 200)";
-			// 
-			// circle_rad_unit
-			// 
-			this.circle_rad_unit.AutoSize = true;
-			this.circle_rad_unit.Location = new System.Drawing.Point( 223, 20 );
-			this.circle_rad_unit.Name = "circle_rad_unit";
-			this.circle_rad_unit.Size = new System.Drawing.Size( 79, 13 );
-			this.circle_rad_unit.TabIndex = 5;
-			this.circle_rad_unit.Text = "mm (default 80)";
-			// 
-			// slider_height_unit
-			// 
-			this.slider_height_unit.AutoSize = true;
-			this.slider_height_unit.Location = new System.Drawing.Point( 223, 45 );
-			this.slider_height_unit.Name = "slider_height_unit";
-			this.slider_height_unit.Size = new System.Drawing.Size( 85, 13 );
-			this.slider_height_unit.TabIndex = 5;
-			this.slider_height_unit.Text = "mm (default 100)";
 			// 
 			// config_dlg
 			// 

@@ -16,21 +16,21 @@ namespace PanelViewer
 		public ViewingPaneForm()
 		{
 			InitializeComponent();
-
-			CheckForIllegalCrossThreadCalls = false;
-
+			
 			#region Initializations
+			CheckForIllegalCrossThreadCalls = false;
 			this.context = Context.CreateFromXmlFile( SAMPLE_XML_FILE, out this.scriptNode );
 			this.sessionManager = new NITE.SessionManager( this.context, "Wave,Click", "RaiseHand" );
 			this.Instruction_Display.Text = "Connected to the Kinect Camera";
 			this.depth = context.FindExistingNode( NodeType.Depth ) as DepthGenerator;
-			this.hands = context.FindExistingNode( NodeType.Hands ) as HandsGenerator;
-			this.hands.SetSmoothing( 0.8f ); 
-			#endregion
 			if (this.depth == null)
 			{
 				throw new Exception( "Viewer must have a depth node!" );
 			}
+			this.hands = context.FindExistingNode( NodeType.Hands ) as HandsGenerator;
+			this.hands.SetSmoothing( 0.8f ); 
+			#endregion
+
 			#region Setup Components
 			pushDetector = new PushDetector( "PushDetector" );
 			aux_pushDect = new PushDetector( "Auxilary Push Detector" );
@@ -67,7 +67,21 @@ namespace PanelViewer
 			this.readerThread.Start(); 
 			#endregion
 
+			#region setProp values
 			this.sessionManager.PrimaryStaticTimeout = 7;
+			this.SteadyReq = 1000;
+			this.SteadyStddevReq = 1;
+			this.SwipeVelmin = 0.2f;
+			this.SwipeMinDuration = 500;
+			this.SwipeXangle = 45;
+			this.SwipeYangle = 45;
+			this.CircleMaxError = 2;
+			this.CircleRadMin = 80;
+			this.SliderHeight = 100;
+			this.SliderWidth = 200;
+			this.SwipeUseSteady = true;
+			this.SwipeSteadyDur = 75;
+			#endregion
 
 			#region Event Registration
 			this.sessionManager.SessionStart += new EventHandler<PositionEventArgs>( sessionManager_SessionStart );
@@ -93,12 +107,12 @@ namespace PanelViewer
 
 		private void customizeSwipe()
 		{
-			swipeDetector.MinimumVelocity = 0.2f;
-			swipeDetector.Duration = 500;
-			swipeDetector.XAngleThreshold = 45;
-			swipeDetector.YAngleThreshold = 45;
-			swipeDetector.UseSteady = true;
-			swipeDetector.SteadyDuration = 75;
+			swipeDetector.MinimumVelocity = this.SwipeVelmin;
+			swipeDetector.Duration = this.SwipeMinDuration;
+			swipeDetector.XAngleThreshold = this.swipeXangle;
+			swipeDetector.YAngleThreshold = this.SwipeYangle;
+			swipeDetector.UseSteady = this.SwipeUseSteady;
+			swipeDetector.SteadyDuration = this.SwipeSteadyDur;
 
 			if (debug == true)
 			{
@@ -109,7 +123,7 @@ namespace PanelViewer
 
 		private void customizeSteady()
 		{
-			this.steadyDetector.DetectionDuration = steadyReq;
+			this.steadyDetector.DetectionDuration = this.SteadyReq;
 			if (debug == true)
 			{
 				_print = true;
@@ -122,8 +136,8 @@ namespace PanelViewer
 		{
 
 
-			circleDectector.MinRadius = 80;
-			circleDectector.MaxErrors = 3;
+			circleDectector.MinRadius = this.CircleRadMin;
+			circleDectector.MaxErrors = this.CircleMaxError;
 
 			if (debug == true)
 			{
@@ -136,8 +150,8 @@ namespace PanelViewer
 
 		private void customizeSlider()
 		{
-			this.slider.SliderSize = 200;
-			this.slider.BorderWidth = 100;
+			this.slider.SliderSize = this.SliderWidth;
+			this.slider.BorderWidth = this.SliderHeight;
 		}
 
 		#endregion
@@ -680,16 +694,164 @@ namespace PanelViewer
 		private SessionState state = SessionState.NOT_IN_SESSION;
 		public int FPS_Temp;
 		private bool _print = false;
-		public int steadyReq = 1000;
 		private double playback_position = 0;
 		private bool _changed = false;
-
 		public enum SessionState
 		{
 			NOT_IN_SESSION,
 			IN_SESSION,
 			QUICK_REFOCUS
 		};
+		private int steadyReq;
+		private float steadyStddevReq;
+		private float swipeVelmin;
+		private int swipeXangle;
+		private int swipeYangle;
+		private int swipeMinDuration;
+		private bool swipeUseSteady;
+		private int swipeSteadyDur;
+		private int circleRadMin;
+		private int circleMaxError;
+		private int sliderWidth;
+		private int sliderHeight;
+
+
+		#region configurableValues
+		public int SteadyReq
+		{
+			get
+			{
+				return steadyReq;
+			}
+			set
+			{
+				steadyReq = value;
+			}
+		}
+		public float SteadyStddevReq
+		{
+			get
+			{
+				return steadyStddevReq;
+			}
+			set
+			{
+				steadyStddevReq = value;
+			}
+		}
+		public float SwipeVelmin
+		{
+			get
+			{
+				return swipeVelmin;
+			}
+			set
+			{
+				swipeVelmin = value;
+			}
+		}
+		public int SwipeXangle
+		{
+			get
+			{
+				return swipeXangle;
+			}
+			set
+			{
+				swipeXangle = value;
+			}
+		}
+		public int SwipeYangle
+		{
+			get
+			{
+				return swipeYangle;
+			}
+			set
+			{
+				swipeYangle = value;
+			}
+		}
+		public int SwipeMinDuration
+		{
+			get
+			{
+				return swipeMinDuration;
+			}
+			set
+			{
+				swipeMinDuration = value;
+			}
+		}
+		public int CircleRadMin
+		{
+			get
+			{
+				return circleRadMin;
+			}
+			set
+			{
+				circleRadMin = value;
+			}
+		}
+		public int CircleMaxError
+		{
+			get
+			{
+				return circleMaxError;
+			}
+			set
+			{
+				circleMaxError = value;
+			}
+		}
+		public int SliderWidth
+		{
+			get
+			{
+				return sliderWidth;
+			}
+			set
+			{
+				sliderWidth = value;
+			}
+		}
+		public int SliderHeight
+		{
+			get
+			{
+				return sliderHeight;
+			}
+			set
+			{
+				sliderHeight = value;
+			}
+		}
+		public bool SwipeUseSteady
+		{
+			get
+			{
+				return swipeUseSteady;
+			}
+			set
+			{
+				swipeUseSteady = value;
+			}
+		}
+		public int SwipeSteadyDur
+		{
+			get
+			{
+				return swipeSteadyDur;
+			}
+			set
+			{
+				swipeSteadyDur = value;
+			}
+		}
+		#endregion
+
+
 		#endregion
 	}
 }
