@@ -28,6 +28,17 @@ namespace PanelViewer
 		{
 			this._steady_duration = int.Parse( form_steadyduration_val.Text.ToString() );
 			this._steady_stddev = float.Parse( form_steady_stddev.Text.ToString() );
+			this._swipe_duration = int.Parse( form_swipe_duration.Text.ToString() );
+			this._swipe_steadyDur = int.Parse( form_steadyduration_val.Text.ToString() );
+			this._swipe_vel = float.Parse( form_swipe_minvel.Text.ToString() );
+			this._swipe_xangle = int.Parse( form_swipe_xangle.Text.ToString() );
+			this._swipe_yangle = int.Parse( form_swipe_yangle.Text.ToString() );
+			this._swipe_usesteay = bool.Parse( swipe_use_Steady.Checked.ToString() );
+			this._circle_maxerr = int.Parse( form_circle_sensitivity.Text.ToString() );
+			this._circle_radmin = int.Parse( form_circle_minrad.Text.ToString() );
+			this._slider_height = float.Parse( form_slider_height.Text.ToString() );
+			this._slider_width = float.Parse( form_slider_width.Text.ToString() );
+
 			this._newvalues = true;
 		}
 
@@ -61,8 +72,8 @@ namespace PanelViewer
 		public int _swipe_steadyDur = 0;
 		public int _circle_radmin = 0;
 		public int _circle_maxerr = 0;
-		public int _slider_height = 0;
-		public int _slider_width = 0;
+		public float _slider_height = 0;
+		public float _slider_width = 0;
 		public bool _newvalues = false;
 		#endregion
 

@@ -559,22 +559,9 @@ namespace PanelViewer
 				vars.SliderWidth = config._slider_width;
 
 				this.customizeCircle();
-				this.customizeSlider();
+				//this.customizeSlider();
 				this.customizeSteady();
 				this.customizeSwipe();
-			}
-
-
-
-
-
-
-
-
-
-
-
-
 				config._newvalues = false;
 			}
 
@@ -764,6 +751,12 @@ namespace PanelViewer
 			QUICK_REFOCUS
 		};
 		#endregion
+
+		private void force_kill_session( object sender, EventArgs e )
+		{
+			this.hands.StopTracking( 1 );
+			this.state = SessionState.QUICK_REFOCUS;
+		}
 	}
 
 

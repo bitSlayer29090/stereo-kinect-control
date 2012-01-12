@@ -53,6 +53,7 @@
 			this.marquetteCVTECToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.debugBox = new System.Windows.Forms.TextBox();
 			this.play_status_icon = new System.Windows.Forms.PictureBox();
+			this.forciblyLeaveSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.status_bar.SuspendLayout();
 			this.menu_bar.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.play_status_icon)).BeginInit();
@@ -205,8 +206,9 @@
 			// toolsToolStripMenuItem
 			// 
 			this.toolsToolStripMenuItem.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.toggle_Debug_switch,
-            this.configureToolStripMenuItem} );
+            this.forciblyLeaveSessionToolStripMenuItem,
+            this.configureToolStripMenuItem,
+            this.toggle_Debug_switch} );
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size( 48, 20 );
 			this.toolsToolStripMenuItem.Text = "&Tools";
@@ -215,14 +217,14 @@
 			// 
 			this.toggle_Debug_switch.CheckOnClick = true;
 			this.toggle_Debug_switch.Name = "toggle_Debug_switch";
-			this.toggle_Debug_switch.Size = new System.Drawing.Size( 168, 22 );
+			this.toggle_Debug_switch.Size = new System.Drawing.Size( 191, 22 );
 			this.toggle_Debug_switch.Text = "&Show Debug Data";
 			this.toggle_Debug_switch.CheckStateChanged += new System.EventHandler( this.toggle_debug );
 			// 
 			// configureToolStripMenuItem
 			// 
 			this.configureToolStripMenuItem.Name = "configureToolStripMenuItem";
-			this.configureToolStripMenuItem.Size = new System.Drawing.Size( 168, 22 );
+			this.configureToolStripMenuItem.Size = new System.Drawing.Size( 191, 22 );
 			this.configureToolStripMenuItem.Text = "Configure ";
 			this.configureToolStripMenuItem.Click += new System.EventHandler( this.form_configure_click );
 			// 
@@ -272,6 +274,13 @@
 			this.play_status_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.play_status_icon.TabIndex = 5;
 			this.play_status_icon.TabStop = false;
+			// 
+			// forciblyLeaveSessionToolStripMenuItem
+			// 
+			this.forciblyLeaveSessionToolStripMenuItem.Name = "forciblyLeaveSessionToolStripMenuItem";
+			this.forciblyLeaveSessionToolStripMenuItem.Size = new System.Drawing.Size( 191, 22 );
+			this.forciblyLeaveSessionToolStripMenuItem.Text = "Forcibly Leave Session";
+			this.forciblyLeaveSessionToolStripMenuItem.Click += new System.EventHandler( this.force_kill_session );
 			// 
 			// ViewingPaneForm
 			// 
@@ -327,6 +336,7 @@
 		private System.Windows.Forms.ToolStripMenuItem configureToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel gesture_display;
 		private System.Windows.Forms.PictureBox play_status_icon;
+		private System.Windows.Forms.ToolStripMenuItem forciblyLeaveSessionToolStripMenuItem;
 	}
 }
 

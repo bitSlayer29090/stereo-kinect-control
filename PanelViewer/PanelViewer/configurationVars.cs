@@ -19,8 +19,8 @@ namespace PanelViewer
 		private int swipeSteadyDur;
 		private int circleRadMin;
 		private int circleMaxError;
-		private int sliderWidth;
-		private int sliderHeight;
+		private float sliderWidth;
+		private float sliderHeight;
 
 		#region configurableValues
 		public int SteadyReq
@@ -111,7 +111,7 @@ namespace PanelViewer
 				circleMaxError = value;
 			}
 		}
-		public int SliderWidth
+		public float SliderWidth
 		{
 			get
 			{
@@ -122,7 +122,7 @@ namespace PanelViewer
 				sliderWidth = value;
 			}
 		}
-		public int SliderHeight
+		public float SliderHeight
 		{
 			get
 			{
