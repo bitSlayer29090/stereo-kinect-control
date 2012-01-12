@@ -26,7 +26,6 @@ namespace PanelViewer
 
 		private void saveAll()
 		{
-
 		}
 
 		private void config_save_button( object sender, EventArgs e )
