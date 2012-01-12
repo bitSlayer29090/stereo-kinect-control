@@ -11,6 +11,8 @@ namespace PanelViewer
 {
 	public partial class ViewingPaneForm : Form
 	{
+
+		//constructor function
 		public ViewingPaneForm()
 		{
 			InitializeComponent();
@@ -87,8 +89,8 @@ namespace PanelViewer
 			#endregion
 		}
 
-
 		#region Non Event Handling Functions
+
 		private void customizeSwipe()
 		{
 			swipeDetector.MinimumVelocity = 0.2f;
@@ -263,6 +265,7 @@ namespace PanelViewer
 			this.playback_position = e.Value * control.duration;
 
 		}
+
 		void aux_pushDect_Push( object sender, VelocityAngleEventArgs e )
 		{
 
@@ -276,6 +279,7 @@ namespace PanelViewer
 				debug_text = "Leaving Slider Mode and setting playback position--setting active listener to Steady Detector";
 			}
 		}
+
 		void steadyDetector_Steady( object sender, SteadyEventArgs e )
 		{
 
@@ -365,6 +369,7 @@ namespace PanelViewer
 		#endregion
 
 		#region DepthMap Rendering Functions
+
 		private unsafe void CalcHist( DepthMetaData depthMD )
 		{
 			// reset
@@ -447,6 +452,7 @@ namespace PanelViewer
 				this.sessionManager.Update( this.context );
 			}
 		}
+
 		protected override void OnPaint( PaintEventArgs e )
 		{
 			base.OnPaint( e );
@@ -493,7 +499,6 @@ namespace PanelViewer
 			}
 
 		}
-		#endregion
 
 		protected override void OnClosing( CancelEventArgs e )
 		{
@@ -510,6 +515,10 @@ namespace PanelViewer
 			}
 			base.OnKeyPress( e );
 		}
+
+		#endregion
+
+		#region Main Window Form Event Handlers
 
 		private void ViewingPane_Load( object sender, EventArgs e )
 		{
@@ -635,6 +644,8 @@ namespace PanelViewer
 
 			tempform.ShowDialog();
 		}
+
+		#endregion
 
 		#region Member Variables
 		private string debug_text = "";
