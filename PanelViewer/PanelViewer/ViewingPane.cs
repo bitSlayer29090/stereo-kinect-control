@@ -134,6 +134,12 @@ namespace PanelViewer
 
 		}
 
+		private void customizeSlider()
+		{
+			this.slider.SliderSize = 200;
+			this.slider.BorderWidth = 100;
+		}
+
 		#endregion
 
 		#region Gesture Event Handlers
@@ -640,9 +646,8 @@ namespace PanelViewer
 
 		private void form_configure_click( object sender, EventArgs e )
 		{
-			config_dlg tempform = new config_dlg();
 
-			tempform.ShowDialog();
+			config.ShowDialog();
 		}
 
 		#endregion
@@ -669,6 +674,7 @@ namespace PanelViewer
 		public NITE.SteadyDetector steadyDetector;
 		public NITE.SelectableSlider1D slider;
 		Control_Functions control = new Control_Functions();
+		config_dlg config = new config_dlg();
 		protected bool gl_loaded = false;
 		private bool debug = true;
 		private SessionState state = SessionState.NOT_IN_SESSION;
@@ -676,6 +682,7 @@ namespace PanelViewer
 		private bool _print = false;
 		public int steadyReq = 1000;
 		private double playback_position = 0;
+		private bool _changed = false;
 
 		public enum SessionState
 		{

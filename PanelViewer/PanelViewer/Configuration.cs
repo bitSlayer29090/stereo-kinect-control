@@ -14,11 +14,37 @@ namespace PanelViewer
 		public config_dlg()
 		{
 			InitializeComponent();
+
+			this.swipe_use_Steady.Checked = true;
+			this.swipe_use_Steady.CheckState = CheckState.Checked;
 		}
 
-		private void toolTip1_Popup( object sender, PopupEventArgs e )
+		private void config_cancel_button( object sender, EventArgs e )
 		{
-
+			this.Close();
 		}
+
+		private void saveAll()
+		{
+		}
+
+		private void config_save_button( object sender, EventArgs e )
+		{
+			this.saveAll();
+			this.Close();
+		}
+
+		private void swipe_duration_checkbox( object sender, EventArgs e )
+		{
+			if (this.swipe_use_Steady.Checked == true)
+			{
+				this.swipe_steady_duration.Enabled = true;
+			}
+			else
+			{
+				this.swipe_steady_duration.Enabled = false;
+			}
+		}
+
 	}
 }
