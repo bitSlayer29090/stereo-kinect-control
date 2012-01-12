@@ -9,6 +9,8 @@
 using System;
 using System.Windows.Forms;
 using StereoPlayer;
+using System.Drawing.Imaging;
+using System.Drawing;
 
 
 namespace PanelViewer
@@ -21,9 +23,9 @@ namespace PanelViewer
 			control = new StereoPlayer.Automation();
 
 			/*Initialize Variables*/
-			play = true;
-			pause = false;
-			stop = false;
+			_play = true;
+			_pause = false;
+			_stop = false;
 			fullscreen = false;
 			zoom = 100;
 			sliderMode = false;
@@ -32,33 +34,36 @@ namespace PanelViewer
 
 		public void togglePlay()
 		{
-			if (play == true && pause == false && stop == false)
+			if (_play == true && _pause == false && _stop == false)
 			{
 				control.SetPlaybackState( PlaybackState.PlaybackState_Pause );
-				play = false;
-				pause = true;
-				stop = false;
+				_play = false;
+				_pause = true;
+				_stop = false;
 			}
-			else if (play == false && pause == true && stop == false)
+			else if (_play == false && _pause == true && _stop == false)
 			{
 				control.SetPlaybackState( PlaybackState.PlaybackState_Play );
-				play = true;
-				pause = false;
-				stop = false;
+				_play = true;
+				_pause = false;
+				_stop = false;
 			}
 
-			else if (play == false && pause == false && stop == true)
+			else if (_play == false && _pause == false && _stop == true)
 			{
 				control.SetPlaybackState( PlaybackState.PlaybackState_Play );
-				play = true;
-				pause = false;
-				stop = false;
+				_play = true;
+				_pause = false;
+				_stop = false;
 			}
+
+			
 		}
 
 		public void setStop()
 		{
 			control.SetPlaybackState( PlaybackState.PlaybackState_Stop );
+			_stop = true;
 		}
 
 		public void toggleFullscreen()
@@ -310,12 +315,11 @@ namespace PanelViewer
 
 #region Global-type Variables
 		private StereoPlayer.IAutomation control;
-		protected bool play;
-		protected bool pause;
-		protected bool stop;
+		public bool _play;
+		public bool _pause;
+		public bool _stop;
 		protected bool fullscreen;
 		public bool sliderMode;
-		protected bool ready;
 		protected bool debug;
 		protected double zoom;
 		public double duration = 0;

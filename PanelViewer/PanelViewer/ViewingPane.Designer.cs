@@ -34,6 +34,7 @@
 			this.Instruction_Display = new System.Windows.Forms.ToolStripStatusLabel();
 			this.FPS_Display = new System.Windows.Forms.ToolStripStatusLabel();
 			this.FPS_Bar = new System.Windows.Forms.ToolStripProgressBar();
+			this.gesture_display = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menu_bar = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,9 +52,10 @@
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.marquetteCVTECToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.debugBox = new System.Windows.Forms.TextBox();
-			this.gesture_display = new System.Windows.Forms.ToolStripStatusLabel();
+			this.play_status_icon = new System.Windows.Forms.PictureBox();
 			this.status_bar.SuspendLayout();
 			this.menu_bar.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.play_status_icon)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// panelViewer
@@ -72,9 +74,10 @@
             this.FPS_Display,
             this.FPS_Bar,
             this.gesture_display} );
-			this.status_bar.Location = new System.Drawing.Point( 0, 666 );
+			this.status_bar.Location = new System.Drawing.Point( 0, 663 );
 			this.status_bar.Name = "status_bar";
 			this.status_bar.Padding = new System.Windows.Forms.Padding( 1, 0, 19, 0 );
+			this.status_bar.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
 			this.status_bar.Size = new System.Drawing.Size( 664, 26 );
 			this.status_bar.TabIndex = 2;
 			this.status_bar.Text = "statusStrip1";
@@ -101,6 +104,15 @@
 			this.FPS_Bar.Maximum = 50;
 			this.FPS_Bar.Name = "FPS_Bar";
 			this.FPS_Bar.Size = new System.Drawing.Size( 75, 20 );
+			// 
+			// gesture_display
+			// 
+			this.gesture_display.AutoSize = false;
+			this.gesture_display.Image = ((System.Drawing.Image)(resources.GetObject( "gesture_display.Image" )));
+			this.gesture_display.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.gesture_display.Name = "gesture_display";
+			this.gesture_display.Size = new System.Drawing.Size( 180, 21 );
+			this.gesture_display.Text = "(No Gestures Recognized)";
 			// 
 			// menu_bar
 			// 
@@ -251,20 +263,22 @@
 			this.debugBox.TabIndex = 4;
 			this.debugBox.Visible = false;
 			// 
-			// gesture_display
+			// play_status_icon
 			// 
-			this.gesture_display.AutoSize = false;
-			this.gesture_display.Image = ((System.Drawing.Image)(resources.GetObject( "gesture_display.Image" )));
-			this.gesture_display.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.gesture_display.Name = "gesture_display";
-			this.gesture_display.Size = new System.Drawing.Size( 180, 21 );
-			this.gesture_display.Text = "(No Gestures Recognized)";
+			this.play_status_icon.Image = ((System.Drawing.Image)(resources.GetObject( "play_status_icon.Image" )));
+			this.play_status_icon.Location = new System.Drawing.Point( 640, 0 );
+			this.play_status_icon.Name = "play_status_icon";
+			this.play_status_icon.Size = new System.Drawing.Size( 24, 24 );
+			this.play_status_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.play_status_icon.TabIndex = 5;
+			this.play_status_icon.TabStop = false;
 			// 
 			// ViewingPaneForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 8F, 16F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size( 664, 692 );
+			this.ClientSize = new System.Drawing.Size( 664, 689 );
+			this.Controls.Add( this.play_status_icon );
 			this.Controls.Add( this.debugBox );
 			this.Controls.Add( this.status_bar );
 			this.Controls.Add( this.menu_bar );
@@ -281,6 +295,7 @@
 			this.status_bar.PerformLayout();
 			this.menu_bar.ResumeLayout( false );
 			this.menu_bar.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.play_status_icon)).EndInit();
 			this.ResumeLayout( false );
 			this.PerformLayout();
 
@@ -311,6 +326,7 @@
 		private System.Windows.Forms.ToolStripMenuItem dVideoFileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem configureToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel gesture_display;
+		private System.Windows.Forms.PictureBox play_status_icon;
 	}
 }
 

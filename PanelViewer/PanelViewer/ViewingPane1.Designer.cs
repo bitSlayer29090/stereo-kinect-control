@@ -88,6 +88,13 @@ namespace PanelViewer {
             }
         }
         
+        public static System.Drawing.Bitmap play_status_icon_Image {
+            get {
+                object obj = ResourceManager.GetObject("play_status_icon.Image", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Point status_bar_TrayLocation {
             get {
                 object obj = ResourceManager.GetObject("status_bar.TrayLocation", resourceCulture);
