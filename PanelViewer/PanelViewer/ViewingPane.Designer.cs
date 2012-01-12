@@ -51,6 +51,7 @@
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.marquetteCVTECToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.debugBox = new System.Windows.Forms.TextBox();
+			this.gesture_display = new System.Windows.Forms.ToolStripStatusLabel();
 			this.status_bar.SuspendLayout();
 			this.menu_bar.SuspendLayout();
 			this.SuspendLayout();
@@ -69,7 +70,8 @@
 			this.status_bar.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.Instruction_Display,
             this.FPS_Display,
-            this.FPS_Bar} );
+            this.FPS_Bar,
+            this.gesture_display} );
 			this.status_bar.Location = new System.Drawing.Point( 0, 666 );
 			this.status_bar.Name = "status_bar";
 			this.status_bar.Padding = new System.Windows.Forms.Padding( 1, 0, 19, 0 );
@@ -80,13 +82,16 @@
 			// Instruction_Display
 			// 
 			this.Instruction_Display.AutoSize = false;
+			this.Instruction_Display.BorderStyle = System.Windows.Forms.Border3DStyle.Bump;
 			this.Instruction_Display.Image = ((System.Drawing.Image)(resources.GetObject( "Instruction_Display.Image" )));
+			this.Instruction_Display.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.Instruction_Display.Name = "Instruction_Display";
 			this.Instruction_Display.Size = new System.Drawing.Size( 200, 21 );
 			this.Instruction_Display.Text = "Ready...";
 			// 
 			// FPS_Display
 			// 
+			this.FPS_Display.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.FPS_Display.Name = "FPS_Display";
 			this.FPS_Display.Size = new System.Drawing.Size( 118, 21 );
 			this.FPS_Display.Text = "toolStripStatusLabel2";
@@ -95,7 +100,7 @@
 			// 
 			this.FPS_Bar.Maximum = 50;
 			this.FPS_Bar.Name = "FPS_Bar";
-			this.FPS_Bar.Size = new System.Drawing.Size( 133, 20 );
+			this.FPS_Bar.Size = new System.Drawing.Size( 75, 20 );
 			// 
 			// menu_bar
 			// 
@@ -246,6 +251,16 @@
 			this.debugBox.TabIndex = 4;
 			this.debugBox.Visible = false;
 			// 
+			// gesture_display
+			// 
+			this.gesture_display.AutoSize = false;
+			this.gesture_display.Image = ((System.Drawing.Image)(resources.GetObject( "gesture_display.Image" )));
+			this.gesture_display.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.gesture_display.Name = "gesture_display";
+			this.gesture_display.Size = new System.Drawing.Size( 180, 21 );
+			this.gesture_display.Text = "(No Gestures Recognized)";
+			this.gesture_display.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+			// 
 			// ViewingPaneForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 8F, 16F );
@@ -296,6 +311,7 @@
 		private System.Windows.Forms.ToolStripMenuItem leftAndRightFilesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem dVideoFileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem configureToolStripMenuItem;
+		private System.Windows.Forms.ToolStripStatusLabel gesture_display;
 	}
 }
 

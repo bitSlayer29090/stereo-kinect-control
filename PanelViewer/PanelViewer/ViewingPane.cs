@@ -74,10 +74,12 @@ namespace PanelViewer
 			this.swipeDetector.SwipeLeft += new EventHandler<VelocityAngleEventArgs>( swipeDetector_SwipeLeft );
 			this.swipeDetector.SwipeUp += new EventHandler<VelocityAngleEventArgs>( swipeDetector_SwipeUp );
 			this.swipeDetector.SwipeDown += new EventHandler<VelocityAngleEventArgs>( swipeDetector_SwipeDown );
-			//this.circleDectector.OnCircle += new EventHandler<CircleEventArgs>( circleDectector_OnCircle );
 			this.steadyDetector.Steady += new EventHandler<SteadyEventArgs>( steadyDetector_Steady );
 			this.slider.ValueChange += new EventHandler<ValueEventArgs>( slider_ValueChange );
 			this.aux_pushDect.Push += new EventHandler<VelocityAngleEventArgs>( aux_pushDect_Push );
+
+
+			//aux_pushDect.
 			#endregion
 		}
 
@@ -340,19 +342,19 @@ namespace PanelViewer
 			if (this.state == SessionState.IN_SESSION)
 			{
 				this.Instruction_Display.Text = "In Session";
-				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/GreenStatus.ico" );
+				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/accept.ico" );
 			}
 
 			else if (this.state == SessionState.NOT_IN_SESSION)
 			{
 				this.Instruction_Display.Text = "Not In Session";
-				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/RedStatus.ico" );
+				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/warning.ico" );
 			}
 
 			else if (this.state == SessionState.QUICK_REFOCUS)
 			{
 				this.Instruction_Display.Text = "Quick Refocus - Raise Hand";
-				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/YellowStatus.ico" );
+				this.Instruction_Display.Image = Bitmap.FromFile( "../../CVTEC Resources/help.ico" );
 			}
 
 			FPS_Display.Text = "Frames Per Second: " + FPS_Temp.ToString();

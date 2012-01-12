@@ -60,6 +60,13 @@ namespace PanelViewer {
             }
         }
         
+        public static System.Drawing.Bitmap gesture_display_Image {
+            get {
+                object obj = ResourceManager.GetObject("gesture_display.Image", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         public static System.Drawing.Bitmap Instruction_Display_Image {
             get {
                 object obj = ResourceManager.GetObject("Instruction_Display.Image", resourceCulture);
