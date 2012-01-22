@@ -245,15 +245,6 @@ namespace PanelViewer
 			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/arrow_right.ico" );
 			this.gesture_display.Text = "Right Swipe";
 
-			if (control._play == true)
-			{
-				this.play_status_icon.Image = Bitmap.FromFile( "../../CVTEC Resources/play.ico" );
-			}
-			else if (control._pause == true)
-			{
-				this.play_status_icon.Image = Bitmap.FromFile( "../../CVTEC Resources/pause.ico" );
-			}
-
 		}
 
 		void pushDetector_Push( object sender, VelocityAngleEventArgs e )
@@ -559,6 +550,8 @@ namespace PanelViewer
 				vars.SliderWidth = config._slider_width;
 
 				this.customizeCircle();
+
+				//TODO need to check why the customizeSlider function doesn't accept the float input
 				//this.customizeSlider();
 				this.customizeSteady();
 				this.customizeSwipe();
@@ -654,7 +647,7 @@ namespace PanelViewer
 
 			this.gesture_display.Text = "Successfully opened file";
 			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/add.ico" );
-			this.play_status_icon.Image = Bitmap.FromFile( "../../CVTEC Resources/add.ico" );
+
 
 
 		}
@@ -674,7 +667,6 @@ namespace PanelViewer
 
 			this.gesture_display.Text = "Successfully opened file";
 			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/add.ico" );
-			this.play_status_icon.Image = Bitmap.FromFile( "../../CVTEC Resources/add.ico" );
 		}
 
 		private void form_open3d( object sender, EventArgs e )
@@ -690,7 +682,6 @@ namespace PanelViewer
 
 			this.gesture_display.Text = "Successfully opened file";
 			this.gesture_display.Image = Bitmap.FromFile( "../../CVTEC Resources/add.ico" );
-			this.play_status_icon.Image = Bitmap.FromFile( "../../CVTEC Resources/add.ico" );
 		}
 
 		private void form_open_folder( object sender, EventArgs e )
@@ -755,7 +746,6 @@ namespace PanelViewer
 		private void force_kill_session( object sender, EventArgs e )
 		{
 			this.hands.StopTracking( 1 );
-			this.state = SessionState.QUICK_REFOCUS;
 		}
 	}
 

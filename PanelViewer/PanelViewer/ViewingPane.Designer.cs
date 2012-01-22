@@ -46,17 +46,15 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toggle_Debug_switch = new System.Windows.Forms.ToolStripMenuItem();
+			this.forciblyLeaveSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.configureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toggle_Debug_switch = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.marquetteCVTECToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.debugBox = new System.Windows.Forms.TextBox();
-			this.play_status_icon = new System.Windows.Forms.PictureBox();
-			this.forciblyLeaveSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.status_bar.SuspendLayout();
 			this.menu_bar.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.play_status_icon)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// panelViewer
@@ -213,13 +211,12 @@
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size( 48, 20 );
 			this.toolsToolStripMenuItem.Text = "&Tools";
 			// 
-			// toggle_Debug_switch
+			// forciblyLeaveSessionToolStripMenuItem
 			// 
-			this.toggle_Debug_switch.CheckOnClick = true;
-			this.toggle_Debug_switch.Name = "toggle_Debug_switch";
-			this.toggle_Debug_switch.Size = new System.Drawing.Size( 191, 22 );
-			this.toggle_Debug_switch.Text = "&Show Debug Data";
-			this.toggle_Debug_switch.CheckStateChanged += new System.EventHandler( this.toggle_debug );
+			this.forciblyLeaveSessionToolStripMenuItem.Name = "forciblyLeaveSessionToolStripMenuItem";
+			this.forciblyLeaveSessionToolStripMenuItem.Size = new System.Drawing.Size( 191, 22 );
+			this.forciblyLeaveSessionToolStripMenuItem.Text = "Forcibly Leave Session";
+			this.forciblyLeaveSessionToolStripMenuItem.Click += new System.EventHandler( this.force_kill_session );
 			// 
 			// configureToolStripMenuItem
 			// 
@@ -227,6 +224,14 @@
 			this.configureToolStripMenuItem.Size = new System.Drawing.Size( 191, 22 );
 			this.configureToolStripMenuItem.Text = "Configure ";
 			this.configureToolStripMenuItem.Click += new System.EventHandler( this.form_configure_click );
+			// 
+			// toggle_Debug_switch
+			// 
+			this.toggle_Debug_switch.CheckOnClick = true;
+			this.toggle_Debug_switch.Name = "toggle_Debug_switch";
+			this.toggle_Debug_switch.Size = new System.Drawing.Size( 191, 22 );
+			this.toggle_Debug_switch.Text = "&Show Debug Data";
+			this.toggle_Debug_switch.CheckStateChanged += new System.EventHandler( this.toggle_debug );
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -265,29 +270,11 @@
 			this.debugBox.TabIndex = 4;
 			this.debugBox.Visible = false;
 			// 
-			// play_status_icon
-			// 
-			this.play_status_icon.Image = ((System.Drawing.Image)(resources.GetObject( "play_status_icon.Image" )));
-			this.play_status_icon.Location = new System.Drawing.Point( 640, 0 );
-			this.play_status_icon.Name = "play_status_icon";
-			this.play_status_icon.Size = new System.Drawing.Size( 24, 24 );
-			this.play_status_icon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-			this.play_status_icon.TabIndex = 5;
-			this.play_status_icon.TabStop = false;
-			// 
-			// forciblyLeaveSessionToolStripMenuItem
-			// 
-			this.forciblyLeaveSessionToolStripMenuItem.Name = "forciblyLeaveSessionToolStripMenuItem";
-			this.forciblyLeaveSessionToolStripMenuItem.Size = new System.Drawing.Size( 191, 22 );
-			this.forciblyLeaveSessionToolStripMenuItem.Text = "Forcibly Leave Session";
-			this.forciblyLeaveSessionToolStripMenuItem.Click += new System.EventHandler( this.force_kill_session );
-			// 
 			// ViewingPaneForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 8F, 16F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size( 664, 689 );
-			this.Controls.Add( this.play_status_icon );
 			this.Controls.Add( this.debugBox );
 			this.Controls.Add( this.status_bar );
 			this.Controls.Add( this.menu_bar );
@@ -304,7 +291,6 @@
 			this.status_bar.PerformLayout();
 			this.menu_bar.ResumeLayout( false );
 			this.menu_bar.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.play_status_icon)).EndInit();
 			this.ResumeLayout( false );
 			this.PerformLayout();
 
@@ -335,7 +321,6 @@
 		private System.Windows.Forms.ToolStripMenuItem dVideoFileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem configureToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel gesture_display;
-		private System.Windows.Forms.PictureBox play_status_icon;
 		private System.Windows.Forms.ToolStripMenuItem forciblyLeaveSessionToolStripMenuItem;
 	}
 }
